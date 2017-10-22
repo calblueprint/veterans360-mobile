@@ -26,6 +26,7 @@ export default class VaultScreen extends React.Component {
         {name: 'LEGAL', selected:true, id: 5},
         {name: 'MENTAL HEALTH', selected:true, id: 6},
       ],
+
       resources: [
         /*
         {title: 'Title of Resource',
@@ -104,8 +105,8 @@ export default class VaultScreen extends React.Component {
         );
       } else {
         return (
-          <TouchableHighlight key = { item.id } style = {[styles.item, { backgroundColor:'white', }]} onPress={() => {this.setOpposite(item.id);}}>
-            <Text style={{ color:'black', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>{item.name}</Text>
+          <TouchableHighlight key = {item.id} style = {[styles.item, {backgroundColor:'white',}]} onPress={() => {this.setOpposite(item.id);}}>
+            <Text style={{color:'black', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>{item.name}</Text>
           </TouchableHighlight>
         );
       }
@@ -351,4 +352,3 @@ const styles = StyleSheet.create({
     color:'#949494',
   },
 });
-
