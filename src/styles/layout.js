@@ -24,12 +24,14 @@ function createStyles(styleNames) {
   return StyleSheet.create(styles);
 }
 
-marginTop = createStyles(['marginTop']);
-marginBottom = createStyles(['marginBottom']);
-marginLeft = createStyles(['marginLeft']);
-marginRight = createStyles(['marginRight']);
-marginTopBottom = createStyles(['marginTop', 'marginBottom']);
-marginLeftRight = createStyles(['marginLeft', 'marginRight']);
+const margins = {
+  marginTop: createStyles(['marginTop']),
+  marginBottom: createStyles(['marginBottom']),
+  marginLeft: createStyles(['marginLeft']),
+  marginRight: createStyles(['marginRight']),
+  marginTopBottom: createStyles(['marginTop', 'marginBottom']),
+  marginLeftRight: createStyles(['marginLeft', 'marginRight']),
+}
 
 const layoutStyles = StyleSheet.create({
   flexCenter: {
@@ -40,11 +42,6 @@ const layoutStyles = StyleSheet.create({
 })
 
 export {
-  marginTop,
-  marginBottom,
-  marginLeft,
-  marginRight,
-  marginTopBottom,
-  marginLeftRight,
+  margins, 
   layoutStyles,
 };
