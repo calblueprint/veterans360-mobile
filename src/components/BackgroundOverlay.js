@@ -1,3 +1,11 @@
+/**
+ * Basic background display component that displays a rotated green
+ * and white background. Use this as a wrapper container for the rest
+ * of the components on the page.
+ *
+ * @prop children     - elements contained in this container
+ */
+
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View } from 'react-native';

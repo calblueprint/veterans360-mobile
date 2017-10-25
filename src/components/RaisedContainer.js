@@ -1,3 +1,10 @@
+/**
+ * Simple reusable white container with box shadow for containing elements.
+ *
+ * @prop style       - style override
+ * @prop children    - children contained in this component
+ */
+
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View } from 'react-native';
