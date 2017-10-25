@@ -1,3 +1,21 @@
+/**
+ * Form object to gather user input and submit to API. This class
+ * wraps the tcomb-form library and overrides many styles by default.
+ * See below for more details. This form's parent component must use
+ * `this.form.getValue()`, which will be set by a ref when the form
+ * values are filled out, in order to retrieve the form information
+ * and handle submission.
+ *
+ * @prop style        - style override
+ * @prop refCallback  - callback function in order to set a ref on the parent
+ *                      to get this form's values. See `LoginScreen` for an
+ *                      example
+ * @prop type         - object that specifies the form fields and types for
+ *                      each field. Again see `LoginScreen` for an example and
+ *                      refer to this documentation: https://github.com/gcanti/tcomb-form-native
+ * @prop options      - options for customizing each form field, see the docs
+ */
+
 import React from 'react';
 import { StyleSheet, Text, View, Platform } from 'react-native';
 import { colors } from '../styles/colors';

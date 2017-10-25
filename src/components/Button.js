@@ -1,3 +1,15 @@
+/**
+ * Button that can handle requests and render success
+ * or failure of response. Eventually will also be able to
+ * handle screen nagivation.
+ *
+ * @prop style        - button style override
+ * @prop textStyle    - text style override
+ * @prop onPress      - callback function with three arguments (see bottom)
+ *                      to be executed when button pressed
+ * @prop text         - the text to be displayed in the button
+ */
+
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
@@ -87,7 +99,7 @@ export default class Button extends React.Component {
       >
         <View style={styles.innerButtonStyle}>
           {this.getIcon()}
-          <Text style={styles.textStyle}>{this.props.text}</Text>
+          <Text style={[styles.textStyle, this.props.textStyle]}>{this.props.text}</Text>
         </View>
       </TouchableHighlight>
     );

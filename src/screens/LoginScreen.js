@@ -1,3 +1,7 @@
+/**
+ * Login screen for veterans. 
+ */
+
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
@@ -23,9 +27,11 @@ export default class LoginScreen extends React.Component {
     super(props);
 
     this.login = this.login.bind(this);
+    this.redirectToSignupScreen = this.redirectToSignupScreen.bind(this);
   }
 
   login(event, onSuccess, onFailure) {
+    event.preventDefault();
     const value = this.form.getValue();
     if (value) {
       console.log(value);
@@ -36,10 +42,14 @@ export default class LoginScreen extends React.Component {
     }
   }
 
+  redirectToSignupScreen(event, onSuccess, onFailure) {
+    event.preventDefault();
+    // TODO: FILL IN
+  }
+
   render() {
     return (
       <BackgroundOverlay>
-
         <RaisedContainer style={styles.raisedContainer}>
           <Text style={styles.titleStyle}>Login</Text>
           <View style={styles.formContainer}>
@@ -62,6 +72,12 @@ export default class LoginScreen extends React.Component {
               text="SUBMIT"
             />
           </View>
+          <Button
+            style={styles.signupButtonStyle}
+            textStyle={styles.signupButtonTextStyle}
+            onPress={this.login}
+            text="SIGN UP"
+          />
         </RaisedContainer>
       </BackgroundOverlay>
     );
@@ -99,5 +115,14 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: '300',
     zIndex: 100,
+  },
+  signupButtonStyle: {
+    position: 'absolute',
+    bottom: -72,
+    height: 32,
+    borderRadius: 16,
+  },
+  signupButtonTextStyle: {
+    fontSize: 13,
   },
 });
