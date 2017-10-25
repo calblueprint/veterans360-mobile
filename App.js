@@ -6,11 +6,12 @@ import ConnectScreen from './src/screens/ConnectScreen';
 import VaultScreen from './src/screens/VaultScreen';
 import ResponseScreen from './src/screens/ResponseScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import LoginScreen from './src/screens/LoginScreen';
 
 
 const Navigator = TabNavigator({
   Home: {
-    screen: HomeScreen,
+    screen: LoginScreen,
   },
   Connect: {
     screen: ConnectScreen,
