@@ -1,6 +1,8 @@
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { Form, t } from '../components/Form';
+
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import BackgroundOverlay from '../components/BackgroundOverlay';
@@ -15,16 +17,43 @@ export default class LoginScreen extends React.Component {
     ),
   };
 
+  constructor(props) {
+    super(props);
+
+    this.login = this.login.bind(this);
+  }
+
+  login() {
+    const value = this.form.getValue();
+    if (value) {
+      console.log(value);
+    } else {
+      console.error("Error occurred.");
+    }
+  }
+
   render() {
     return (
       <BackgroundOverlay>
         <RaisedContainer style={styles.raisedContainer}>
-          <Text>Hello</Text>
+          <Form
+            refCallback={(ref) => this.form = ref}
+            type={t.struct({
+              email: t.String,
+              password: t.String,
+            })}
+          />
+        <TouchableHighlight
+          onPress={this.login}
+        >
+          <Text>Save</Text>
+        </TouchableHighlight>
         </RaisedContainer>
       </BackgroundOverlay>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   raisedContainer: {
