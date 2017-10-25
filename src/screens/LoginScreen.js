@@ -4,9 +4,11 @@ import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { Form, t } from '../components/Form';
 
 import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
+import { layoutStyles, marginTop } from '../styles/layout';
+import { colors } from '../styles/colors';
 import BackgroundOverlay from '../components/BackgroundOverlay';
 import RaisedContainer from '../components/RaisedContainer';
+import Button from '../components/Button';
 
 export default class LoginScreen extends React.Component {
 
@@ -23,31 +25,38 @@ export default class LoginScreen extends React.Component {
     this.login = this.login.bind(this);
   }
 
-  login() {
+  login(event, onSuccess, onFailure) {
     const value = this.form.getValue();
     if (value) {
       console.log(value);
+      onSuccess && onSuccess(value);
     } else {
       console.error("Error occurred.");
+      onFailure && onFailure();
     }
   }
 
   render() {
     return (
       <BackgroundOverlay>
+
         <RaisedContainer style={styles.raisedContainer}>
-          <Form
-            refCallback={(ref) => this.form = ref}
-            type={t.struct({
-              email: t.String,
-              password: t.String,
-            })}
-          />
-        <TouchableHighlight
-          onPress={this.login}
-        >
-          <Text>Save</Text>
-        </TouchableHighlight>
+          <Text style={styles.titleStyle}>Login</Text>
+          <View style={styles.formContainer}>
+            <Form
+              style={styles.formStyle}
+              refCallback={(ref) => this.form = ref}
+              type={t.struct({
+                email: t.String,
+                password: t.String,
+              })}
+            />
+            <Button
+              style={marginTop.md}
+              onPress={this.login}
+              text="SUBMIT"
+            />
+          </View>
         </RaisedContainer>
       </BackgroundOverlay>
     );
@@ -65,5 +74,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  formContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 40,
+    paddingRight: 40,
+  },
+  formStyle: {
+    width: 500,
+  },
+  titleStyle: {
+    position: 'absolute',
+    top: -72,
+    color: colors.white,
+    backgroundColor: 'transparent',
+    fontSize: 36,
+    fontWeight: '300',
+    zIndex: 100,
   },
 });
