@@ -47,13 +47,13 @@ class Form extends React.Component {
 
     textbox.error = {
       color: INPUT_COLOR,
-      backgroundColor: colors.red,
+      backgroundColor: colors.snow,
       fontSize: FONT_SIZE,
       height: HEIGHT,
       paddingVertical: Platform.OS === "ios" ? 7 : 0,
       paddingHorizontal: PADDING_HORIZONTAL,
       borderRadius: HEIGHT / 2,
-      borderColor: colors.dark_red,
+      borderColor: colors.red,
       borderWidth: 1,
       marginBottom: 5,
     }
@@ -101,6 +101,7 @@ class Form extends React.Component {
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   formStyle: {

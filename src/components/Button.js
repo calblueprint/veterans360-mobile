@@ -15,6 +15,7 @@ export default class Button extends React.Component {
     this.timer = null  // Disable button for 1s after submit
 
     this.resetState = this.resetState.bind(this);
+    this.showError = this.showError.bind(this);
     this.endSave = this.endSave.bind(this);
     this.submit = this.submit.bind(this);
   }
@@ -62,11 +63,11 @@ export default class Button extends React.Component {
   getIcon() {
     switch (this.state.currentAction) {
       case 'saving':
-        return <Icon name="spinner" size={20} color={colors.white} />
+        return <Icon name="spinner" style={styles.iconStyle} size={14} color={colors.white} />
       case 'success':
-        return <Icon name="check" size={20} color={colors.white} />
+        return <Icon name="check" style={styles.iconStyle} size={14} color={colors.white} />
       case 'error':
-        return <Icon name="times" size={20} color={colors.white} />
+        return <Icon name="times" style={styles.iconStyle} size={14} color={colors.white} />
       default:
         return
     }
@@ -74,7 +75,7 @@ export default class Button extends React.Component {
 
   submit(event) {
     this.startSave();
-    this.props.onPress(event, this.endSave, this.showError)
+    this.props.onPress(event, this.endSave, this.showError);
   }
 
   render() {
@@ -84,7 +85,7 @@ export default class Button extends React.Component {
         onPress={this.submit}
         underlayColor={colors.dark_green}
       >
-        <View>
+        <View style={styles.innerButtonStyle}>
           {this.getIcon()}
           <Text style={styles.textStyle}>{this.props.text}</Text>
         </View>
@@ -92,6 +93,7 @@ export default class Button extends React.Component {
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -114,10 +116,18 @@ const styles = StyleSheet.create({
   errorButtonStyle: {
     backgroundColor: colors.red,
   },
+  innerButtonStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconStyle: {
+    marginRight: 8,
+  },
   textStyle: {
     color: colors.white,
     fontSize: 14,
     fontWeight: 'bold',
     letterSpacing: 1,
-  }
+  },
 });

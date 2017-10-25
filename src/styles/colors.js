@@ -29,7 +29,7 @@ colors = {
   dark_red          : '#A33543',
 
   // White
-  white             : '#FFFFFF', 
+  white             : '#FFFFFF',
 }
 
 export { colors };

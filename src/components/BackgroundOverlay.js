@@ -17,6 +17,7 @@ export default class BackgroundOverlay extends React.Component {
   }
 }
 
+
 const styles = StyleSheet.create({
   baseContainer: {
     flex: 1,

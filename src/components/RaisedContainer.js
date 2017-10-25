@@ -16,6 +16,7 @@ export default class RaisedContainer extends React.Component {
   }
 }
 
+
 const styles = StyleSheet.create({
   baseContainer: {
     flex: 1,

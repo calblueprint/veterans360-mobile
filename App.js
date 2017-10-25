@@ -10,7 +10,7 @@ import LoginScreen from './src/screens/LoginScreen';
 
 
 const Navigator = TabNavigator({
-  Home: {
+  Login: {
     screen: LoginScreen,
   },
   Connect: {
