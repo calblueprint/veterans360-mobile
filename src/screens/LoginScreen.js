@@ -50,6 +50,11 @@ export default class LoginScreen extends React.Component {
                 email: t.String,
                 password: t.String,
               })}
+              options={{
+                fields: {
+                  password: { secureTextEntry: true },
+                },
+              }}
             />
             <Button
               style={marginTop.md}
