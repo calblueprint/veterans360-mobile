@@ -4,7 +4,7 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView } from 'react-native';
 import { Form, t } from '../components/Form';
 
 import { imageStyles } from '../styles/images';
@@ -45,6 +45,8 @@ export default class SignupScreen extends React.Component {
   redirectToLoginScreen(event, onSuccess, onFailure) {
     event.preventDefault();
     // TODO: FILL IN
+    this.props.navigation.navigate('Login');
+    onSuccess && onSuccess();
   }
 
   render() {
@@ -52,27 +54,34 @@ export default class SignupScreen extends React.Component {
       <BackgroundOverlay>
         <RaisedContainer style={styles.raisedContainer}>
           <Text style={styles.titleStyle}>Sign Up</Text>
-          <View style={styles.formContainer}>
-            <Form
-              style={styles.formStyle}
-              refCallback={(ref) => this.form = ref}
-              type={t.struct({
-                email: t.String,
-                password: t.String,
-                confirmPassword: t.String,
-              })}
-              options={{
-                fields: {
-                  password: { secureTextEntry: true },
-                },
-              }}
-            />
-            <Button
-              style={margins.marginTop.md}
-              onPress={this.login}
-              text="SUBMIT"
-            />
-          </View>
+          <ScrollView style={styles.scrollContainer}>
+            <View style={styles.formContainer}>
+              <Form
+                refCallback={(ref) => this.form = ref}
+                type={t.struct({
+                  email: t.String,
+                  password: t.String,
+                  confirmPassword: t.String,
+                  activeDuty: t.Boolean,
+                  veteran: t.Boolean,
+                  post_911: t.Boolean,
+                  family_member: t.Boolean,
+                  caregiver: t.Boolean,
+                  other: t.Boolean,
+                })}
+                options={{
+                  fields: {
+                    password: { secureTextEntry: true },
+                  },
+                }}
+              />
+              <Button
+                style={margins.marginTop.md}
+                onPress={this.login}
+                text="SUBMIT"
+              />
+            </View>
+          </ScrollView>
           <Button
             style={styles.signupButtonStyle}
             textStyle={styles.signupButtonTextStyle}
@@ -91,20 +100,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: '10%',
     width: '80%',
+    height: '60%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  formContainer: {
+  scrollContainer: {
     width: '100%',
-    justifyContent: 'center',
     paddingTop: 40,
     paddingBottom: 40,
     paddingLeft: 40,
     paddingRight: 40,
   },
-  formStyle: {
-    width: 500,
+  formContainer: {
+    marginBottom: 80,
   },
   titleStyle: {
     position: 'absolute',

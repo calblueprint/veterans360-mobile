@@ -44,7 +44,8 @@ export default class LoginScreen extends React.Component {
 
   redirectToSignupScreen(event, onSuccess, onFailure) {
     event.preventDefault();
-    // TODO: FILL IN
+    this.props.navigation.navigate('Signup');
+    onSuccess && onSuccess();
   }
 
   render() {
@@ -54,7 +55,6 @@ export default class LoginScreen extends React.Component {
           <Text style={styles.titleStyle}>Login</Text>
           <View style={styles.formContainer}>
             <Form
-              style={styles.formStyle}
               refCallback={(ref) => this.form = ref}
               type={t.struct({
                 email: t.String,
@@ -101,9 +101,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     paddingLeft: 40,
     paddingRight: 40,
-  },
-  formStyle: {
-    width: 500,
   },
   titleStyle: {
     position: 'absolute',
