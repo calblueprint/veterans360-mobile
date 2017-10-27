@@ -10,6 +10,7 @@ import { Form, t } from '../components/Form';
 import { imageStyles } from '../styles/images';
 import { layoutStyles, margins } from '../styles/layout';
 import { colors } from '../styles/colors';
+import LoginRequester from '../helpers/requesters/LoginRequester';
 import BackgroundOverlay from '../components/BackgroundOverlay';
 import RaisedContainer from '../components/RaisedContainer';
 import Button from '../components/Button';
@@ -25,13 +26,16 @@ export default class LoginScreen extends React.Component {
 
   login(event, onSuccess, onFailure) {
     event.preventDefault();
-    const value = this.form.getValue();
-    if (value) {
-      console.log(value);
-      onSuccess && onSuccess(value);
+    const values = this.form.getValue();
+    if (values) {
+      LoginRequester.login(
+        values.email,
+        values.password,
+        onSuccess,
+        onFailure
+      );
+      console.log(values);
     } else {
-      console.error("Error occurred.");
-      onFailure && onFailure();
     }
   }
 
@@ -55,7 +59,13 @@ export default class LoginScreen extends React.Component {
               })}
               options={{
                 fields: {
-                  password: { secureTextEntry: true },
+                  email: {
+                    error: "Cannot be blank"
+                  },
+                  password: { 
+                    secureTextEntry: true,
+                    error: "Cannot be blank"
+                  },
                 },
               }}
             />

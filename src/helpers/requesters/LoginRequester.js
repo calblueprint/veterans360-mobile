@@ -3,7 +3,7 @@ import { APIRoutes } from '../routes/routes';
 
 class LoginRequester {
 
-  static login(email, password, onSuccess, onFailure) {
+  static async login(email, password, onSuccess, onFailure) {
     const params = {
       veteran: {
         email: email,
@@ -12,7 +12,7 @@ class LoginRequester {
     };
     const endpoint = APIRoutes.veteransSignInPath();
     try {
-      let response = await BaseRequester.post(endpoint, params, onSuccess, onFailure);
+      var response = await BaseRequester.post(endpoint, params, onSuccess, onFailure);
       onSuccess && onSuccess(response.veteran);
       return Promise.resolve(response.veteran);
     } catch (error) {
