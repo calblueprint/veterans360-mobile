@@ -6,12 +6,12 @@ import { layoutStyles } from '../styles/layout';
 
 export default class HomeScreen extends React.Component {
 
-  static navigationOptions = {
-    tabBarLabel: 'Home',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="home" size={25} color="#e91e63" />
-    ),
-  };
+  // static navigationOptions = {
+  //   tabBarLabel: 'Home',
+  //   tabBarIcon: ({ tintColor }) => (
+  //     <Icon name="home" size={25} color="#e91e63" />
+  //   ),
+  // };
 
   render() {
     return (
