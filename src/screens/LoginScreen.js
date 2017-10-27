@@ -21,10 +21,10 @@ export default class LoginScreen extends React.Component {
     super(props);
 
     this.login = this.login.bind(this);
-    this.redirectToSignupScreen = this.redirectToSignupScreen.bind(this);
+    this.navigateToSignupScreen = this.navigateToSignupScreen.bind(this);
   }
 
-  login(event, onSuccess, onFailure) {
+  async login(event, onSuccess, onFailure) {
     event.preventDefault();
     const values = this.form.getValue();
     if (values) {
@@ -33,13 +33,20 @@ export default class LoginScreen extends React.Component {
         values.password,
         onSuccess,
         onFailure
-      );
-      console.log(values);
-    } else {
+      ).then((response) => {
+        console.log(response);
+        this.navigateToApp();
+      }).catch((error) => {
+        console.log("Invalid email/password.");
+      });
     }
   }
 
-  redirectToSignupScreen(event, onSuccess, onFailure) {
+  navigateToApp() {
+    this.props.navigation.navigate('App');
+  }
+
+  navigateToSignupScreen(event, onSuccess, onFailure) {
     event.preventDefault();
     this.props.navigation.navigate('Signup');
     onSuccess && onSuccess();
@@ -62,7 +69,7 @@ export default class LoginScreen extends React.Component {
                   email: {
                     error: "Cannot be blank"
                   },
-                  password: { 
+                  password: {
                     secureTextEntry: true,
                     error: "Cannot be blank"
                   },
@@ -78,7 +85,7 @@ export default class LoginScreen extends React.Component {
           <Button
             style={styles.signupButtonStyle}
             textStyle={styles.signupButtonTextStyle}
-            onPress={this.redirectToSignupScreen}
+            onPress={this.navigateToSignupScreen}
             text="SIGN UP"
           />
         </RaisedContainer>

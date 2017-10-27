@@ -20,7 +20,7 @@ export default class SignupScreen extends React.Component {
     super(props);
 
     this.login = this.login.bind(this);
-    this.redirectToLoginScreen = this.redirectToLoginScreen.bind(this);
+    this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
   }
 
   login(event, onSuccess, onFailure) {
@@ -35,7 +35,7 @@ export default class SignupScreen extends React.Component {
     }
   }
 
-  redirectToLoginScreen(event, onSuccess, onFailure) {
+  navigateToLoginScreen(event, onSuccess, onFailure) {
     event.preventDefault();
     this.props.navigation.navigate('Login');
     onSuccess && onSuccess();
@@ -52,7 +52,7 @@ export default class SignupScreen extends React.Component {
                 refCallback={(ref) => this.form = ref}
                 type={t.struct({
                   first_name: t.String,
-                  last_name: t.String, 
+                  last_name: t.String,
                   email: t.String,
                   password: t.String,
                   confirmPassword: t.String,
@@ -79,7 +79,7 @@ export default class SignupScreen extends React.Component {
           <Button
             style={styles.signupButtonStyle}
             textStyle={styles.signupButtonTextStyle}
-            onPress={this.redirectToLoginScreen}
+            onPress={this.navigateToLoginScreen}
             text="LOGIN"
           />
         </RaisedContainer>
