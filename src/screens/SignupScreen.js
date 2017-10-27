@@ -16,13 +16,6 @@ import Button from '../components/Button';
 
 export default class SignupScreen extends React.Component {
 
-  static navigationOptions = {
-    tabBarLabel: 'Login',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="check" size={20} color="#e91e63" />
-    ),
-  };
-
   constructor(props) {
     super(props);
 
@@ -44,7 +37,6 @@ export default class SignupScreen extends React.Component {
 
   redirectToLoginScreen(event, onSuccess, onFailure) {
     event.preventDefault();
-    // TODO: FILL IN
     this.props.navigation.navigate('Login');
     onSuccess && onSuccess();
   }
@@ -59,6 +51,8 @@ export default class SignupScreen extends React.Component {
               <Form
                 refCallback={(ref) => this.form = ref}
                 type={t.struct({
+                  first_name: t.String,
+                  last_name: t.String, 
                   email: t.String,
                   password: t.String,
                   confirmPassword: t.String,

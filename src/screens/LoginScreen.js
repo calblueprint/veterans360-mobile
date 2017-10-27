@@ -16,13 +16,6 @@ import Button from '../components/Button';
 
 export default class LoginScreen extends React.Component {
 
-  static navigationOptions = {
-    tabBarLabel: 'Login',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="check" size={20} color="#e91e63" />
-    ),
-  };
-
   constructor(props) {
     super(props);
 
