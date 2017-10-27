@@ -1,5 +1,5 @@
 /**
- * Login screen for veterans. 
+ * Login screen for veterans.
  */
 
 import React from 'react';
@@ -8,7 +8,7 @@ import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { Form, t } from '../components/Form';
 
 import { imageStyles } from '../styles/images';
-import { layoutStyles, marginTop } from '../styles/layout';
+import { layoutStyles, margins } from '../styles/layout';
 import { colors } from '../styles/colors';
 import BackgroundOverlay from '../components/BackgroundOverlay';
 import RaisedContainer from '../components/RaisedContainer';
@@ -67,7 +67,7 @@ export default class LoginScreen extends React.Component {
               }}
             />
             <Button
-              style={marginTop.md}
+              style={margins.marginTop.md}
               onPress={this.login}
               text="SUBMIT"
             />
