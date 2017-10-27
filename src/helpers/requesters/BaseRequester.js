@@ -25,7 +25,7 @@ class BaseRequester {
   /**
    * POST request on endpoint.
    */
-  static post(endpoint, params, onSuccess, onFailure) {
+  static async post(endpoint, params, onSuccess, onFailure) {
     return this._request(
       'POST', endpoint, params, onSuccess, onFailure
     );

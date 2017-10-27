@@ -14,6 +14,8 @@
  *                      each field. Again see `LoginScreen` for an example and
  *                      refer to this documentation: https://github.com/gcanti/tcomb-form-native
  * @prop options      - options for customizing each form field, see the docs
+ * @prop value        - default values in form
+ * @prop onChange     - callback handler called every time the form changes
  */
 
 import React from 'react';
@@ -135,6 +137,8 @@ class Form extends React.Component {
         ref={this.props.refCallback}
         type={this.props.type}
         options={this.props.options}
+        value={this.props.value}
+        onChange={this.props.onChange}
       />
     );
   }

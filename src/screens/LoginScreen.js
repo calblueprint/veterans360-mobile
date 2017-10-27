@@ -20,11 +20,27 @@ export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      formValues: this.getInitialFormValues(),
+    }
+
+    this.onFormChange = this.onFormChange.bind(this);
     this.login = this.login.bind(this);
     this.navigateToSignupScreen = this.navigateToSignupScreen.bind(this);
   }
 
-  async login(event, onSuccess, onFailure) {
+  getInitialFormValues() {
+    return {
+      email: 'kenchen@berkeley.edu',
+      password: 'password',
+    };
+  }
+
+  onFormChange(values) {
+    this.setState({ formValues: values });
+  }
+
+  login(event, onSuccess, onFailure) {
     event.preventDefault();
     const values = this.form.getValue();
     if (values) {
@@ -32,18 +48,18 @@ export default class LoginScreen extends React.Component {
         values.email,
         values.password,
         onSuccess,
-        onFailure
+        onFailure,
       ).then((response) => {
         console.log(response);
-        this.navigateToApp();
+        this.navigateToApp(response);
       }).catch((error) => {
         console.log("Invalid email/password.");
       });
     }
   }
 
-  navigateToApp() {
-    this.props.navigation.navigate('App');
+  navigateToApp(navProps) {
+    this.props.navigation.navigate('App', navProps);
   }
 
   navigateToSignupScreen(event, onSuccess, onFailure) {
@@ -67,14 +83,19 @@ export default class LoginScreen extends React.Component {
               options={{
                 fields: {
                   email: {
-                    error: "Cannot be blank"
+                    error: 'Cannot be blank',
+                    value: 'kenchen@berkeley.edu',
                   },
                   password: {
                     secureTextEntry: true,
-                    error: "Cannot be blank"
+                    error: 'Cannot be blank',
+                    value: 'password'
+
                   },
                 },
               }}
+              value={this.state.formValues}
+              onChange={this.onFormChange}
             />
             <Button
               style={margins.marginTop.md}

@@ -12,9 +12,9 @@ class LoginRequester {
     };
     const endpoint = APIRoutes.veteransSignInPath();
     try {
-      var response = await BaseRequester.post(endpoint, params, onSuccess, onFailure);
-      onSuccess && onSuccess(response.veteran);
-      return Promise.resolve(response.veteran);
+      let response = await BaseRequester.post(endpoint, params, onSuccess, onFailure);
+      onSuccess && onSuccess(response);
+      return Promise.resolve(response);
     } catch (error) {
       onFailure && onFailure(error);
       return Promise.reject(error);
