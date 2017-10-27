@@ -25,6 +25,7 @@ export default class SignupScreen extends React.Component {
   constructor(props) {
     super(props);
 
+<<<<<<< d8d82701c0414edb73fc76c27248f4f23820a031
     this.state = {
       formValues: this.getInitialFormValues(),
       errors: {},  // Set and reset by signUp if any errors occurred
@@ -91,6 +92,10 @@ export default class SignupScreen extends React.Component {
         },
       },
     };
+=======
+    this.login = this.login.bind(this);
+    this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
+>>>>>>> Begins hooking up login to API.
   }
 
   /**
@@ -148,6 +153,7 @@ export default class SignupScreen extends React.Component {
     }
   }
 
+<<<<<<< d8d82701c0414edb73fc76c27248f4f23820a031
   /**
    * Routes user to the 'App' screen, which is the MainTabNavigator.
    *
@@ -160,6 +166,8 @@ export default class SignupScreen extends React.Component {
   /**
    * Routes user to 'LoginScreen'.
    */
+=======
+>>>>>>> Begins hooking up login to API.
   navigateToLoginScreen(event, onSuccess, onFailure) {
     event.preventDefault();
     this.props.navigation.navigate('Login');
@@ -175,10 +183,31 @@ export default class SignupScreen extends React.Component {
             <View style={styles.formContainer}>
               <Form
                 refCallback={(ref) => this.form = ref}
+<<<<<<< d8d82701c0414edb73fc76c27248f4f23820a031
                 type={this.getFormType()}
                 options={this.getFormOptions()}
                 value={this.state.formValues}
                 onChange={this.onFormChange}
+=======
+                type={t.struct({
+                  first_name: t.String,
+                  last_name: t.String,
+                  email: t.String,
+                  password: t.String,
+                  confirmPassword: t.String,
+                  activeDuty: t.Boolean,
+                  veteran: t.Boolean,
+                  post_911: t.Boolean,
+                  family_member: t.Boolean,
+                  caregiver: t.Boolean,
+                  other: t.Boolean,
+                })}
+                options={{
+                  fields: {
+                    password: { secureTextEntry: true },
+                  },
+                }}
+>>>>>>> Begins hooking up login to API.
               />
               <Button
                 style={margins.marginTop.md}
