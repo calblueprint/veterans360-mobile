@@ -6,13 +6,45 @@ import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 
 export default class VaultScreen extends React.Component {
-
   static navigationOptions = {
     tabBarLabel: 'Vault',
     tabBarIcon: ({ tintColor }) => (
       <Icon name="briefcase" size={22} color="#e91e63" />
     ),
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchText: '',
+      filter: [],
+      categories: [
+        {name: 'CLEAR', selected:false, id: 1},
+        {name: 'FINANCE', selected:true, id: 2},
+        {name: 'HOUSING', selected:true, id: 3},
+        {name: 'EMPLOYMENT', selected:true, id: 4},
+        {name: 'LEGAL', selected:true, id: 5},
+        {name: 'MENTAL HEALTH', selected:true, id: 6},
+      ],
+      fontLoaded: false,
+      resources: [
+        /*
+        {title: 'Title of Resource',
+          partner_org: 'Name of Partner Org',
+          date:'8 Oct 2018',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et aliquam neque. Proin lectus neque, tincidunt eget elementum sit amet, rhoncus ut libero.',
+          link: 'something',
+          upvotes: 0,
+          category: 2,
+          id: 1,
+        },
+        */
+      ]
+    };
+    this.falseState = this.falseState.bind(this);
+    this.setOpposite = this.setOpposite.bind(this);
+    this.renderScrollView = this.renderScrollView.bind(this);
+  }
 
   async componentDidMount() {
     await Font.loadAsync({
@@ -31,161 +63,174 @@ export default class VaultScreen extends React.Component {
     });
     this.setState({fontLoaded: true});
   }
-  constructor(props) {
-    super(props);
-    this.state = {
-      titleName: "Resources",
-      searchText: '',
-      filter: [],
-      names: [
-        {name: 'CLEAR', selected:false, id: 1},
-        {name: 'FINANCE', selected:true, id: 2},
-        {name: 'HOUSING', selected:true, id: 3},
-        {name: 'EMPLOYMENT', selected:true, id: 4},
-        {name: 'LEGAL', selected:true, id: 5},
-        {name: 'MENTAL HEALTH', selected:true, id: 6},
-      ],
-      fontLoaded: false,
-      resources: [
-        {title: 'Title of Resource',
-          partner_org: 'Name of Partner Org',
-          date:'8 Oct 2018',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et aliquam neque. Proin lectus neque, tincidunt eget elementum sit amet, rhoncus ut libero.',
-          link: 'something',
-          upvotes: 0,
-          id: 1,
-        },
-        {title: 'Title of Resource',
-          partner_org: 'Name of Partner Org',
-          date:'8 Oct 2018',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et aliquam neque. Proin lectus neque, tincidunt eget elementum sit amet, rhoncus ut libero.',
-          link: 'something',
-          upvotes: 0,
-          id: 2,
-        },
-        {title: 'Title of Resource',
-          partner_org: 'Name of Partner Org',
-          date:'8 Oct 2018',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et aliquam neque. Proin lectus neque, tincidunt eget elementum sit amet, rhoncus ut libero.',
-          link: 'something',
-          upvotes: 0,
-          id: 3,
-        }
-      ]
-    };
-  }
-  updateFilter(item_id, new_state) {
-    var names_arr = this.state.names.slice()
-    for(var i = 0; i < names_arr.length; i++) {
-      if(names_arr[i].id == item_id) {
-        names_arr[i].selected = new_state;
+
+  updateFilter(itemId, newState) {
+    /**
+     * Updates the category filter and set state to updated categories
+     * @param {Number} itemId 
+     * @param {Boolean} newState
+     */
+    var categoriesArr = this.state.categories.slice()
+    categoriesArr.forEach((i) => {
+      if (i.id == itemId) {
+        i.selected = newState;
       }
-    };
-    this.setState({names:names_arr});
+    })
+    this.setState({ categories:categoriesArr });
   }
-  setOpposite(item_id) {
-    for(var i = 0; i < this.state.names.length; i++) {
-      if(this.state.names[i].id == item_id) {
-        this.updateFilter(item_id, !this.state.names[i].selected);
+
+  setOpposite(itemId) {
+    /**
+     * Sets the category with the provided ID to have the opposite filter selection
+     * @param {Number} itemId 
+     */
+    this.state.categories.forEach((i) => {
+      if (i.id == itemId) {
+        this.updateFilter(itemId, !i.selected);
       }
-    };
+    })
   }
-  falseState(name, item_id) {
-    if(name=='Clear') {
-      for(var i = 1; i < this.state.names.length; i++) {
-        this.updateFilter(this.state.names[i].id, false)
+
+  falseState(name, itemId) {
+    /**
+     * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
+     * @param {String} name
+     * @param {Number} itemId 
+     */
+    if(name==='CLEAR') {
+      for(var i = 1; i < this.state.categories.length; i++) {
+        this.updateFilter(this.state.categories[i].id, false)
       }
     } else {
-      this.setOpposite(item_id);
+      this.setOpposite(itemId);
     }
   }
+
   filterScroller() {
-    return this.state.names.map((item) => {
+    /**
+     * Upon call, returns the filter category elements based on the category array in the state.
+     */
+    return this.state.categories.map((item) => {
       if (item.selected==false) {
         return (
-          <TouchableHighlight key = {item.id} style={styles.item} onPress={() => {this.falseState(item.name, item.id);}}>
-            <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>{item.name}</Text>
+          <TouchableHighlight key = { item.id } style={ styles.item } onPress={ () => { this.falseState(item.name, item.id); } }>
+            <Text style={ { color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold', } }>{item.name}</Text>
           </TouchableHighlight>
         );
       } else {
         return (
-          <TouchableHighlight key = {item.id} style = {[styles.item, {backgroundColor:'white',}]} onPress={() => {this.setOpposite(item.id);}}>
-            <Text style={{color:'black', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>{item.name}</Text>
+          <TouchableHighlight key = { item.id } style = {[styles.item, { backgroundColor:'white', }]} onPress={() => {this.setOpposite(item.id);}}>
+            <Text style={{ color:'black', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>{item.name}</Text>
           </TouchableHighlight>
         );
       }
     })
   }
-  upvote(item_id) {
-    var resources_arr = this.state.resources.slice()
-    for(var i = 0; i < resources_arr.length; i++) {
-      if(resources_arr[i].id == item_id) {
-        resources_arr[i].upvotes = resources_arr[i].upvotes+1;
+
+  upvote(itemId) {
+    /**
+     * 
+     */
+    var resourcesArr = this.state.resources.slice()
+    for(var i = 0; i < resourcesArr.length; i++) {
+      if(resourcesArr[i].id == itemId) {
+        resourcesArr[i].upvotes = resourcesArr[i].upvotes+1;
       }
     };
-    this.setState({resources:resources_arr});
+    this.setState({ resources:resourcesArr });
   }
+
+  getCategory(categoryId) {
+    /**
+     * Retrieves the string name of the category given the category ID.
+     * @param {number} categoryId
+     */
+    for(var i = 0; i < this.state.categories.length; i++) {
+      if(this.state.categories[i].id==categoryId) {
+        return this.state.categories[i].name;
+      }
+    }
+  }
+
   displayResources() {
+    /**
+     * Returns the resource element based on the resources provided in the state.
+     */
     return this.state.resources.map((item) => {
       return (
-        <View key = {item.id} style={styles.contentPanel}>
-          <Text style={styles.contentTitle}>{item.title}</Text>
-          <View style={styles.contentInformation}>
-            <View style={{justifyContent:'center'}}>
-              <Text style={styles.partnerOrg}>{item.partner_org}</Text>
+        <View key = { item.id } style={ styles.contentPanel }>
+          <Text style={ styles.contentTitle }>{ item.title }</Text>
+          <View style={ styles.contentInformation }>
+            <View style={{ justifyContent:'center' }}>
+              <Text style={ styles.partnerOrg }>{ item.partner_org }</Text>
             </View>
             <View style={{justifyContent:'center', marginLeft: 5,}}>
-              <Text style={styles.dateText}>{item.date}</Text>
+              <Text style={ styles.dateText }>{ item.date }</Text>
             </View>
           </View>
-          <Text style={[styles.bodyText, {marginTop: 10,}]}>{item.description}</Text>
-          <View style={[styles.contentInformation, {marginTop: 10,}]}>
-            <View style={styles.button}>
+          <Text style={[styles.bodyText, {marginTop: 10,}]}>{ item.description }</Text>
+          <View style={[styles.contentInformation, { marginTop: 10,}]}>
+            <View style={ styles.button }>
               <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
             </View>
-            <View style={styles.upvote}>
-              <TouchableHighlight onPress={() => {this.upvote(item.id);}}>
-                <Text style={styles.upvoteText}>{item.upvotes}</Text>
+            <View style={ styles.upvote }>
+              <TouchableHighlight onPress={() => { this.upvote(item.id); }}>
+                <Text style={ styles.upvoteText }>{ item.upvotes }</Text>
               </TouchableHighlight>
+            </View>
+            <View style={ styles.resourceCategory }>
+              <Text style={ styles.categoryText }>{ this.getCategory(item.category) }</Text>
             </View>
           </View>
         </View>
       );
     })
   }
+
   onSubmitEdit = () => {
     //add options
   }
-  render() {
+
+  renderScrollView() {
     return (
-      <ScrollView contentContainerStyle={{flexGrow:1}} >
+      <View style={ styles.backgroundContainer }>
         {
           this.state.fontLoaded? (
-            <View style={{flex:1}}>
-              <View style={styles.backgroundContainer}>
-                <View style={styles.backgroundDisplay}>
-                </View>
-                <View style={[styles.contentContainer, {top:0,}]}>
-                  <Text style={[styles.baseText, {marginBottom: 5,}]}>
-                    <Text style={[styles.titleText, {color:'rgb(255, 255, 255)'}]}>
-                      {this.state.titleName}
+            <View style={{flex: 1,}}>
+              <View style={ styles.backgroundDisplay }>
+              </View>
+              <View style={{position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,}}>
+                <ScrollView>
+                  <View style={[styles.contentContainer, {top:0,}]}>
+                    <Text style={[styles.baseText, {marginBottom: 5,}]}>
+                      <Text style={[styles.titleText, {color:'rgb(255, 255, 255)'}]}>
+                        Resources
+                      </Text>
                     </Text>
-                  </Text>
-                  <View style={[styles.search, {marginTop: 5,}]}>
-                    <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
+                    <View style={[styles.search, {marginTop: 5,}]}>
+                      <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
+                    </View>
                   </View>
-                </View>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.filter}>  
-                  {this.filterScroller()}
+                  <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>  
+                    {this.filterScroller()}
+                  </ScrollView>
+                  <View style={styles.contentContainer}>
+                    {this.displayResources()}
+                  </View>
                 </ScrollView>
-                <View style={[styles.contentContainer, {top:125,}]}>
-                  {this.displayResources()}
-                </View>
               </View>
             </View>
           ) : null
         }
-      </ScrollView>
+      </View>
+    );
+  }
+
+  render() {
+    return (
+      <View style={{flex: 1,}}>
+        {this.renderScrollView()}
+      </View>
     );
   }
 }
@@ -208,10 +253,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginLeft:15,
     marginRight:15,
-    position:'absolute',
-    left:0,
     backgroundColor:'rgba(255, 255, 255, 0)',
-    right: 0,
   },
   backgroundContainer: {
     flex: 1,
@@ -310,9 +352,22 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   upvoteText: {
-    //color: '#61D8F9',
     fontFamily: 'source-sans-pro-bold',
     fontSize: 12,
     color:'#949494',
-  }
+  },
+  upvote: {
+    justifyContent:'center',
+    marginLeft: 10,
+  },
+  resourceCategory: {
+    justifyContent:'center',
+    marginLeft: 10,
+  },
+  categoryText: {
+    fontFamily: 'source-sans-pro-light-italic',
+    fontSize: 12,
+    color:'#949494',
+  },
 });
+
