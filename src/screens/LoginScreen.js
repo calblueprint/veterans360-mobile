@@ -75,7 +75,7 @@ export default class LoginScreen extends React.Component {
           <Button
             style={styles.signupButtonStyle}
             textStyle={styles.signupButtonTextStyle}
-            onPress={this.login}
+            onPress={this.redirectToSignupScreen}
             text="SIGN UP"
           />
         </RaisedContainer>
@@ -88,10 +88,8 @@ export default class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
   raisedContainer: {
     position: 'absolute',
-    top: '30%',
     left: '10%',
     width: '80%',
-    height: '40%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -99,8 +97,8 @@ const styles = StyleSheet.create({
   formContainer: {
     width: '100%',
     justifyContent: 'center',
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
     paddingLeft: 40,
     paddingRight: 40,
   },
