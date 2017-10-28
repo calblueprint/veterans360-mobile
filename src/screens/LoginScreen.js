@@ -64,7 +64,7 @@ export default class LoginScreen extends React.Component {
 
   navigateToSignupScreen(event, onSuccess, onFailure) {
     event.preventDefault();
-    this.props.navigation.navigate('Signup');
+    this.props.navigation.navigate('Signup', this.state.formValues);
     onSuccess && onSuccess();
   }
 

@@ -8,7 +8,10 @@ class APIRoutes {
 
   // Authentication
   static veteransSignInPath() {
-    return APIRoutes.create('/veterans/sign_in')
+    return APIRoutes.create('/veterans/sign_in');
+  }
+  static veteransSignUpPath() {
+    return APIRoutes.create('/veterans');
   }
 }
 

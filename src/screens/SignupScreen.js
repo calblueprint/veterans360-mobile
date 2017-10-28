@@ -10,6 +10,7 @@ import { Form, t } from '../components/Form';
 import { imageStyles } from '../styles/images';
 import { layoutStyles, margins } from '../styles/layout';
 import { colors } from '../styles/colors';
+import LoginRequester from '../helpers/requesters/LoginRequester';
 import BackgroundOverlay from '../components/BackgroundOverlay';
 import RaisedContainer from '../components/RaisedContainer';
 import Button from '../components/Button';
@@ -19,20 +20,39 @@ export default class SignupScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.login = this.login.bind(this);
+    this.signUp = this.signUp.bind(this);
     this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
   }
 
-  login(event, onSuccess, onFailure) {
+  getInitialFormValues() {
+    return {
+      firstName: 'Ken',
+      lastName: 'Chen',
+      email: 'lbkchen@gmail.com',
+      password: 'password',
+      confirmPassword: 'password'
+    }
+  }
+
+  signUp(event, onSuccess, onFailure) {
     event.preventDefault();
     const value = this.form.getValue();
     if (value) {
-      console.log(value);
-      onSuccess && onSuccess(value);
-    } else {
-      console.error("Error occurred.");
-      onFailure && onFailure();
+      LoginRequester.signUp(
+        value,
+        onSuccess,
+        onFailure
+      ).then((response) => {
+        console.log(response);
+        this.navigateToApp(response);
+      }).catch((error) => {
+        console.log("An error occurred during sign up.")
+      });
     }
+  }
+
+  navigateToApp(navProps) {
+    this.props.navigation.navigate('App', navProps);
   }
 
   navigateToLoginScreen(event, onSuccess, onFailure) {
@@ -51,27 +71,29 @@ export default class SignupScreen extends React.Component {
               <Form
                 refCallback={(ref) => this.form = ref}
                 type={t.struct({
-                  first_name: t.String,
-                  last_name: t.String,
+                  firstName: t.String,
+                  lastName: t.String,
                   email: t.String,
                   password: t.String,
                   confirmPassword: t.String,
                   activeDuty: t.Boolean,
                   veteran: t.Boolean,
                   post_911: t.Boolean,
-                  family_member: t.Boolean,
+                  familyMember: t.Boolean,
                   caregiver: t.Boolean,
                   other: t.Boolean,
                 })}
                 options={{
                   fields: {
                     password: { secureTextEntry: true },
+                    confirmPassword: { secureTextEntry: true },
                   },
                 }}
+                value={this.getInitialFormValues()}
               />
               <Button
                 style={margins.marginTop.md}
-                onPress={this.login}
+                onPress={this.signUp}
                 text="SUBMIT"
               />
             </View>
