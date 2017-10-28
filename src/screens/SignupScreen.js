@@ -25,6 +25,7 @@ export default class SignupScreen extends React.Component {
   constructor(props) {
     super(props);
 
+<<<<<<< b817c0d3dcb641f9babce39374ab9a05c03e8fa7
 <<<<<<< d8d82701c0414edb73fc76c27248f4f23820a031
     this.state = {
       formValues: this.getInitialFormValues(),
@@ -94,10 +95,14 @@ export default class SignupScreen extends React.Component {
     };
 =======
     this.login = this.login.bind(this);
+=======
+    this.signUp = this.signUp.bind(this);
+>>>>>>> Finishes sign up feature, may need some extra backend validations and flashes for rendering errors.
     this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
 >>>>>>> Begins hooking up login to API.
   }
 
+<<<<<<< b817c0d3dcb641f9babce39374ab9a05c03e8fa7
   /**
    * Sets the errors state from errors, which is a dictionary mapping from
    * field name to a list of messages.
@@ -132,6 +137,18 @@ export default class SignupScreen extends React.Component {
    * @param {function} onSuccess: callback on response when successful
    * @param {function} onFailure: callback on error object when errored
    */
+=======
+  getInitialFormValues() {
+    return {
+      firstName: 'Ken',
+      lastName: 'Chen',
+      email: 'lbkchen@gmail.com',
+      password: 'password',
+      confirmPassword: 'password'
+    }
+  }
+
+>>>>>>> Finishes sign up feature, may need some extra backend validations and flashes for rendering errors.
   signUp(event, onSuccess, onFailure) {
     event.preventDefault();
     this.clearFormErrors();
@@ -139,6 +156,7 @@ export default class SignupScreen extends React.Component {
     if (value) {
       LoginRequester.signUp(
         value,
+<<<<<<< b817c0d3dcb641f9babce39374ab9a05c03e8fa7
       ).then((response) => {
         console.log(response);
         onSuccess && onSuccess(response);
@@ -159,15 +177,31 @@ export default class SignupScreen extends React.Component {
    *
    * @param {object} navProps: data object to be sent to next screen
    */
+=======
+        onSuccess,
+        onFailure
+      ).then((response) => {
+        console.log(response);
+        this.navigateToApp(response);
+      }).catch((error) => {
+        console.log("An error occurred during sign up.")
+      });
+    }
+  }
+
+>>>>>>> Finishes sign up feature, may need some extra backend validations and flashes for rendering errors.
   navigateToApp(navProps) {
     this.props.navigation.navigate('App', navProps);
   }
 
+<<<<<<< b817c0d3dcb641f9babce39374ab9a05c03e8fa7
   /**
    * Routes user to 'LoginScreen'.
    */
 =======
 >>>>>>> Begins hooking up login to API.
+=======
+>>>>>>> Finishes sign up feature, may need some extra backend validations and flashes for rendering errors.
   navigateToLoginScreen(event, onSuccess, onFailure) {
     event.preventDefault();
     this.props.navigation.navigate('Login');
@@ -190,24 +224,29 @@ export default class SignupScreen extends React.Component {
                 onChange={this.onFormChange}
 =======
                 type={t.struct({
-                  first_name: t.String,
-                  last_name: t.String,
+                  firstName: t.String,
+                  lastName: t.String,
                   email: t.String,
                   password: t.String,
                   confirmPassword: t.String,
                   activeDuty: t.Boolean,
                   veteran: t.Boolean,
                   post_911: t.Boolean,
-                  family_member: t.Boolean,
+                  familyMember: t.Boolean,
                   caregiver: t.Boolean,
                   other: t.Boolean,
                 })}
                 options={{
                   fields: {
                     password: { secureTextEntry: true },
+                    confirmPassword: { secureTextEntry: true },
                   },
                 }}
+<<<<<<< b817c0d3dcb641f9babce39374ab9a05c03e8fa7
 >>>>>>> Begins hooking up login to API.
+=======
+                value={this.getInitialFormValues()}
+>>>>>>> Finishes sign up feature, may need some extra backend validations and flashes for rendering errors.
               />
               <Button
                 style={margins.marginTop.md}
