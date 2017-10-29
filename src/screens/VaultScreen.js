@@ -4,6 +4,7 @@ import { Font } from 'expo';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
+import { fonts } from '../styles/fonts';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {
@@ -43,33 +44,20 @@ export default class VaultScreen extends React.Component {
     };
     this.falseState = this.falseState.bind(this);
     this.setOpposite = this.setOpposite.bind(this);
-    this.renderScrollView = this.renderScrollView.bind(this);
+    this.renderResourceContent = this.renderResourceContent.bind(this);
   }
 
   async componentDidMount() {
-    await Font.loadAsync({
-      'source-sans-pro-black': require('../.././assets/fonts/SourceSansPro-Black.ttf'),
-      'source-sans-pro-black-italic': require('../.././assets/fonts/SourceSansPro-BlackItalic.ttf'),
-      'source-sans-pro-bold': require('../.././assets/fonts/SourceSansPro-Bold.ttf'),
-      'source-sans-pro-bold-italic': require('../.././assets/fonts/SourceSansPro-BoldItalic.ttf'),
-      'source-sans-pro-extra-light': require('../.././assets/fonts/SourceSansPro-ExtraLight.ttf'),
-      'source-sans-pro-extra-light-italic': require('../.././assets/fonts/SourceSansPro-ExtraLightItalic.ttf'),
-      'source-sans-pro-italic': require('../.././assets/fonts/SourceSansPro-Italic.ttf'),
-      'source-sans-pro-light': require('../.././assets/fonts/SourceSansPro-Light.ttf'),
-      'source-sans-pro-light-italic': require('../.././assets/fonts/SourceSansPro-LightItalic.ttf'),
-      'source-sans-pro-regular': require('../.././assets/fonts/SourceSansPro-Regular.ttf'),
-      'source-sans-pro-semibold': require('../.././assets/fonts/SourceSansPro-SemiBold.ttf'),
-      'source-sans-pro-semibold-italic': require('../.././assets/fonts/SourceSansPro-SemiBoldItalic.ttf'),
-    });
+    { fonts(); }
     this.setState({fontLoaded: true});
   }
 
+  /**
+   * Updates the category filter and set state to updated categories
+   * @param {Number} itemId 
+   * @param {Boolean} newState
+   */
   updateFilter(itemId, newState) {
-    /**
-     * Updates the category filter and set state to updated categories
-     * @param {Number} itemId 
-     * @param {Boolean} newState
-     */
     var categoriesArr = this.state.categories.slice()
     categoriesArr.forEach((i) => {
       if (i.id == itemId) {
@@ -79,11 +67,11 @@ export default class VaultScreen extends React.Component {
     this.setState({ categories:categoriesArr });
   }
 
+  /**
+   * Sets the category with the provided ID to have the opposite filter selection
+   * @param {Number} itemId 
+   */
   setOpposite(itemId) {
-    /**
-     * Sets the category with the provided ID to have the opposite filter selection
-     * @param {Number} itemId 
-     */
     this.state.categories.forEach((i) => {
       if (i.id == itemId) {
         this.updateFilter(itemId, !i.selected);
@@ -91,12 +79,12 @@ export default class VaultScreen extends React.Component {
     })
   }
 
+  /**
+   * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
+   * @param {String} name
+   * @param {Number} itemId 
+   */
   falseState(name, itemId) {
-    /**
-     * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
-     * @param {String} name
-     * @param {Number} itemId 
-     */
     if(name==='CLEAR') {
       for(var i = 1; i < this.state.categories.length; i++) {
         this.updateFilter(this.state.categories[i].id, false)
@@ -106,10 +94,10 @@ export default class VaultScreen extends React.Component {
     }
   }
 
+  /**
+   * Upon call, returns the filter category elements based on the category array in the state.
+   */
   filterScroller() {
-    /**
-     * Upon call, returns the filter category elements based on the category array in the state.
-     */
     return this.state.categories.map((item) => {
       if (item.selected==false) {
         return (
@@ -127,10 +115,10 @@ export default class VaultScreen extends React.Component {
     })
   }
 
+  /**
+   * Upon call, returns the filter category elements based on the category array in the state.
+   */
   upvote(itemId) {
-    /**
-     * 
-     */
     var resourcesArr = this.state.resources.slice()
     for(var i = 0; i < resourcesArr.length; i++) {
       if(resourcesArr[i].id == itemId) {
@@ -140,11 +128,11 @@ export default class VaultScreen extends React.Component {
     this.setState({ resources:resourcesArr });
   }
 
+  /**
+   * Retrieves the string name of the category given the category ID.
+   * @param {number} categoryId
+   */
   getCategory(categoryId) {
-    /**
-     * Retrieves the string name of the category given the category ID.
-     * @param {number} categoryId
-     */
     for(var i = 0; i < this.state.categories.length; i++) {
       if(this.state.categories[i].id==categoryId) {
         return this.state.categories[i].name;
@@ -152,10 +140,10 @@ export default class VaultScreen extends React.Component {
     }
   }
 
+  /**
+   * Returns the resource element based on the resources provided in the state.
+   */
   displayResources() {
-    /**
-     * Returns the resource element based on the resources provided in the state.
-     */
     return this.state.resources.map((item) => {
       return (
         <View key = { item.id } style={ styles.contentPanel }>
@@ -191,7 +179,7 @@ export default class VaultScreen extends React.Component {
     //add options
   }
 
-  renderScrollView() {
+  renderResourceContent() {
     return (
       <View style={ styles.backgroundContainer }>
         {
@@ -229,7 +217,7 @@ export default class VaultScreen extends React.Component {
   render() {
     return (
       <View style={{flex: 1,}}>
-        {this.renderScrollView()}
+        {this.renderResourceContent()}
       </View>
     );
   }
