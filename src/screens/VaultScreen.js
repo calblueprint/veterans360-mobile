@@ -4,6 +4,7 @@ import { Font } from 'expo';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
+import { fonts } from '../styles/fonts';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {

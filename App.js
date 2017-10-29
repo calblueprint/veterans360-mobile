@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
+<<<<<<< HEAD
 import LoginStackNavigator from './src/navigators/LoginStackNavigator';
 import { loadFonts } from './src/styles/fonts';
 
