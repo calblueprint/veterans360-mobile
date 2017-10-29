@@ -36,6 +36,30 @@ export default class LoginScreen extends React.Component {
     };
   }
 
+  getFormType() {
+    return t.struct({
+      email: t.String,
+      password: t.String,
+    });
+  }
+
+  getFormOptions() {
+    return {
+      fields: {
+        email: {
+          error: 'Cannot be blank',
+          value: 'kenchen@berkeley.edu',
+        },
+        password: {
+          secureTextEntry: true,
+          password: true,
+          error: 'Cannot be blank',
+          value: 'password'
+        },
+      },
+    };
+  }
+
   onFormChange(values) {
     this.setState({ formValues: values });
   }
@@ -51,10 +75,17 @@ export default class LoginScreen extends React.Component {
         onFailure,
       ).then((response) => {
         console.log(response);
-        this.navigateToApp(response);
+        if ('errors' in response) {
+          // Render errors using flashes
+          onFailure && onFailure();
+        } else {
+          this.navigateToApp(response);
+        }
       }).catch((error) => {
         console.log("Invalid email/password.");
       });
+    } else {
+      onFailure && onFailure();
     }
   }
 
@@ -76,24 +107,8 @@ export default class LoginScreen extends React.Component {
           <View style={styles.formContainer}>
             <Form
               refCallback={(ref) => this.form = ref}
-              type={t.struct({
-                email: t.String,
-                password: t.String,
-              })}
-              options={{
-                fields: {
-                  email: {
-                    error: 'Cannot be blank',
-                    value: 'kenchen@berkeley.edu',
-                  },
-                  password: {
-                    secureTextEntry: true,
-                    error: 'Cannot be blank',
-                    value: 'password'
-
-                  },
-                },
-              }}
+              type={this.getFormType()}
+              options={this.getFormOptions()}
               value={this.state.formValues}
               onChange={this.onFormChange}
             />

@@ -20,8 +20,16 @@ export default class SignupScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      formValues: this.getInitialFormValues(),
+      errors: {},
+    };
+
+    this.onFormChange = this.onFormChange.bind(this);
+    this.setFormValidationErrors = this.setFormValidationErrors.bind(this);
     this.signUp = this.signUp.bind(this);
     this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
+    this.confirmMatchingPasswords = this.confirmMatchingPasswords.bind(this);
   }
 
   getInitialFormValues() {
@@ -31,7 +39,74 @@ export default class SignupScreen extends React.Component {
       email: 'lbkchen@gmail.com',
       password: 'password',
       confirmPassword: 'password'
+    };
+  }
+
+  getFormType() {
+    return t.subtype(t.struct({
+      firstName: t.String,
+      lastName: t.String,
+      email: t.String,
+      password: t.String,
+      confirmPassword: t.String,
+      activeDuty: t.Boolean,
+      veteran: t.Boolean,
+      post_911: t.Boolean,
+      familyMember: t.Boolean,
+      caregiver: t.Boolean,
+      other: t.Boolean,
+    }), this.confirmMatchingPasswords);
+  }
+
+  getFormOptions() {
+    return {
+      error: (value) => { return this.setFormValidationErrors(value) },
+      fields: {
+        email: {
+          type: 'email',
+          hasError: !!this.state.errors.email,
+          message: this.state.errors.email,
+        },
+        password: {
+          password: true,
+          secureTextEntry: true
+        },
+        confirmPassword: {
+          password: true,
+          secureTextEntry: true
+        },
+      },
+    };
+  }
+
+  setFormValidationErrors(formValues) {
+    let errors = [];
+    // Confirm passwords match
+    if (!this.confirmMatchingPasswords(formValues)) {
+      errors.push('Passwords must match');
     }
+    return errors.join('\n');
+  }
+
+  setFormErrors(errors) {
+    let formErrors = {};
+    Object.keys(errors).forEach((field) => {
+      const messages = errors[field].join('\n');
+      formErrors[field] = messages;
+    });
+    this.setState({ errors: formErrors });
+  }
+
+  clearFormErrors() {
+    this.setState({ errors: {} });
+  }
+
+  onFormChange(values) {
+    this.setState({ formValues: values });
+  }
+
+  confirmMatchingPasswords(value) {
+    return value.password === value.confirmPassword;
   }
 
   signUp(event, onSuccess, onFailure) {
@@ -44,10 +119,18 @@ export default class SignupScreen extends React.Component {
         onFailure
       ).then((response) => {
         console.log(response);
-        this.navigateToApp(response);
+        if ('errors' in response) {
+          // Render errors using flashes
+          onFailure && onFailure();
+          this.setState({ errors: response.errors });
+        } else {
+          this.navigateToApp(response);
+        }
       }).catch((error) => {
-        console.log("An error occurred during sign up.")
+        console.log("An error occurred during sign up.");
       });
+    } else {
+      onFailure && onFailure();
     }
   }
 
@@ -70,26 +153,10 @@ export default class SignupScreen extends React.Component {
             <View style={styles.formContainer}>
               <Form
                 refCallback={(ref) => this.form = ref}
-                type={t.struct({
-                  firstName: t.String,
-                  lastName: t.String,
-                  email: t.String,
-                  password: t.String,
-                  confirmPassword: t.String,
-                  activeDuty: t.Boolean,
-                  veteran: t.Boolean,
-                  post_911: t.Boolean,
-                  familyMember: t.Boolean,
-                  caregiver: t.Boolean,
-                  other: t.Boolean,
-                })}
-                options={{
-                  fields: {
-                    password: { secureTextEntry: true },
-                    confirmPassword: { secureTextEntry: true },
-                  },
-                }}
-                value={this.getInitialFormValues()}
+                type={this.getFormType()}
+                options={this.getFormOptions()}
+                value={this.state.formValues}
+                onChange={this.onFormChange}
               />
               <Button
                 style={margins.marginTop.md}

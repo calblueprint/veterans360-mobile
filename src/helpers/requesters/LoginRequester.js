@@ -44,7 +44,6 @@ class LoginRequester {
     roles = Object.keys(roles).filter((role) => {
       return roles[role];
     });
-    console.log(roles);
     const params = {
       veteran: {
         first_name: fields.firstName,
