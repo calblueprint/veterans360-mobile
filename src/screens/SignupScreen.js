@@ -63,12 +63,12 @@ export default class SignupScreen extends React.Component {
       error: (value) => { return this.setFormValidationErrors(value) },
       fields: {
         firstName: {
-          hasError: !!this.state.errors.firstName,
-          error: this.state.errors.firstName,
+          hasError: !!this.state.errors.first_name,
+          error: this.state.errors.first_name,
         },
         lastName: {
-          hasError: !!this.state.errors.lastName,
-          error: this.state.errors.lastName,
+          hasError: !!this.state.errors.last_name,
+          error: this.state.errors.last_name,
         },
         email: {
           type: 'email',
@@ -77,7 +77,9 @@ export default class SignupScreen extends React.Component {
         },
         password: {
           password: true,
-          secureTextEntry: true
+          secureTextEntry: true,
+          hasError: !!this.state.errors.password,
+          error: this.state.errors.password, 
         },
         confirmPassword: {
           password: true,
