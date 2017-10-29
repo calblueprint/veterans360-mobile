@@ -62,10 +62,18 @@ export default class SignupScreen extends React.Component {
     return {
       error: (value) => { return this.setFormValidationErrors(value) },
       fields: {
+        firstName: {
+          hasError: !!this.state.errors.firstName,
+          error: this.state.errors.firstName,
+        },
+        lastName: {
+          hasError: !!this.state.errors.lastName,
+          error: this.state.errors.lastName,
+        },
         email: {
           type: 'email',
           hasError: !!this.state.errors.email,
-          message: this.state.errors.email,
+          error: this.state.errors.email,
         },
         password: {
           password: true,
@@ -111,6 +119,7 @@ export default class SignupScreen extends React.Component {
 
   signUp(event, onSuccess, onFailure) {
     event.preventDefault();
+    this.clearFormErrors();
     const value = this.form.getValue();
     if (value) {
       LoginRequester.signUp(
@@ -120,7 +129,6 @@ export default class SignupScreen extends React.Component {
       ).then((response) => {
         console.log(response);
         if ('errors' in response) {
-          // Render errors using flashes
           onFailure && onFailure();
           this.setState({ errors: response.errors });
         } else {
