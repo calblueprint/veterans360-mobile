@@ -26,7 +26,6 @@ export default class SignupScreen extends React.Component {
     };
 
     this.onFormChange = this.onFormChange.bind(this);
-    this.setFormValidationErrors = this.setFormValidationErrors.bind(this);
     this.signUp = this.signUp.bind(this);
     this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
     this.confirmMatchingPasswords = this.confirmMatchingPasswords.bind(this);
@@ -43,7 +42,7 @@ export default class SignupScreen extends React.Component {
   }
 
   getFormType() {
-    return t.subtype(t.struct({
+    return t.struct({
       firstName: t.String,
       lastName: t.String,
       email: t.String,
@@ -55,12 +54,11 @@ export default class SignupScreen extends React.Component {
       familyMember: t.Boolean,
       caregiver: t.Boolean,
       other: t.Boolean,
-    }), this.confirmMatchingPasswords);
+    });
   }
 
   getFormOptions() {
     return {
-      error: (value) => { return this.setFormValidationErrors(value) },
       fields: {
         firstName: {
           hasError: !!this.state.errors.first_name,
@@ -79,23 +77,16 @@ export default class SignupScreen extends React.Component {
           password: true,
           secureTextEntry: true,
           hasError: !!this.state.errors.password,
-          error: this.state.errors.password, 
+          error: this.state.errors.password,
         },
         confirmPassword: {
           password: true,
-          secureTextEntry: true
+          secureTextEntry: true,
+          hasError: !!this.state.errors.password_confirmation,
+          error: this.state.errors.password_confirmation,
         },
       },
     };
-  }
-
-  setFormValidationErrors(formValues) {
-    let errors = [];
-    // Confirm passwords match
-    if (!this.confirmMatchingPasswords(formValues)) {
-      errors.push('Passwords must match');
-    }
-    return errors.join('\n');
   }
 
   setFormErrors(errors) {

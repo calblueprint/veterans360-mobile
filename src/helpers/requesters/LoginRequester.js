@@ -50,6 +50,7 @@ class LoginRequester {
         last_name: fields.lastName,
         email: fields.email,
         password: fields.password,
+        password_confirmation: fields.confirmPassword, 
         roles: roles,
       },
     };
