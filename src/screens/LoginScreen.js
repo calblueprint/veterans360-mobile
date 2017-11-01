@@ -22,6 +22,7 @@ export default class LoginScreen extends React.Component {
 
     this.state = {
       formValues: this.getInitialFormValues(),
+      errors: {},
     }
 
     this.onFormChange = this.onFormChange.bind(this);
@@ -47,17 +48,26 @@ export default class LoginScreen extends React.Component {
     return {
       fields: {
         email: {
-          error: 'Cannot be blank',
           value: 'kenchen@berkeley.edu',
+          hasError: !!this.state.errors.email,
+          error: this.state.errors.email,
         },
         password: {
           secureTextEntry: true,
           password: true,
-          error: 'Cannot be blank',
-          value: 'password'
+          value: 'password',
+          hasError: !!this.state.errors.password,
+          error: this.state.errors.password,
         },
       },
     };
+  }
+
+  /**
+   * Clear the error state at the beginning of each validation (login)
+   */
+  clearFormErrors() {
+    this.setState({ errors: {} });
   }
 
   onFormChange(values) {
@@ -73,23 +83,20 @@ export default class LoginScreen extends React.Component {
    */
   login(event, onSuccess, onFailure) {
     event.preventDefault();
+    this.clearFormErrors();
     const values = this.form.getValue();
     if (values) {
       LoginRequester.login(
         values.email,
         values.password,
-        onSuccess,
-        onFailure,
       ).then((response) => {
         console.log(response);
-        if ('errors' in response) {
-          // Render errors using flashes
-          onFailure && onFailure();
-        } else {
-          this.navigateToApp(response);
-        }
+        onSuccess && onSuccess(response);
+        this.navigateToApp(response);
       }).catch((error) => {
-        console.log("Invalid email/password.");
+        console.log(error);
+        onFailure && onFailure(error);
+        this.setState({ errors: error });
       });
     } else {
       onFailure && onFailure();

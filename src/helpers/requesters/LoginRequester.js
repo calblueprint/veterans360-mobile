@@ -11,7 +11,7 @@ class LoginRequester {
    * Sends a POST request through BaseRequester that attempts
    * to log the user in.
    */
-  static async login(email, password, onSuccess, onFailure) {
+  static async login(email, password) {
     const params = {
       veteran: {
         email: email,
@@ -19,9 +19,10 @@ class LoginRequester {
       },
     };
     const endpoint = APIRoutes.veteransSignInPath();
+
     try {
-      let response = await BaseRequester.post(endpoint, params, onSuccess, onFailure);
-      return Promise.resolve(response);
+      let response_json = await BaseRequester.post(endpoint, params);
+      return Promise.resolve(response_json);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -32,7 +33,7 @@ class LoginRequester {
    * to sign up a user.
    * @param {object} fields: object that contains all sign up fields
    */
-  static async signUp(fields, onSuccess, onFailure) {
+  static async signUp(fields) {
     let roles = {
       active_duty: fields.activeDuty,
       veteran: fields.veteran,
@@ -55,9 +56,10 @@ class LoginRequester {
       },
     };
     const endpoint = APIRoutes.veteransSignUpPath();
+
     try {
-      let response = await BaseRequester.post(endpoint, params, onSuccess, onFailure);
-      return Promise.resolve(response);
+      let response_json = await BaseRequester.post(endpoint, params);
+      return Promise.resolve(response_json);
     } catch (error) {
       return Promise.reject(error);
     }
