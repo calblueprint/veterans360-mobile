@@ -30,7 +30,7 @@ class LoginRequester {
   /**
    * Sends a POST request through BaseRequester that attempts
    * to sign up a user.
-   * @param {object} fields: object that contains all login fields
+   * @param {object} fields: object that contains all sign up fields
    */
   static async signUp(fields, onSuccess, onFailure) {
     let roles = {
@@ -50,7 +50,7 @@ class LoginRequester {
         last_name: fields.lastName,
         email: fields.email,
         password: fields.password,
-        password_confirmation: fields.confirmPassword, 
+        password_confirmation: fields.confirmPassword,
         roles: roles,
       },
     };

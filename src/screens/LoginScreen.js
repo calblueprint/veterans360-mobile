@@ -64,6 +64,13 @@ export default class LoginScreen extends React.Component {
     this.setState({ formValues: values });
   }
 
+  /**
+   * Attempts to login the user to the API. If successful then routes the
+   * user to the `App`, otherwise, renders errors.
+   *
+   * @param {function} onSuccess: callback on response when successful
+   * @param {function} onFailure: callback on error object when errored
+   */
   login(event, onSuccess, onFailure) {
     event.preventDefault();
     const values = this.form.getValue();
@@ -89,10 +96,16 @@ export default class LoginScreen extends React.Component {
     }
   }
 
+  /**
+   * Routes the user to the app.
+   */
   navigateToApp(navProps) {
     this.props.navigation.navigate('App', navProps);
   }
 
+  /**
+   * Routes the user to the `SignupScreen`.
+   */
   navigateToSignupScreen(event, onSuccess, onFailure) {
     event.preventDefault();
     this.props.navigation.navigate('Signup', this.state.formValues);

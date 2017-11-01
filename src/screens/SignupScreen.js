@@ -1,5 +1,10 @@
 /**
  * Signup screen for veterans.
+
+ * Basically a container for a sign up form with helpers to
+ * send data back to the API, receive validations, and then render
+ * any errors. See Form documentation for usage of form and data types.
+ *
  */
 
 import React from 'react';
@@ -22,13 +27,12 @@ export default class SignupScreen extends React.Component {
 
     this.state = {
       formValues: this.getInitialFormValues(),
-      errors: {},
+      errors: {},  // Set and reset by signUp if any errors occurred
     };
 
     this.onFormChange = this.onFormChange.bind(this);
     this.signUp = this.signUp.bind(this);
     this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
-    this.confirmMatchingPasswords = this.confirmMatchingPasswords.bind(this);
   }
 
   getInitialFormValues() {
@@ -89,6 +93,12 @@ export default class SignupScreen extends React.Component {
     };
   }
 
+  /**
+   * Sets the errors state from errors, which is a dictionary mapping from
+   * field name to a list of messages.
+   *
+   * @param {object} error: string -> array
+   */
   setFormErrors(errors) {
     let formErrors = {};
     Object.keys(errors).forEach((field) => {
@@ -98,6 +108,9 @@ export default class SignupScreen extends React.Component {
     this.setState({ errors: formErrors });
   }
 
+  /**
+   * Clear the error state at the beginning of each validation (signUp)
+   */
   clearFormErrors() {
     this.setState({ errors: {} });
   }
@@ -106,10 +119,14 @@ export default class SignupScreen extends React.Component {
     this.setState({ formValues: values });
   }
 
-  confirmMatchingPasswords(value) {
-    return value.password === value.confirmPassword;
-  }
-
+  /**
+   * Attempts to sign the user up using the fields from the form.
+   * If successful will progress user to the App, otherwise will
+   * render validation errors on each field.
+   *
+   * @param {function} onSuccess: callback on response when successful
+   * @param {function} onFailure: callback on error object when errored
+   */
   signUp(event, onSuccess, onFailure) {
     event.preventDefault();
     this.clearFormErrors();
@@ -135,10 +152,18 @@ export default class SignupScreen extends React.Component {
     }
   }
 
+  /**
+   * Routes user to the 'App' screen, which is the MainTabNavigator.
+   *
+   * @param {object} navProps: data object to be sent to next screen
+   */
   navigateToApp(navProps) {
     this.props.navigation.navigate('App', navProps);
   }
 
+  /**
+   * Routes user to 'LoginScreen'.
+   */
   navigateToLoginScreen(event, onSuccess, onFailure) {
     event.preventDefault();
     this.props.navigation.navigate('Login');
