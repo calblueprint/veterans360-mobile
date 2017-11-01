@@ -15,7 +15,7 @@ const MainTabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Home',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="home" size={25} color={colors.green} />
+        <Icon name="home" size={25} color={tintColor} />
       ),
     },
   },
@@ -24,7 +24,7 @@ const MainTabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Connect',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="users" size={20} color={colors.green} />
+        <Icon name="users" size={20} color={tintColor} />
       ),
     },
   },
@@ -33,7 +33,7 @@ const MainTabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Vault',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="briefcase" size={22} color={colors.green} />
+        <Icon name="briefcase" size={22} color={tintColor} />
       ),
     },
   },
@@ -42,7 +42,7 @@ const MainTabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Response',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="file-o" size={21} color={colors.green} />
+        <Icon name="file-o" size={21} color={tintColor} />
       ),
     },
   },
@@ -51,7 +51,7 @@ const MainTabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Profile',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="user" size={22} color={colors.green} />
+        <Icon name="user" size={22} color={tintColor} />
       ),
     },
   },
