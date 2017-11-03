@@ -5,14 +5,8 @@ import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 
-<<<<<<< HEAD
-
 async function loadFonts() {
       return await Font.loadAsync({
-=======
-const fonts = async function loadFonts() {
-      await Font.loadAsync({
->>>>>>> resource vault
             'source-sans-pro-black': require('../.././assets/fonts/SourceSansPro-Black.ttf'),
             'source-sans-pro-black-italic': require('../.././assets/fonts/SourceSansPro-BlackItalic.ttf'),
             'source-sans-pro-bold': require('../.././assets/fonts/SourceSansPro-Bold.ttf'),
@@ -28,10 +22,4 @@ const fonts = async function loadFonts() {
       });
 }
 
-<<<<<<< HEAD
 export { loadFonts };
-=======
-export {
-      fonts,
-}
->>>>>>> resource vault
