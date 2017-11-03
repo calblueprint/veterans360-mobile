@@ -38,24 +38,6 @@ export default class InfoModal extends React.Component {
     });
   }
 
-  getVeterans() {
-    return [
-      {
-        id: 15,
-        first_name: 'Ken',
-        last_name: 'Chen',
-        roles: [1, 2],
-        email: 'kenchen@berkeley.edu',
-        lat: 32.43,
-        lng: -124.24, 
-      }
-    ]
-  }
-
-  getParterOrgs() {
-
-  }
-
   getHelpAnimationStyle() {
     return {
       opacity: this.state.helpAnimationValue,
