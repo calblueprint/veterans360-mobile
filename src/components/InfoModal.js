@@ -1,5 +1,6 @@
 /**
- * Simple info modal
+ * Simple hovering info modal that displays a title and a paragraph text
+ * and can be closed.
  *
  * @prop style            - style override
  * @prop title            - title text
@@ -9,7 +10,7 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, Animated } from 'react-native';
+import { StyleSheet, Text, View, Animated, Easing } from 'react-native';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import { colors } from '../styles/colors';
@@ -21,30 +22,56 @@ export default class InfoModal extends React.Component {
     super(props);
 
     this.state = {
-      opacity: new Animated.Value(0),
+      helpAnimationValue: new Animated.Value(0),
     };
 
     this.closeModal = this.closeModal.bind(this);
   }
 
   componentDidMount() {
-    Animated.timing(this.state.opacity, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
+    Animations.fade(this.state.helpAnimationValue, toValue = 1).start();
   }
 
   closeModal() {
-    Animations.fadeAnimation(this.state.opacity).start(() => {
+    Animations.fade(this.state.helpAnimationValue).start(() => {
       this.props.onClose();
     });
+  }
+
+  getVeterans() {
+    return [
+      {
+        id: 15,
+        first_name: 'Ken',
+        last_name: 'Chen',
+        roles: [1, 2],
+        email: 'kenchen@berkeley.edu',
+        lat: 32.43,
+        lng: -124.24, 
+      }
+    ]
+  }
+
+  getParterOrgs() {
+
+  }
+
+  getHelpAnimationStyle() {
+    return {
+      opacity: this.state.helpAnimationValue,
+      transform: [{
+        translateY: this.state.helpAnimationValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [100, 0],
+        }),
+      }],
+    };
   }
 
   render() {
     return (
       <Animated.View
-        style={[styles.baseContainer, { opacity: this.state.opacity }]}
+        style={[styles.baseContainer, this.getHelpAnimationStyle()]}
       >
         <Icon
           name="times"

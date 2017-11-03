@@ -44,8 +44,8 @@ export default class ConnectScreen extends React.Component {
     if (this.state.isHelpModalOpen) {
       return (
         <InfoModal
-          title="yes this is it"
-          text="this is the body text"
+          title="WELCOME TO CONNECT!"
+          text="Pan the map around to see who's around you."
           onClose={this.closeHelpModal}
         />
       );
