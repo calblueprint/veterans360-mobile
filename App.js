@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import HomeScreen from './src/screens/HomeScreen';
@@ -7,7 +7,8 @@ import VaultScreen from './src/screens/VaultScreen';
 import ResponseScreen from './src/screens/ResponseScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import LoginScreen from './src/screens/LoginScreen';
-
+import { Font } from 'expo';
+import { loadFonts } from './src/styles/fonts';
 
 const Navigator = TabNavigator({
   Login: {
@@ -34,16 +35,25 @@ const Navigator = TabNavigator({
 });
 
 export default class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      fontsLoaded: false, 
+    };
+  }
+
+  componentDidMount() {
+    loadFonts().then(() => {
+      this.setState({ fontsLoaded: true });
+    }).catch((error) => {
+      console.error(error);
+    })
+  }
+
   render() {
-    return <Navigator />;
+    return this.state.fontsLoaded ? (
+      <Navigator />
+    ) : null;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
