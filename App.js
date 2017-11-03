@@ -7,7 +7,8 @@ import VaultScreen from './src/screens/VaultScreen';
 import ResponseScreen from './src/screens/ResponseScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import LoginScreen from './src/screens/LoginScreen';
-import { fonts } from './src/styles/fonts';
+import { Font } from 'expo';
+import { loadFonts } from './src/styles/fonts';
 
 const Navigator = TabNavigator({
   Login: {
@@ -34,13 +35,25 @@ const Navigator = TabNavigator({
 });
 
 export default class App extends React.Component {
-  async componentDidMount() {
-    { fonts(); }
-    this.setState({fontLoaded: true});
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      fontsLoaded: false, 
+    };
   }
+
+  componentDidMount() {
+    loadFonts().then(() => {
+      this.setState({ fontsLoaded: true });
+    }).catch((error) => {
+      console.error(error);
+    })
+  }
+
   render() {
-    return (
+    return this.state.fontsLoaded ? (
       <Navigator />
-    );
+    ) : null;
   }
 }

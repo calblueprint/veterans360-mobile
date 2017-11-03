@@ -4,7 +4,6 @@ import { Font } from 'expo';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
-import { fonts } from '../styles/fonts';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {
@@ -27,7 +26,6 @@ export default class VaultScreen extends React.Component {
         {name: 'LEGAL', selected:true, id: 5},
         {name: 'MENTAL HEALTH', selected:true, id: 6},
       ],
-      fontLoaded: false,
       resources: [
         /*
         {title: 'Title of Resource',
@@ -47,9 +45,8 @@ export default class VaultScreen extends React.Component {
     this.renderResourceContent = this.renderResourceContent.bind(this);
   }
 
-  async componentDidMount() {
-    { fonts(); }
-    this.setState({fontLoaded: true});
+  componentDidMount() {
+
   }
 
   /**
@@ -182,34 +179,30 @@ export default class VaultScreen extends React.Component {
   renderResourceContent() {
     return (
       <View style={ styles.backgroundContainer }>
-        {
-          this.state.fontLoaded? (
-            <View style={{flex: 1,}}>
-              <View style={ styles.backgroundDisplay }>
+        <View style={{flex: 1,}}>
+          <View style={ styles.backgroundDisplay }>
+          </View>
+          <View style={{position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,}}>
+            <ScrollView>
+              <View style={[styles.contentContainer, {top:0,}]}>
+                <Text style={[styles.baseText, {marginBottom: 5,}]}>
+                  <Text style={[styles.titleText, {color:'rgb(255, 255, 255)'}]}>
+                    Resources
+                  </Text>
+                </Text>
+                <View style={[styles.search, {marginTop: 5,}]}>
+                  <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
+                </View>
               </View>
-              <View style={{position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,}}>
-                <ScrollView>
-                  <View style={[styles.contentContainer, {top:0,}]}>
-                    <Text style={[styles.baseText, {marginBottom: 5,}]}>
-                      <Text style={[styles.titleText, {color:'rgb(255, 255, 255)'}]}>
-                        Resources
-                      </Text>
-                    </Text>
-                    <View style={[styles.search, {marginTop: 5,}]}>
-                      <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
-                    </View>
-                  </View>
-                  <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>  
-                    {this.filterScroller()}
-                  </ScrollView>
-                  <View style={styles.contentContainer}>
-                    {this.displayResources()}
-                  </View>
-                </ScrollView>
+              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>  
+                {this.filterScroller()}
+              </ScrollView>
+              <View style={styles.contentContainer}>
+                {this.displayResources()}
               </View>
-            </View>
-          ) : null
-        }
+            </ScrollView>
+          </View>
+        </View>
       </View>
     );
   }
@@ -234,7 +227,7 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 12,
-    fontFamily: 'source-sans-pro-regular',
+    fontFamily: 'SourceSansPro-Black',
   },
   contentContainer: {
     flexDirection:'column',
