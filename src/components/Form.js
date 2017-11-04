@@ -14,6 +14,8 @@
  *                      each field. Again see `LoginScreen` for an example and
  *                      refer to this documentation: https://github.com/gcanti/tcomb-form-native
  * @prop options      - options for customizing each form field, see the docs
+ * @prop value        - default values in form
+ * @prop onChange     - callback handler called every time the form changes
  */
 
 import React from 'react';
@@ -48,6 +50,8 @@ class Form extends React.Component {
     const LABEL_COLOR = colors.charcoal
     const LABEL_FONT_WEIGHT = 'bold';
 
+    const HELPBLOCK_FONT_SIZE = 13;
+
     // Textbox styles
     let textbox = stylesheet.textbox;
     textbox.normal = {
@@ -61,7 +65,7 @@ class Form extends React.Component {
       borderColor: colors.light_gray,
       borderWidth: 1,
       marginBottom: 5,
-    }
+    };
 
     textbox.error = {
       color: INPUT_COLOR,
@@ -74,7 +78,7 @@ class Form extends React.Component {
       borderColor: colors.red,
       borderWidth: 1,
       marginBottom: 5,
-    }
+    };
 
     textbox.notEditable = {
       color: INPUT_COLOR,
@@ -87,7 +91,7 @@ class Form extends React.Component {
       borderColor: colors.light_charcoal,
       borderWidth: 1,
       marginBottom: 5,
-    }
+    };
 
     // Label styles
     let label = stylesheet.controlLabel;
@@ -97,7 +101,7 @@ class Form extends React.Component {
       marginBottom: 7,
       fontWeight: LABEL_FONT_WEIGHT,
       letterSpacing: 0.5,
-    }
+    };
 
     label.error = {
       color: colors.red,
@@ -105,7 +109,25 @@ class Form extends React.Component {
       marginBottom: 7,
       fontWeight: LABEL_FONT_WEIGHT,
       letterSpacing: 0.5,
-    }
+    };
+
+    // Helpblock styles (help and error messages)
+    let helpBlock = stylesheet.helpBlock;
+    helpBlock.normal = {
+      color: colors.light_gray,
+      fontSize: HELPBLOCK_FONT_SIZE,
+      marginBottom: 2,
+    };
+    helpBlock.error = {
+      color: colors.red,
+      fontSize: HELPBLOCK_FONT_SIZE,
+      marginBottom: 2,
+    };
+    stylesheet.errorBlock = {
+      color: colors.red,
+      fontSize: HELPBLOCK_FONT_SIZE,
+      marginBottom: 2,
+    };
   }
 
   render() {
@@ -115,6 +137,8 @@ class Form extends React.Component {
         ref={this.props.refCallback}
         type={this.props.type}
         options={this.props.options}
+        value={this.props.value}
+        onChange={this.props.onChange}
       />
     );
   }

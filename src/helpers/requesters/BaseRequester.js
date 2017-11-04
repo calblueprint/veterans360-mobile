@@ -5,10 +5,6 @@
  *
  * @param {string} endpoint: endpoint route
  * @param {object} params: object containing payload body
- * @param {function} onSuccess: callback executed after
- *          a successful request
- * @param {function} onFailure: callback executed after
- *          a failed request
  */
 
 class BaseRequester {
@@ -16,36 +12,36 @@ class BaseRequester {
   /**
    * GET request on endpoint.
    */
-  static get(endpoint, onSuccess, onFailure) {
+  static get(endpoint) {
     return this._request(
-      'GET', endpoint, {}, onSuccess, onFailure
+      'GET', endpoint, {}
     );
   }
 
   /**
    * POST request on endpoint.
    */
-  static post(endpoint, params, onSuccess, onFailure) {
+  static async post(endpoint, params) {
     return this._request(
-      'POST', endpoint, params, onSuccess, onFailure
+      'POST', endpoint, params
     );
   }
 
   /**
    * PATCH request on endpoint.
    */
-  static patch(endpoint, params, onSuccess, onFailure) {
+  static patch(endpoint, params) {
     return this._request(
-      'PATCH', endpoint, params, onSuccess, onFailure
+      'PATCH', endpoint, params
     );
   }
 
   /**
    * DESTROY request on endpoint.
    */
-  static destroy(endpoint, onSuccess, onFailure) {
+  static destroy(endpoint) {
     return this._request(
-      'DESTROY', endpoint, {}, onSuccess, onFailure
+      'DESTROY', endpoint, {}
     );
   }
 
@@ -53,7 +49,7 @@ class BaseRequester {
    * Internal method to process all requests, wraps
    * fetch.
    */
-  static async _request(method, endpoint, params, onSuccess, onFailure) {
+  static async _request(method, endpoint, params) {
     const headers = this._getHeaders();
     return fetch(endpoint, {
       method: method,
@@ -62,11 +58,11 @@ class BaseRequester {
     }).then((response) => {
       return response.json();
     }).then((json) => {
-      onSuccess && onSuccess(json);
-      return json;
-    }).catch((error) => {
-      console.error(error);
-      onFailure && onFailure(error);
+      if ('errors' in json) {
+        throw json.errors;
+      } else {
+        return json;
+      }
     });
   }
 
