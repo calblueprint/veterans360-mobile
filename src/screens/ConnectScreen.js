@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, Modal } from 'react-native';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import InfoModal from '../components/InfoModal';
+import ConnectPin from '../components/ConnectPin';
 
 export default class ConnectScreen extends React.Component {
 
@@ -124,7 +125,9 @@ export default class ConnectScreen extends React.Component {
           title={`${veteran.first_name} ${veteran.last_name}`}
           description={veteran.email}
           key={`veteran-${veteran.id}`}
-        />
+        >
+        <ConnectPin />
+      </MapView.Marker>
       );
     });
   }
