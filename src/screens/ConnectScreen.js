@@ -12,6 +12,10 @@ export default class ConnectScreen extends React.Component {
     this.props.navigation.navigate('ConnectSignUp', this.props.navigation.state.params);
   }
 
+  navigateToSignUp() {
+    this.props.navigation.navigate('ConnectSignUp');
+  }
+
   render() {
     return (
       <View style={layoutStyles.flexCenter}>
@@ -22,5 +26,9 @@ export default class ConnectScreen extends React.Component {
       </View>
     );
   }
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> sign up for connect
