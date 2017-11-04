@@ -9,6 +9,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import { Font } from 'expo';
 import { loadFonts } from './src/styles/fonts';
+import ConnectSignUpStackNavigator from './src/navigation/ConnectSignUpStackNavigator';
 
 const Navigator = TabNavigator({
   Login: {
@@ -53,7 +54,8 @@ export default class App extends React.Component {
 
   render() {
     return this.state.fontsLoaded ? (
-      <Navigator />
+      <ConnectSignUpStackNavigator/>
+      //<Navigator />
     ) : null;
   }
 }
