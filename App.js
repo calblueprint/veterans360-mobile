@@ -55,7 +55,7 @@ export default class App extends React.Component {
   render() {
     return this.state.fontsLoaded ? (
       <ConnectSignUpStackNavigator/>
-      //<Navigator />
+      <Navigator />
     ) : null;
   }
 }
