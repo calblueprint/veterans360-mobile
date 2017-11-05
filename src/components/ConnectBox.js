@@ -10,6 +10,7 @@
  *                            - roles
  *                            - image
  *                            - bio
+ * @prop onClose          - callback to be executed when close button pressed
  */
 
 import React from 'react';
@@ -17,6 +18,7 @@ import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, Animated, Image } from 'react-native';
 
 import { colors } from '../styles/colors';
+import { layoutStyles, margins } from '../styles/layout';
 import Animations from '../styles/animations';
 import Button from '../components/Button';
 
@@ -53,6 +55,18 @@ export default class ConnectBox extends React.Component {
     }
   }
 
+  renderCloseButton() {
+    return (
+      <Icon
+        name="times"
+        size={20}
+        color={colors.light_gray}
+        style={styles.closeButton}
+        onPress={this.props.onClose}
+      />
+    );
+  }
+
   render() {
     return (
       <View style={[styles.baseContainer, this.props.style]}>
@@ -61,10 +75,12 @@ export default class ConnectBox extends React.Component {
           <View style={styles.buttonContainer}>
             <Button
               style={styles.profileButton}
+              textStyle={styles.profileButtonText}
               text="VIEW"
             />
             <Button
-              style={styles.profileButton}
+              style={[styles.profileButton, margins.marginTop.md]}
+              textStyle={styles.profileButtonText}
               text="CONNECT"
             />
           </View>
@@ -78,6 +94,7 @@ export default class ConnectBox extends React.Component {
             <Text>{this.props.connection.bio}</Text>
           </View>
         </View>
+        {this.renderCloseButton()}
       </View>
     );
   }
@@ -104,7 +121,7 @@ const styles = StyleSheet.create({
 
   /* Container of left hand side column with picture and buttons */
   leftContainer: {
-    flex: 1,
+    flex: 1.8,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -116,12 +133,13 @@ const styles = StyleSheet.create({
     flex: 4,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 
   /* Container of two buttons below profile picture */
   buttonContainer: {
-    marginTop: 30,
+    flex: 1,
+    marginTop: 20,
   },
 
   /* Container of name and title of veteran/org */
@@ -132,33 +150,38 @@ const styles = StyleSheet.create({
   /* Container of veteran/org bio */
   bioContainer: {
     marginTop: 30,
-    fontSize: 13,
-    color: colors.charcoal,
   },
 
   /* Individual components */
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
   },
   profileButton: {
     height: 30,
     borderRadius: 15,
-    fontSize: 12,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  profileButtonText: {
+    fontSize: 10,
     fontWeight: 'bold',
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: 'bold',
     color: colors.charcoal,
   },
   title: {
     fontSize: 14,
+    fontStyle: 'italic',
     color: colors.gray,
   },
   closeButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 16,
+    right: 16,
+    zIndex: 1000,
   },
 });

@@ -2,8 +2,10 @@ import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Modal } from 'react-native';
+
 import InfoModal from '../components/InfoModal';
 import ConnectPin from '../components/ConnectPin';
+import ConnectBox from '../components/ConnectBox';
 
 export default class ConnectScreen extends React.Component {
 
@@ -14,10 +16,12 @@ export default class ConnectScreen extends React.Component {
       isHelpModalOpen: true,
       veterans: this.getVeterans(),
       parterOrgs: this.getParterOrgs(),
+      activeConnection: null,  // Indicates if a veteran/org has been focused
     }
 
     this.onRegionChange = this.onRegionChange.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
+    this.closeConnectBox = this.closeConnectBox.bind(this);
   }
 
   /**
@@ -30,6 +34,7 @@ export default class ConnectScreen extends React.Component {
         name: 'Ken Chen',
         roles: ['veteran', 'caretaker'],
         email: 'kenchen@berkeley.edu',
+        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
         lat: 37.78825,
         lng: -122.4324,
       },
@@ -38,6 +43,7 @@ export default class ConnectScreen extends React.Component {
         name: 'James Chen',
         roles: ['family_member'],
         email: 'kenchen@berkeley.edu',
+        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
         lat: 37.77825,
         lng: -122.4123,
       },
@@ -46,6 +52,7 @@ export default class ConnectScreen extends React.Component {
         name: 'Sarah Chen',
         roles: ['combat_veteran', 'post_911'],
         email: 'kenchen@berkeley.edu',
+        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
         lat: 37.78240,
         lng: -122.4344,
       },
@@ -54,6 +61,7 @@ export default class ConnectScreen extends React.Component {
         name: 'Alice Chen',
         roles: ['combat_veteran', 'caretaker'],
         email: 'kenchen@berkeley.edu',
+        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
         lat: 37.78434,
         lng: -122.4354,
       },
@@ -83,6 +91,14 @@ export default class ConnectScreen extends React.Component {
     this.setState({ isHelpModalOpen: false });
   }
 
+  openConnectBox(connection) {
+    this.setState({ activeConnection: connection });
+  }
+
+  closeConnectBox() {
+    this.setState({ activeConnection: null });
+  }
+
   getInitialRegion() {
     return {
       latitude: 37.78825,
@@ -104,6 +120,23 @@ export default class ConnectScreen extends React.Component {
    */
   animateToPin(coordinate, duration = 100) {
     this.mapView && this.mapView.animateToCoordinate(coordinate, duration);
+  }
+
+  onMarkerPress(connection) {
+    const coordinate = {
+      latitude: connection.lat,
+      longitude: connection.lng,
+    };
+    const mapAnimateDuration = 100;
+    const connectBoxAnimateDuration = 200;
+
+    return () => {
+      // First need to animate map to current coordinate
+      this.mapView && this.mapView.animateToCoordinate(coordinate, mapAnimateDuration);
+
+      // Next also need to show Connect Box for this connection
+      this.openConnectBox(connection);
+    };
   }
 
   /**
@@ -137,7 +170,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={() => {this.animateToPin(coordinate)}}
+          onPress={this.onMarkerPress(veteran)}
           title={veteran.name}
           description={veteran.email}
           key={`veteran-${veteran.id}`}
@@ -162,7 +195,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={() => {this.animateToPin(coordinate)}}
+          onPress={this.onMarkerPress(org)}
           title={org.name}
           description={org.email}
           key={`parterOrg-${org.id}`}
@@ -171,6 +204,15 @@ export default class ConnectScreen extends React.Component {
         </MapView.Marker>
       );
     })
+  }
+
+  renderConnectBox() {
+    return this.state.activeConnection ? (
+      <ConnectBox
+        connection={this.state.activeConnection}
+        onClose={this.closeConnectBox}
+      />
+    ) : null;
   }
 
   render() {
@@ -186,6 +228,7 @@ export default class ConnectScreen extends React.Component {
           {this.renderVeteranMarkers()}
           {this.renderParterOrgMarkers()}
         </MapView>
+        {this.renderConnectBox()}
       </View>
     );
   }
