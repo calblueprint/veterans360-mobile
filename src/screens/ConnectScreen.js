@@ -102,6 +102,10 @@ export default class ConnectScreen extends React.Component {
     this.setState({ region: region });
   }
 
+  animateToPin(coordinate, duration = 200) {
+    this.mapView && this.mapView.animateToCoordinate(coordinate, duration);
+  }
+
   renderHelpModal() {
     if (this.state.isHelpModalOpen) {
       return (
@@ -114,14 +118,21 @@ export default class ConnectScreen extends React.Component {
     }
   }
 
+  /**
+   * Return a list of MapView Markers that represent veterans.
+   * TODO (Ken): See if you can use underscore.js partials instead of
+   * rocket function to bind the onPress method
+   */
   renderVeteranMarkers() {
     return this.state.veterans.map((veteran) => {
+      const coordinate = {
+        latitude: veteran.lat,
+        longitude: veteran.lng,
+      };
       return (
         <MapView.Marker
-          coordinate={{
-            latitude: veteran.lat,
-            longitude: veteran.lng,
-          }}
+          coordinate={coordinate}
+          onPress={() => {this.animateToPin(coordinate)}}
           title={`${veteran.first_name} ${veteran.last_name}`}
           description={veteran.email}
           key={`veteran-${veteran.id}`}
@@ -132,14 +143,21 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+  /**
+   * Return a list of MapView Markers that represent partering orgs.
+   * TODO (Ken): See if you can use underscore.js partials instead of
+   * rocket function to bind the onPress method
+   */
   renderParterOrgMarkers() {
     return this.state.parterOrgs.map((org) => {
+      const coordinate = {
+        latitude: org.lat,
+        longitude: org.lng,
+      };
       return (
         <MapView.Marker
-          coordinate={{
-            latitude: org.lat,
-            longitude: org.lng,
-          }}
+          coordinate={coordinate}
+          onPress={() => {this.animateToPin(coordinate)}}
           title={org.name}
           description={org.email}
           key={`parterOrg-${org.id}`}
@@ -155,6 +173,7 @@ export default class ConnectScreen extends React.Component {
       <View style={styles.baseContainer}>
         {this.renderHelpModal()}
         <MapView
+          ref={(ref) => this.mapView = ref}
           style={styles.baseMapContainer}
           initialRegion={this.getInitialRegion()}
           provider={PROVIDER_GOOGLE}
