@@ -1,15 +1,12 @@
 /**
- * Connect Pin
+ * Connect Pin component that renders a basic profile
+ * image of the user to be used as MapView.Marker custom view.
+ *
+ * @prop pinType        - either "veteran" or "parterOrg"
  */
 
 import React from 'react';
-import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, Animated, Image } from 'react-native';
-import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
-import { colors } from '../styles/colors';
-import Animations from '../styles/animations';
-
+import { StyleSheet, View, Image } from 'react-native';
 
 export default class ConnectPin extends React.Component {
 
@@ -74,23 +71,5 @@ const styles = StyleSheet.create({
     margin: properties.imageMargin,
     borderRadius: 0.5 * (properties.pinHeight * 0.75 - 2 * properties.imageMargin),
     zIndex: 100,
-  },
-  title: {
-    marginBottom: 10,
-    color: colors.green,
-    backgroundColor: 'transparent',
-    fontSize: 16,
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
-  },
-  bodyText: {
-    color: colors.charcoal,
-    backgroundColor: 'transparent',
-    fontSize: 14,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
   },
 });

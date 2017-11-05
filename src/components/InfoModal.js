@@ -11,8 +11,6 @@
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, Animated, Easing } from 'react-native';
-import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
 import { colors } from '../styles/colors';
 import Animations from '../styles/animations';
 

@@ -2,8 +2,6 @@ import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { StyleSheet, Text, View, Modal } from 'react-native';
-import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
 import InfoModal from '../components/InfoModal';
 import ConnectPin from '../components/ConnectPin';
 
@@ -29,36 +27,32 @@ export default class ConnectScreen extends React.Component {
     return [
       {
         id: 15,
-        first_name: 'Ken',
-        last_name: 'Chen',
-        roles: [1, 2],
+        name: 'Ken Chen',
+        roles: ['veteran', 'caretaker'],
         email: 'kenchen@berkeley.edu',
         lat: 37.78825,
         lng: -122.4324,
       },
       {
         id: 16,
-        first_name: 'James',
-        last_name: 'Chen',
-        roles: [1, 2, 3],
+        name: 'James Chen',
+        roles: ['family_member'],
         email: 'kenchen@berkeley.edu',
         lat: 37.77825,
         lng: -122.4123,
       },
       {
         id: 17,
-        first_name: 'Sarah',
-        last_name: 'Chen',
-        roles: [1, 2, 4, 5],
+        name: 'Sarah Chen',
+        roles: ['combat_veteran', 'post_911'],
         email: 'kenchen@berkeley.edu',
         lat: 37.78240,
         lng: -122.4344,
       },
       {
         id: 18,
-        first_name: 'Alice',
-        last_name: 'Chen',
-        roles: [1],
+        name: 'Alice Chen',
+        roles: ['combat_veteran', 'caretaker'],
         email: 'kenchen@berkeley.edu',
         lat: 37.78434,
         lng: -122.4354,
@@ -102,16 +96,27 @@ export default class ConnectScreen extends React.Component {
     this.setState({ region: region });
   }
 
-  animateToPin(coordinate, duration = 200) {
+  /**
+   * Animates the MapView to the current point coordinate.
+   *
+   * @param {{latitude: float, longitude: float}} coordinate
+   * @param {integer} duration: millisecond delay for this animation
+   */
+  animateToPin(coordinate, duration = 100) {
     this.mapView && this.mapView.animateToCoordinate(coordinate, duration);
   }
 
+  /**
+   * Renders a help modal with some information when the user first
+   * sees the page.
+   */
   renderHelpModal() {
     if (this.state.isHelpModalOpen) {
+      const { params } = this.props.navigation.state;
       return (
         <InfoModal
-          title="WELCOME TO CONNECT!"
-          text="Pan the map around to see who's around you."
+          title={`WELCOME TO CONNECT, ${params.first_name}!`}
+          text="Pan the map to see who's around you."
           onClose={this.closeHelpModal}
         />
       );
@@ -133,7 +138,7 @@ export default class ConnectScreen extends React.Component {
         <MapView.Marker
           coordinate={coordinate}
           onPress={() => {this.animateToPin(coordinate)}}
-          title={`${veteran.first_name} ${veteran.last_name}`}
+          title={veteran.name}
           description={veteran.email}
           key={`veteran-${veteran.id}`}
         >
