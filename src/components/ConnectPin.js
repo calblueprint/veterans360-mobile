@@ -20,15 +20,26 @@ export default class ConnectPin extends React.Component {
     };
   }
 
+  renderPin() {
+    return this.props.pinType == 'parterOrg' ? (
+      <Image
+        source={require('../../assets/images/pin-green.png')}
+        style={styles.pin}
+      />
+    ) : (
+      <Image
+        source={require('../../assets/images/pin.png')}
+        style={styles.pin}
+      />
+    );
+  }
+
   render() {
     return (
       <View
         style={[styles.baseContainer]}
       >
-        <Image
-          source={require('../../assets/images/pin.png')}
-          style={styles.pin}
-        />
+        {this.renderPin()}
         <Image
           source={require('../../assets/images/photogenic.jpg')}
           style={styles.image}

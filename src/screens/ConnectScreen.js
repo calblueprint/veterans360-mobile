@@ -126,8 +126,8 @@ export default class ConnectScreen extends React.Component {
           description={veteran.email}
           key={`veteran-${veteran.id}`}
         >
-        <ConnectPin />
-      </MapView.Marker>
+          <ConnectPin pinType="veteran" />
+        </MapView.Marker>
       );
     });
   }
@@ -143,7 +143,9 @@ export default class ConnectScreen extends React.Component {
           title={org.name}
           description={org.email}
           key={`parterOrg-${org.id}`}
-        />
+        >
+          <ConnectPin pinType="parterOrg" />
+        </MapView.Marker>
       );
     })
   }
