@@ -28,13 +28,39 @@ export default class ConnectBox extends React.Component {
     super(props);
 
     this.state = {
+      animationValue: new Animated.Value(0),
+
     };
+
+    this.onBoxClose = this.onBoxClose.bind(this);
+  }
+
+  componentDidMount() {
+    Animations.fade(this.state.animationValue, toValue = 1).start();
+  }
+
+  onBoxClose() {
+    Animations.fade(this.state.animationValue).start(() => {
+      this.props.onClose();
+    });
   }
 
   getConnectionTitle() {
     return this.props.connection.roles ?
       this.props.connection.roles.join(', ') :
       'Partering Organization';
+  }
+
+  getAnimationStyle() {
+    return {
+      opacity: this.state.animationValue,
+      transform: [{
+        translateY: this.state.animationValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [200, 0],
+        }),
+      }],
+    };
   }
 
   renderProfileImage() {
@@ -62,14 +88,18 @@ export default class ConnectBox extends React.Component {
         size={20}
         color={colors.light_gray}
         style={styles.closeButton}
-        onPress={this.props.onClose}
+        onPress={this.onBoxClose}
       />
     );
   }
 
   render() {
     return (
-      <View style={[styles.baseContainer, this.props.style]}>
+      <Animated.View
+        style={[styles.baseContainer,
+                this.getAnimationStyle(),
+                this.props.style]}
+      >
         <View style={styles.leftContainer}>
           {this.renderProfileImage()}
           <View style={styles.buttonContainer}>
@@ -95,7 +125,7 @@ export default class ConnectBox extends React.Component {
           </View>
         </View>
         {this.renderCloseButton()}
-      </View>
+      </Animated.View>
     );
   }
 }
