@@ -113,15 +113,15 @@ export default class ConnectScreen extends React.Component {
   }
 
   /**
-   * Animates the MapView to the current point coordinate.
+   * Called when a marker is pressed and does two things:
+   *   1. Animates map to center on coordinate
+   *   2. Opens appropriate ConnectBox or refreshes current active box
    *
-   * @param {{latitude: float, longitude: float}} coordinate
-   * @param {integer} duration: millisecond delay for this animation
+   * @param {object} connection: either a veteran or parter org object
+   *                 with required fields as described in `ConnectBox`
+   * @return {() => null}: a function that animates the mapview and also
+   *                       opens the ConnectBox for this veteran/org
    */
-  animateToPin(coordinate, duration = 100) {
-    this.mapView && this.mapView.animateToCoordinate(coordinate, duration);
-  }
-
   onMarkerPress(connection) {
     const coordinate = {
       latitude: connection.lat,
@@ -171,8 +171,6 @@ export default class ConnectScreen extends React.Component {
         <MapView.Marker
           coordinate={coordinate}
           onPress={this.onMarkerPress(veteran)}
-          title={veteran.name}
-          description={veteran.email}
           key={`veteran-${veteran.id}`}
         >
           <ConnectPin pinType="veteran" />
@@ -196,8 +194,6 @@ export default class ConnectScreen extends React.Component {
         <MapView.Marker
           coordinate={coordinate}
           onPress={this.onMarkerPress(org)}
-          title={org.name}
-          description={org.email}
           key={`parterOrg-${org.id}`}
         >
           <ConnectPin pinType="parterOrg" />
