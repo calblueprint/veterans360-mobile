@@ -97,14 +97,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: colors.green,
     backgroundColor: 'transparent',
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-bold',
     letterSpacing: 0.5,
   },
   bodyText: {
     color: colors.charcoal,
     backgroundColor: 'transparent',
-    fontSize: 14,
+    fontSize: 16,
+    fontFamily: 'source-sans-pro-regular'
   },
   closeButton: {
     position: 'absolute',

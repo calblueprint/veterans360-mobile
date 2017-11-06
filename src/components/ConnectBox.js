@@ -121,7 +121,7 @@ export default class ConnectBox extends React.Component {
             <Text style={styles.title}>{this.getConnectionTitle()}</Text>
           </View>
           <View style={styles.bioContainer}>
-            <Text>{this.props.connection.bio}</Text>
+            <Text style={styles.bio}>{this.props.connection.bio}</Text>
           </View>
         </View>
         {this.renderCloseButton()}
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
 
   /* Container of left hand side column with picture and buttons */
   leftContainer: {
-    flex: 1.8,
+    flex: 1.6,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -191,22 +191,27 @@ const styles = StyleSheet.create({
   profileButton: {
     height: 30,
     borderRadius: 15,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 12,
+    paddingRight: 12,
   },
   profileButtonText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
   },
   name: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontFamily: 'source-sans-pro-bold',
     color: colors.charcoal,
   },
   title: {
-    fontSize: 14,
-    fontStyle: 'italic',
+    fontSize: 16,
+    fontFamily: 'source-sans-pro-italic',
     color: colors.gray,
+  },
+  bio: {
+    fontSize: 16,
+    fontFamily: 'source-sans-pro-regular',
+    color: colors.charcoal,
   },
   closeButton: {
     position: 'absolute',

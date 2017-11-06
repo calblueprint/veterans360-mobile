@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: colors.white,
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'source-sans-pro-bold',
     letterSpacing: 1,
   },
 });
