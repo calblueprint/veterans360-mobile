@@ -219,7 +219,6 @@ export default class ConnectScreen extends React.Component {
           ref={(ref) => this.mapView = ref}
           style={styles.baseMapContainer}
           initialRegion={this.getInitialRegion()}
-          provider={PROVIDER_GOOGLE}
         >
           {this.renderVeteranMarkers()}
           {this.renderParterOrgMarkers()}
