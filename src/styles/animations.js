@@ -38,6 +38,14 @@ class Animations {
       useNativeDriver: this.USE_NATIVE_DRIVER(),
     });
   }
+
+  static bounce(scale, toValue = 1.1, duration = 200) {
+    return Animated.spring(scale, {
+      toValue: toValue,
+      duration: duration,
+      useNativeDriver: this.USE_NATIVE_DRIVER(),
+    });
+  }
 }
 
 export default Animations;

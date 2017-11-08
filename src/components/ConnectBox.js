@@ -29,7 +29,6 @@ export default class ConnectBox extends React.Component {
 
     this.state = {
       animationValue: new Animated.Value(0),
-
     };
 
     this.onBoxClose = this.onBoxClose.bind(this);
