@@ -35,7 +35,7 @@ export default class VaultScreen extends React.Component {
           link: 'something',
           upvotes: 0,
           category: 2,
-          id: 1,
+          id : 1,
         },
         */
       ]

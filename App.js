@@ -1,46 +1,15 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
-import HomeScreen from './src/screens/HomeScreen';
-import ConnectScreen from './src/screens/ConnectScreen';
-import VaultScreen from './src/screens/VaultScreen';
-import ResponseScreen from './src/screens/ResponseScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import { Font } from 'expo';
+import LoginStackNavigator from './src/navigators/LoginStackNavigator';
 import { loadFonts } from './src/styles/fonts';
-import ConnectSignUpStackNavigator from './src/navigation/ConnectSignUpStackNavigator';
-
-const Navigator = TabNavigator({
-  Login: {
-    screen: LoginScreen,
-  },
-  Connect: {
-    screen: ConnectScreen,
-  },
-  Vault: {
-    screen: VaultScreen,
-  },
-  Response: {
-    screen: ResponseScreen,
-  },
-  Profile: {
-    screen: ProfileScreen,
-  }
-}, {
-  tabBarPosition: 'bottom',
-  animationEnabled: true,
-  tabBarOptions: {
-    activeTintColor: '#e91e63',
-  }
-});
 
 export default class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      fontsLoaded: false, 
+      fontsLoaded: false,
     };
   }
 
@@ -54,8 +23,7 @@ export default class App extends React.Component {
 
   render() {
     return this.state.fontsLoaded ? (
-      <ConnectSignUpStackNavigator/>
-      <Navigator />
+      <LoginStackNavigator />
     ) : null;
   }
 }

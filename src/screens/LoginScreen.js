@@ -10,41 +10,113 @@ import { Form, t } from '../components/Form';
 import { imageStyles } from '../styles/images';
 import { layoutStyles, margins } from '../styles/layout';
 import { colors } from '../styles/colors';
+import LoginRequester from '../helpers/requesters/LoginRequester';
 import BackgroundOverlay from '../components/BackgroundOverlay';
 import RaisedContainer from '../components/RaisedContainer';
 import Button from '../components/Button';
 
 export default class LoginScreen extends React.Component {
 
-  static navigationOptions = {
-    tabBarLabel: 'Login',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="check" size={20} color="#e91e63" />
-    ),
-  };
-
   constructor(props) {
     super(props);
 
+    this.state = {
+      formValues: this.getInitialFormValues(),
+      errors: {},
+    }
+
+    this.onFormChange = this.onFormChange.bind(this);
     this.login = this.login.bind(this);
-    this.redirectToSignupScreen = this.redirectToSignupScreen.bind(this);
+    this.navigateToSignupScreen = this.navigateToSignupScreen.bind(this);
   }
 
+  getInitialFormValues() {
+    return {
+      email: 'kenchen@berkeley.edu',
+      password: 'password',
+    };
+  }
+
+  getFormType() {
+    return t.struct({
+      email: t.String,
+      password: t.String,
+    });
+  }
+
+  getFormOptions() {
+    return {
+      fields: {
+        email: {
+          value: 'kenchen@berkeley.edu',
+          hasError: !!this.state.errors.email,
+          error: this.state.errors.email,
+        },
+        password: {
+          secureTextEntry: true,
+          password: true,
+          value: 'password',
+          hasError: !!this.state.errors.password,
+          error: this.state.errors.password,
+        },
+      },
+    };
+  }
+
+  /**
+   * Clear the error state at the beginning of each validation (login)
+   */
+  clearFormErrors() {
+    this.setState({ errors: {} });
+  }
+
+  onFormChange(values) {
+    this.setState({ formValues: values });
+  }
+
+  /**
+   * Attempts to login the user to the API. If successful then routes the
+   * user to the `App`, otherwise, renders errors.
+   *
+   * @param {function} onSuccess: callback on response when successful
+   * @param {function} onFailure: callback on error object when errored
+   */
   login(event, onSuccess, onFailure) {
     event.preventDefault();
-    const value = this.form.getValue();
-    if (value) {
-      console.log(value);
-      onSuccess && onSuccess(value);
+    this.clearFormErrors();
+    const values = this.form.getValue();
+    if (values) {
+      LoginRequester.login(
+        values.email,
+        values.password,
+      ).then((response) => {
+        console.log(response);
+        onSuccess && onSuccess(response);
+        this.navigateToApp(response);
+      }).catch((error) => {
+        console.log(error);
+        onFailure && onFailure(error);
+        this.setState({ errors: error });
+      });
     } else {
-      console.error("Error occurred.");
       onFailure && onFailure();
     }
   }
 
-  redirectToSignupScreen(event, onSuccess, onFailure) {
+  /**
+   * Routes the user to the app.
+   */
+  navigateToApp(navProps) {
+    this.props.navigation.navigate('App', navProps);
+  }
+
+  /**
+   * Routes the user to the `SignupScreen`.
+   */
+  navigateToSignupScreen(event, onSuccess, onFailure) {
     event.preventDefault();
-    // TODO: FILL IN
+    this.props.navigation.navigate('Signup', this.state.formValues);
+    onSuccess && onSuccess();
   }
 
   render() {
@@ -54,17 +126,11 @@ export default class LoginScreen extends React.Component {
           <Text style={styles.titleStyle}>Login</Text>
           <View style={styles.formContainer}>
             <Form
-              style={styles.formStyle}
               refCallback={(ref) => this.form = ref}
-              type={t.struct({
-                email: t.String,
-                password: t.String,
-              })}
-              options={{
-                fields: {
-                  password: { secureTextEntry: true },
-                },
-              }}
+              type={this.getFormType()}
+              options={this.getFormOptions()}
+              value={this.state.formValues}
+              onChange={this.onFormChange}
             />
             <Button
               style={margins.marginTop.md}
@@ -75,7 +141,7 @@ export default class LoginScreen extends React.Component {
           <Button
             style={styles.signupButtonStyle}
             textStyle={styles.signupButtonTextStyle}
-            onPress={this.login}
+            onPress={this.navigateToSignupScreen}
             text="SIGN UP"
           />
         </RaisedContainer>
@@ -88,10 +154,8 @@ export default class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
   raisedContainer: {
     position: 'absolute',
-    top: '30%',
     left: '10%',
     width: '80%',
-    height: '40%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -99,13 +163,10 @@ const styles = StyleSheet.create({
   formContainer: {
     width: '100%',
     justifyContent: 'center',
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
     paddingLeft: 40,
     paddingRight: 40,
-  },
-  formStyle: {
-    width: 500,
   },
   titleStyle: {
     position: 'absolute',
