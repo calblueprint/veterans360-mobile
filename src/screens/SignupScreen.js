@@ -139,11 +139,9 @@ export default class SignupScreen extends React.Component {
       LoginRequester.signUp(
         value,
       ).then((response) => {
-        console.log(response);
         onSuccess && onSuccess(response);
         this.navigateToApp(response);
       }).catch((error) => {
-        console.log(error.errors);
         onFailure && onFailure(error.errors);
         this.setState({ errors: error.errors })
       });

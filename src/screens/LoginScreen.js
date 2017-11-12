@@ -87,11 +87,9 @@ export default class LoginScreen extends React.Component {
         values.email,
         values.password,
       ).then((response) => {
-        console.log(response);
         onSuccess && onSuccess(response);
         this.navigateToApp(response);
       }).catch((error) => {
-        console.log(error.error);
         onFailure && onFailure(error.error);
         this.setState({ errors: error.error });
       });
