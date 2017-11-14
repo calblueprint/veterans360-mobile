@@ -1,3 +1,11 @@
+/**
+ * Connect Screen that shows a map view of the neighborhood
+ * around the user and renders pins corresponding to veterans
+ * that are using the app and also signed up for Connect.
+ *
+ * @prop navigation.state.params      - current signed in veteran obj
+ */
+
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, TouchableHighlight, Modal, Image, Dimensions } from 'react-native';
