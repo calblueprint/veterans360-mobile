@@ -56,13 +56,14 @@ class BaseRequester {
       headers: headers,
       body: JSON.stringify(params),
     }).then((response) => {
+      if (!response.ok) { throw response; }
       return response.json();
     }).then((json) => {
-      if ('errors' in json) {
-        throw json.errors;
-      } else {
-        return json;
-      }
+      return json;
+    }).catch((error) => {
+      return error.json().then((json) => {
+        throw json;
+      });
     });
   }
 

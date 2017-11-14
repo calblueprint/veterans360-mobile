@@ -91,6 +91,9 @@ export default class SignupScreen extends React.Component {
         },
       },
     };
+
+    this.signUp = this.signUp.bind(this);
+    this.navigateToLoginScreen = this.navigateToLoginScreen.bind(this);
   }
 
   /**
@@ -127,6 +130,7 @@ export default class SignupScreen extends React.Component {
    * @param {function} onSuccess: callback on response when successful
    * @param {function} onFailure: callback on error object when errored
    */
+
   signUp(event, onSuccess, onFailure) {
     event.preventDefault();
     this.clearFormErrors();
@@ -135,13 +139,11 @@ export default class SignupScreen extends React.Component {
       LoginRequester.signUp(
         value,
       ).then((response) => {
-        console.log(response);
         onSuccess && onSuccess(response);
         this.navigateToApp(response);
       }).catch((error) => {
-        console.log(error);
-        onFailure && onFailure(error);
-        this.setState({ errors: error })
+        onFailure && onFailure(error.errors);
+        this.setState({ errors: error.errors })
       });
     } else {
       onFailure && onFailure();
