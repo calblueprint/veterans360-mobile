@@ -34,8 +34,7 @@ export default class ConnectScreen extends React.Component {
     const id = params.id; 
     ConnectSignUpRequester.connectStatus(id).then((response) => {
       console.log(response)
-      //this.setState({ stillLoading: false, onConnect: true });
-      this.setState({ stillLoading: false, onConnect: false });
+      this.setState({ stillLoading: false, onConnect: true });
     }).catch((error) => {
       console.log(error)
       this.setState({ stillLoading: false, onConnect: false });
