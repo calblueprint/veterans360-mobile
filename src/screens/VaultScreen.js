@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 12,
-    fontFamily: 'SourceSansPro-Black',
+    fontFamily: 'source-sans-pro-black',
   },
   contentContainer: {
     flexDirection:'column',
