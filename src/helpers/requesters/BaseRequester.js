@@ -51,11 +51,11 @@ class BaseRequester {
    */
   static async _request(method, endpoint, params) {
     const headers = this._getHeaders();
-    console.log(endpoint);
+
     let payload = {
       method: method,
       headers: headers,
-    };
+    }
 
     if (method != 'GET') {
       payload.body = JSON.stringify(params);
