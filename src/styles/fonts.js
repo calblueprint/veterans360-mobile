@@ -5,7 +5,6 @@ import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 
-
 async function loadFonts() {
       return await Font.loadAsync({
             'source-sans-pro-black': require('../.././assets/fonts/SourceSansPro-Black.ttf'),

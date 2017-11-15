@@ -51,16 +51,17 @@ class BaseRequester {
    */
   static async _request(method, endpoint, params) {
     const headers = this._getHeaders();
+
     let payload = {
       method: method,
       headers: headers,
     }
+
     if (method != 'GET') {
       payload.body = JSON.stringify(params);
     }
 
-    return fetch(endpoint, payload)
-    .then((response) => {
+    return fetch(endpoint, payload).then((response) => {
       if (!response.ok) { throw response; }
       return response.json();
     }).then((json) => {

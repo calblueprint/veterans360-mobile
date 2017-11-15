@@ -6,6 +6,12 @@ import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 
 export default class VaultScreen extends React.Component {
+  static navigationOptions = {
+    tabBarLabel: 'Vault',
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name="briefcase" size={22} color="#e91e63" />
+    ),
+  };
 
   constructor(props) {
     super(props);
@@ -20,6 +26,7 @@ export default class VaultScreen extends React.Component {
         {name: 'LEGAL', selected:true, id: 5},
         {name: 'MENTAL HEALTH', selected:true, id: 6},
       ],
+
       resources: [
         /*
         {title: 'Title of Resource',
@@ -45,7 +52,7 @@ export default class VaultScreen extends React.Component {
 
   /**
    * Updates the category filter and set state to updated categories
-   * @param {Number} itemId
+   * @param {Number} itemId 
    * @param {Boolean} newState
    */
   updateFilter(itemId, newState) {
@@ -60,7 +67,7 @@ export default class VaultScreen extends React.Component {
 
   /**
    * Sets the category with the provided ID to have the opposite filter selection
-   * @param {Number} itemId
+   * @param {Number} itemId 
    */
   setOpposite(itemId) {
     this.state.categories.forEach((i) => {
@@ -73,7 +80,7 @@ export default class VaultScreen extends React.Component {
   /**
    * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
    * @param {String} name
-   * @param {Number} itemId
+   * @param {Number} itemId 
    */
   falseState(name, itemId) {
     if(name==='CLEAR') {
@@ -188,7 +195,7 @@ export default class VaultScreen extends React.Component {
                   <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
                 </View>
               </View>
-              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>
+              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>  
                 {this.filterScroller()}
               </ScrollView>
               <View style={styles.contentContainer}>
@@ -208,7 +215,6 @@ export default class VaultScreen extends React.Component {
       </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -222,7 +228,7 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 12,
-    fontFamily: 'SourceSansPro-Black',
+    fontFamily: 'source-sans-pro-black',
   },
   contentContainer: {
     flexDirection:'column',
