@@ -22,7 +22,7 @@ export default class LoginScreen extends React.Component {
 
     this.state = {
       formValues: this.getInitialFormValues(),
-      errors: {},
+      errors: [],
     }
 
     this.onFormChange = this.onFormChange.bind(this);
@@ -46,18 +46,15 @@ export default class LoginScreen extends React.Component {
 
   getFormOptions() {
     return {
+      error: this.state.errors,
       fields: {
         email: {
           value: 'kenchen@berkeley.edu',
-          hasError: !!this.state.errors.email,
-          error: this.state.errors.email,
         },
         password: {
           secureTextEntry: true,
           password: true,
           value: 'password',
-          hasError: !!this.state.errors.password,
-          error: this.state.errors.password,
         },
       },
     };
@@ -67,7 +64,7 @@ export default class LoginScreen extends React.Component {
    * Clear the error state at the beginning of each validation (login)
    */
   clearFormErrors() {
-    this.setState({ errors: {} });
+    this.setState({ errors: [] });
   }
 
   onFormChange(values) {
@@ -90,13 +87,11 @@ export default class LoginScreen extends React.Component {
         values.email,
         values.password,
       ).then((response) => {
-        console.log(response);
         onSuccess && onSuccess(response);
         this.navigateToApp(response);
       }).catch((error) => {
-        console.log(error);
-        onFailure && onFailure(error);
-        this.setState({ errors: error });
+        onFailure && onFailure(error.error);
+        this.setState({ errors: error.error });
       });
     } else {
       onFailure && onFailure();

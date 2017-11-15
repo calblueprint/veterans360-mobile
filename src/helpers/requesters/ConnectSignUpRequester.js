@@ -27,6 +27,17 @@ class ConnectSignUpRequester {
       return Promise.reject(error);
     }
   }
+
+  static async connectStatus(id) {
+    const endpoint = APIRoutes.veteranConnectStatus(id);
+    try {
+      let response_json = await BaseRequester.get(endpoint);
+      console.log(response_json)
+      return Promise.resolve(response_json);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default ConnectSignUpRequester;

@@ -16,6 +16,9 @@ class APIRoutes {
   static veteransConnectSignUpPath(id) {
     return APIRoutes.create(`/veterans/${id}/connect_sign_up`);
   }
+  static veteranConnectStatus(id) {
+    return APIRoutes.create(`/veterans/${id}`);
+  }
 }
 
 export { APIRoutes };
