@@ -38,14 +38,6 @@ export default class ConnectSignUp extends React.Component {
     */
   getFormType() {
     return t.struct({
-      militaryStatus: t.enums({
-        1: 'Active Duty',
-        2: 'Veteran',
-        3: 'Combat Veteran',
-        4: 'Post 9/11',
-        5: 'Family Member',
-        6: 'Caregiver',
-      }),
       militaryBranch: t.enums({
         1: 'Army',
         2: 'Navy',
@@ -88,12 +80,9 @@ export default class ConnectSignUp extends React.Component {
         this.props.navigation.state.params.id,
         values,
       ).then((response) => {
-        console.log(response);
-        console.log("yay");
         onSuccess && onSuccess(response);
         this.navigateToConnect(response);
       }).catch((error) => {
-        console.log(error);
         onFailure && onFailure(error);
         this.setState({ errors: error });
       });
@@ -122,7 +111,7 @@ export default class ConnectSignUp extends React.Component {
                    <Button
                     style={margins.marginTop.md}
                     onPress={this.signUp}
-                    text="SUBMIT"
+                    text="SIGN UP"
                   />
                 </ScrollView>
               </View>

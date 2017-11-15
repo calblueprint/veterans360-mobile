@@ -9,7 +9,6 @@ class ConnectSignUpRequester {
   static async signUp(id, values) {
     const params = {
       veteran: {
-        military_status: values.militaryStatus,
         military_branch: values.militaryBranch,
         unit: values.unit,
         notes: values.notes,
@@ -19,7 +18,6 @@ class ConnectSignUpRequester {
         on_connect: true,
       },
     };
-    console.log(params);
     const endpoint = APIRoutes.veteransConnectSignUpPath(id);
 
     try {
