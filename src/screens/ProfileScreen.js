@@ -8,6 +8,9 @@ import Icon from '@expo/vector-icons/FontAwesome';
 
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { colors } from '../styles/colors';
+import { margins } from '../styles/layout';
+import { fontStyles } from '../styles/fonts';
+import Button from '../components/Button';
 
 export default class ProfileScreen extends React.Component {
 
@@ -19,8 +22,35 @@ export default class ProfileScreen extends React.Component {
     return this.props.params || this.props.navigation.state.params;
   }
 
+  connect(event, onSuccess, onFailure) {
+
+  }
+
+  renderDetailRow(label, value) {
+    return (
+      <View style={styles.detailRowContainer}>
+        <View style={styles.detailLabelContainer}>
+          <Text style={fontStyles.labelText}>{label}</Text>
+        </View>
+        <View style={styles.detailValueContainer}>
+          <Text style={fontStyles.bodyText}>{value}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderDetails() {
+    const params = this.getParams();
+    return (
+      <View style={styles.detailsContainer}>
+        {this.renderDetailRow("EMAIL", params.email)}
+        {this.renderDetailRow("BRANCH OF SERVICE", params.roles.join(", "))}
+      </View>
+    );
+  }
+
   render() {
-    params = this.getParams();
+    const params = this.getParams();
     console.log(params);
     return (
       <View style={styles.baseContainer}>
@@ -34,15 +64,18 @@ export default class ProfileScreen extends React.Component {
         </Text>
         </View>
         <View style={styles.bodyContainer}>
-          <View style={styles.detailsContainer}>
-          </View>
+          {this.renderDetails()}
           <View style={styles.bioContainer}>
           </View>
+          <Button
+            style={margins.marginTop.md}
+            onPress={this.login}
+            text="CONNECT"
+          />
         </View>
       </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -59,11 +92,12 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: colors.green,
+    zIndex: 100,
   },
 
   /* Container for the body content */
   bodyContainer: {
-    flex: 3,
+    flex: 2.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -71,8 +105,32 @@ const styles = StyleSheet.create({
   /* Container for the details of this veteran/PO */
   detailsContainer: {
     margin: 20,
+    padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  /* Container for one row of details LABEL -> value */
+  detailRowContainer: {
+    margin: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  /* Container for label in a row */
+  detailLabelContainer: {
+    flex: 1,
+    marginRight: 30,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+
+  /* Container for value field in a row */
+  detailValueContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
 
   /* Container for this veteran/PO's bio */

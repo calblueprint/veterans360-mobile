@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, StyleSheet, TextInput, View, ScrollView, TouchableHighlight } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Font } from 'expo';
-import Icon from '@expo/vector-icons/FontAwesome';
-import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
+import { colors } from './colors';
 
 async function loadFonts() {
       return await Font.loadAsync({
@@ -22,4 +20,33 @@ async function loadFonts() {
       });
 }
 
-export { loadFonts };
+const fontStyles = StyleSheet.create({
+  main_header: {
+    fontSize: 32,
+    fontFamily: 'source-sans-pro-bold',
+    color: colors.charcoal,
+  },
+  main_header_white: {
+    fontSize: 32,
+    fontFamily: 'source-sans-pro-bold',
+    color: colors.white,
+  },
+  labelText: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-bold',
+    letterSpacing: 1,
+    color: colors.light_charcoal,
+  },
+  emphasisText: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-semibold-italic',
+    color: colors.gray,
+  },
+  bodyText: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-regular',
+    color: colors.charcoal,
+  },
+});
+
+export { loadFonts, fontStyles };
