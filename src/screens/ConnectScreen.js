@@ -105,7 +105,6 @@ export default class ConnectScreen extends React.Component {
   }
 
   getVeteransTemp() {
-    console.log('wtf');
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
       console.log(response);

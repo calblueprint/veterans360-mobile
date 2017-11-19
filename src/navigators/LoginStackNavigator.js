@@ -17,7 +17,7 @@ const LoginStackNavigator = StackNavigator({
   },
 }, {
   initialRouteName: 'Login',
-  headerMode: 'none', 
+  headerMode: 'none',
 });
 
 export default LoginStackNavigator;
