@@ -13,6 +13,11 @@ class APIRoutes {
   static veteransSignUpPath() {
     return APIRoutes.create('/veterans');
   }
+  
+  // Veterans
+  static veteransPath() {
+    return APIRoutes.create('/veterans');
+  }
   static veteransConnectSignUpPath(id) {
     return APIRoutes.create(`/veterans/${id}/connect_sign_up`);
   }

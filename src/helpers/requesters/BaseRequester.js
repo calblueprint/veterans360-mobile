@@ -67,6 +67,9 @@ class BaseRequester {
     }).then((json) => {
       return json;
     }).catch((error) => {
+      if (!error.json) {
+        throw error;
+      }
       return error.json().then((json) => {
         throw json;
       });

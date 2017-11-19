@@ -13,6 +13,9 @@ import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import ConnectSignUpRequester from '../helpers/requesters/ConnectSignUpRequester';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 import InfoModal from '../components/InfoModal';
 import ConnectPin from '../components/ConnectPin';
 import ConnectBox from '../components/ConnectBox';
@@ -99,6 +102,16 @@ export default class ConnectScreen extends React.Component {
         lng: -122.4354,
       },
     ]
+  }
+
+  getVeteransTemp() {
+    console.log('wtf');
+    const route = APIRoutes.veteransPath();
+    BaseRequester.get(route).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   /**
