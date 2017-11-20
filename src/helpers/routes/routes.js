@@ -30,6 +30,9 @@ class APIRoutes {
   static veteranFriendshipsPath(veteran_id) {
     return APIRoutes.create(`/veterans/${veteran_id}/friendships`);
   }
+  static veteranFriendRequestsPath(id) {
+    return APIRoutes.create(`/veterans/${id}/requests`);
+  }
 
   // Partnering Orgs
   static parterOrgsPath() {

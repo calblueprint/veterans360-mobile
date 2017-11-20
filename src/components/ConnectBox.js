@@ -126,6 +126,7 @@ export default class ConnectBox extends React.Component {
 
   render() {
     const connection = this.props.connection;
+    const buttonStyle = connection.is_friend ? styles.friendButton : styles.profileButton;
     return (
       <Animated.View
         style={[styles.baseContainer,
@@ -141,9 +142,9 @@ export default class ConnectBox extends React.Component {
               text="VIEW"
             />
             <Button
-              style={[styles.profileButton, margins.marginTop.md]}
+              style={[buttonStyle, margins.marginTop.md]}
               textStyle={styles.profileButtonText}
-              text="CONNECT"
+              text={connection.is_friend ? 'FRIEND' : 'CONNECT'}
               disabled={connection.is_friend || connection.sent_friend_request}
               onPress={this.connectWithVeteran}
             />
@@ -227,6 +228,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingLeft: 12,
     paddingRight: 12,
+  },
+  friendButton: {
+    height: 25,
+    borderRadius: 4,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: colors.blue,
   },
   profileButtonText: {
     fontSize: 12,

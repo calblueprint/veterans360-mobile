@@ -63,6 +63,9 @@ export default class ConnectScreen extends React.Component {
     this.props.navigation.navigate('ConnectSignUp', this.props.navigation.state.params);
   }
 
+  /**
+   * Gets all veterans from the server and sets state once retrieved.
+   */
   getVeterans() {
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
@@ -86,6 +89,16 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+  getVeteranFriendRequests() {
+    const id = this.props.navigation.state.params.id;
+    const route = APIRoutes.veteranFriendRequestsPath(id);
+    BaseRequester.get(route).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
   openHelpModal() {
     this.setState({ isHelpModalOpen: true });
   }
@@ -94,10 +107,9 @@ export default class ConnectScreen extends React.Component {
     this.setState({ isHelpModalOpen: false });
   }
 
-  openConnectBox(connection, i) {
+  openConnectBox(connection) {
     this.setState({
       activeConnection: connection,
-      activeConnectionIndex: i,
     });
   }
 
@@ -128,7 +140,7 @@ export default class ConnectScreen extends React.Component {
    * @return {() => null}: a function that animates the mapview and also
    *                       opens the ConnectBox for this veteran/org
    */
-  onMarkerPress(connection, i) {
+  onMarkerPress(connection) {
     const coordinate = {
       latitude: connection.lat,
       longitude: connection.lng,
@@ -141,7 +153,7 @@ export default class ConnectScreen extends React.Component {
       this.mapView && this.mapView.animateToCoordinate(coordinate, mapAnimateDuration);
 
       // Next also need to show Connect Box for this connection
-      this.openConnectBox(connection, i);
+      this.openConnectBox(connection);
     };
   }
 
@@ -178,7 +190,7 @@ export default class ConnectScreen extends React.Component {
    * rocket function to bind the onPress method
    */
   renderVeteranMarkers() {
-    return this.state.veterans.map((veteran, i) => {
+    return this.state.veterans.map((veteran) => {
       const coordinate = {
         latitude: parseFloat(veteran.lat),
         longitude: parseFloat(veteran.lng),
@@ -186,7 +198,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={this.onMarkerPress(veteran, i)}
+          onPress={this.onMarkerPress(veteran)}
           key={`veteran-${veteran.id}`}
         >
           <ConnectPin pinType="veteran" />
