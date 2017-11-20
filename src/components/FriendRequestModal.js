@@ -10,6 +10,8 @@
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, Image, Animated, Easing } from 'react-native';
+
+import { margins } from '../styles/layout';
 import { colors } from '../styles/colors';
 import Animations from '../styles/animations';
 import Button from '../components/Button';
@@ -28,6 +30,8 @@ export default class FriendRequestModal extends React.Component {
 
   componentDidMount() {
     Animations.fade(this.state.helpAnimationValue, toValue = 1).start();
+    console.log('VETERAN');
+    console.log(this.props.veteran);
   }
 
   closeModal() {
@@ -49,6 +53,7 @@ export default class FriendRequestModal extends React.Component {
   }
 
   render() {
+    const veteran = this.props.veteran;
     return (
       <Animated.View
         style={[styles.baseContainer, this.getHelpAnimationStyle()]}
@@ -66,22 +71,23 @@ export default class FriendRequestModal extends React.Component {
             source={require('../../assets/images/photogenic.jpg')}
             style={styles.image}
           />
-          <Text style={styles.name}>{this.props.veteran.name}</Text>
+        <Text style={styles.name}>
+          {`${veteran.first_name} ${veteran.last_name}`}
+        </Text>
         </View>
         <View style={styles.buttonsContainer}>
           <Button
-            style={[buttonStyle, margins.marginTop.md]}
-            textStyle={styles.acceptButton}
+            style={[styles.acceptButton, margins.marginTop.md]}
+            textStyle={styles.buttonText}
             text="ACCEPT"
           />
           <Button
-            style={[buttonStyle, margins.marginTop.md]}
-            textStyle={styles.rejectButton}
+            style={[styles.rejectButton, margins.marginTop.md]}
+            textStyle={styles.buttonText}
             text="REJECT"
             disabled={true}
           />
         </View>
-        <Text style={styles.bodyText}>{this.props.text}</Text>
       </Animated.View>
     );
   }
@@ -98,6 +104,8 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
   },
   baseContainer: {
+    marginTop: 5,
+    marginBottom: 5,
     padding: 20,
     borderRadius: 4,
     backgroundColor: colors.light_snow,
@@ -133,7 +141,8 @@ const styles = StyleSheet.create({
   },
   name: {
     marginLeft: 20,
-    fontSize: 16,
+    color: colors.charcoal,
+    fontSize: 18,
     fontFamily: 'source-sans-pro-bold',
   },
   bodyText: {
@@ -143,20 +152,23 @@ const styles = StyleSheet.create({
     fontFamily: 'source-sans-pro-regular'
   },
   acceptButton: {
-    height: 25,
-    borderRadius: 12.5,
+    height: 30,
+    borderRadius: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    fontSize: 14,
     backgroundColor: colors.green,
   },
   rejectButton: {
-    height: 25,
-    borderRadius: 12.5,
+    height: 30,
+    borderRadius: 15,
+    marginLeft: 40,
     paddingLeft: 15,
     paddingRight: 15,
-    fontSize: 14,
     backgroundColor: colors.red,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontFamily: 'source-sans-pro-bold',
   },
   closeButton: {
     position: 'absolute',

@@ -19,6 +19,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import InfoModal from '../components/InfoModal';
+import FriendRequestModal from '../components/FriendRequestModal';
 import ConnectPin from '../components/ConnectPin';
 import ConnectBox from '../components/ConnectBox';
 
@@ -33,8 +34,12 @@ export default class ConnectScreen extends React.Component {
       veterans: [],
       parterOrgs: [],
       activeConnection: null,  // Indicates if a veteran/org has been focused
+<<<<<<< 8e3c01dff4932bf78c0d3e41f4fa7605928049ab
       stillLoading: true,
       onConnect: false,
+=======
+      friendRequests: [],
+>>>>>>> Adds friend request modal YUS.
     }
 
     this.onRegionChange = this.onRegionChange.bind(this);
@@ -94,6 +99,7 @@ export default class ConnectScreen extends React.Component {
     const route = APIRoutes.veteranFriendRequestsPath(id);
     BaseRequester.get(route).then((response) => {
       console.log(response);
+      this.setState({ friendRequests: response });
     }).catch((error) => {
       console.error(error);
     });
@@ -105,6 +111,17 @@ export default class ConnectScreen extends React.Component {
 
   closeHelpModal() {
     this.setState({ isHelpModalOpen: false });
+  }
+
+  closeFriendRequestModal(i) {
+    return () => {
+      const newFriendRequests = update(this.state.friendRequests, {
+        $apply: (reqs) => {return reqs.splice(i, 1)},
+      });
+      console.log("NEW FIRENDS");
+      console.log(newFriendRequests);
+      this.setState({ friendRequests: newFriendRequests });
+    };
   }
 
   openConnectBox(connection) {
@@ -167,6 +184,15 @@ export default class ConnectScreen extends React.Component {
     this.setState({ activeConnection: this.state.activeConnection });
   }
 
+  renderNotifications() {
+    return (
+      <View style={styles.notificationBox}>
+        {this.renderHelpModal()}
+        {this.renderFriendRequests()}
+      </View>
+    )
+  }
+
   /**
    * Renders a help modal with some information when the user first
    * sees the page.
@@ -182,6 +208,18 @@ export default class ConnectScreen extends React.Component {
         />
       );
     }
+  }
+
+  renderFriendRequests() {
+    return this.state.friendRequests.map((veteran, i) => {
+      return (
+        <FriendRequestModal
+          veteran={veteran}
+          onClose={this.closeFriendRequestModal(i)}
+          key={`friend_request_${i}`}
+        />
+      );
+    });
   }
 
   /**
@@ -242,6 +280,21 @@ export default class ConnectScreen extends React.Component {
   }
 
   render() {
+    return (
+      <View style={styles.baseContainer}>
+        {this.renderNotifications()}
+        <MapView
+          ref={(ref) => this.mapView = ref}
+          style={styles.baseMapContainer}
+          initialRegion={this.getInitialRegion()}
+        >
+          {this.renderVeteranMarkers()}
+          {this.renderParterOrgMarkers()}
+        </MapView>
+        {this.renderConnectBox()}
+      </View>
+    );
+  }
 
     if (this.state.stillLoading) {
       return <View/>
@@ -346,6 +399,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+<<<<<<< 8e3c01dff4932bf78c0d3e41f4fa7605928049ab
   backgroundImg: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
@@ -428,4 +482,15 @@ const styles = StyleSheet.create({
     marginLeft:60,
     backgroundColor:'#18B671',
   }
+=======
+  notificationBox: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    margin: 10,
+    marginTop: 30,
+    zIndex: 100,
+  },
+>>>>>>> Adds friend request modal YUS.
 });
