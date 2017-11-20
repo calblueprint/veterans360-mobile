@@ -9,9 +9,11 @@
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, TouchableHighlight, Modal, Image, Dimensions } from 'react-native';
+
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import ConnectSignUpRequester from '../helpers/requesters/ConnectSignUpRequester';
+import update from 'immutability-helper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 import { APIRoutes } from '../helpers/routes/routes';
@@ -36,6 +38,7 @@ export default class ConnectScreen extends React.Component {
     }
 
     this.onRegionChange = this.onRegionChange.bind(this);
+    this.onConnectRequest = this.onConnectRequest.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
     this.closeConnectBox = this.closeConnectBox.bind(this);
   }
@@ -63,7 +66,7 @@ export default class ConnectScreen extends React.Component {
   getVeterans() {
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
-      console.log(response);
+      console.log(response[0]);
       this.setState({ veterans: response });
     }).catch((error) => {
       console.log(error);
@@ -76,11 +79,11 @@ export default class ConnectScreen extends React.Component {
   getParterOrgs() {
     const route = APIRoutes.parterOrgsPath();
     BaseRequester.get(route).then((response) => {
-      console.log(response);
+      console.log(response[0]);
       this.setState({ parterOrgs: response });
     }).catch((error) => {
       console.log(error);
-    })
+    });
   }
 
   openHelpModal() {
@@ -91,8 +94,11 @@ export default class ConnectScreen extends React.Component {
     this.setState({ isHelpModalOpen: false });
   }
 
-  openConnectBox(connection) {
-    this.setState({ activeConnection: connection });
+  openConnectBox(connection, i) {
+    this.setState({
+      activeConnection: connection,
+      activeConnectionIndex: i,
+    });
   }
 
   closeConnectBox() {
@@ -122,7 +128,7 @@ export default class ConnectScreen extends React.Component {
    * @return {() => null}: a function that animates the mapview and also
    *                       opens the ConnectBox for this veteran/org
    */
-  onMarkerPress(connection) {
+  onMarkerPress(connection, i) {
     const coordinate = {
       latitude: connection.lat,
       longitude: connection.lng,
@@ -135,8 +141,18 @@ export default class ConnectScreen extends React.Component {
       this.mapView && this.mapView.animateToCoordinate(coordinate, mapAnimateDuration);
 
       // Next also need to show Connect Box for this connection
-      this.openConnectBox(connection);
+      this.openConnectBox(connection, i);
     };
+  }
+
+  /**
+   * Called when the ConnectBox "CONNECT" button is pressed by
+   * this user, indicating a friend request sent to the other
+   * user.
+   */
+  onConnectRequest() {
+    this.state.activeConnection.sent_friend_request = true;
+    this.setState({ activeConnection: this.state.activeConnection });
   }
 
   /**
@@ -162,7 +178,7 @@ export default class ConnectScreen extends React.Component {
    * rocket function to bind the onPress method
    */
   renderVeteranMarkers() {
-    return this.state.veterans.map((veteran) => {
+    return this.state.veterans.map((veteran, i) => {
       const coordinate = {
         latitude: parseFloat(veteran.lat),
         longitude: parseFloat(veteran.lng),
@@ -170,7 +186,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={this.onMarkerPress(veteran)}
+          onPress={this.onMarkerPress(veteran, i)}
           key={`veteran-${veteran.id}`}
         >
           <ConnectPin pinType="veteran" />
@@ -206,7 +222,10 @@ export default class ConnectScreen extends React.Component {
     return this.state.activeConnection ? (
       <ConnectBox
         connection={this.state.activeConnection}
-        onClose={this.closeConnectBox}/>
+        onClose={this.closeConnectBox}
+        onConnect={this.onConnectRequest}
+        currentVeteran={this.props.navigation.state.params}
+      />
     ) : null;
   }
 

@@ -26,6 +26,10 @@ class APIRoutes {
   }
   static veteransMilitaryBranch() {
     return APIRoutes.create('/veterans/get_military_branch');
+  }
+  static veteranFriendshipsPath(veteran_id) {
+    return APIRoutes.create(`/veterans/${veteran_id}/friendships`);
+  }
 
   // Partnering Orgs
   static parterOrgsPath() {
