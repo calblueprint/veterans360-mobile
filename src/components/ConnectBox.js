@@ -44,6 +44,11 @@ export default class ConnectBox extends React.Component {
     });
   }
 
+  getConnectionName() {
+    const connection = this.props.connection;
+    return connection.name || `${connection.first_name} ${connection.last_name}`;
+  }
+
   getConnectionTitle() {
     return this.props.connection.roles ?
       this.props.connection.roles.join(', ') :
@@ -116,7 +121,7 @@ export default class ConnectBox extends React.Component {
         </View>
         <View style={styles.rightContainer}>
           <View style={styles.nameContainer}>
-            <Text style={styles.name}>{this.props.connection.name}</Text>
+            <Text style={styles.name}>{this.getConnectionName()}</Text>
             <Text style={styles.title}>{this.getConnectionTitle()}</Text>
           </View>
           <View style={styles.bioContainer}>

@@ -28,8 +28,8 @@ export default class ConnectScreen extends React.Component {
 
     this.state = {
       isHelpModalOpen: true,
-      veterans: this.getVeterans(),
-      parterOrgs: this.getParterOrgs(),
+      veterans: [],
+      parterOrgs: [],
       activeConnection: null,  // Indicates if a veteran/org has been focused
       stillLoading: true,
       onConnect: false,
@@ -60,72 +60,27 @@ export default class ConnectScreen extends React.Component {
     this.props.navigation.navigate('ConnectSignUp', this.props.navigation.state.params);
   }
 
-  /**
-   * Placeholder until backend data is collected.
-   */
   getVeterans() {
-    return [
-      {
-        id: 15,
-        name: 'Ken Chen',
-        roles: ['veteran', 'caretaker'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.78825,
-        lng: -122.4324,
-      },
-      {
-        id: 16,
-        name: 'James Chen',
-        roles: ['family_member'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.77825,
-        lng: -122.4123,
-      },
-      {
-        id: 17,
-        name: 'Sarah Chen',
-        roles: ['combat_veteran', 'post_911'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.78240,
-        lng: -122.4344,
-      },
-      {
-        id: 18,
-        name: 'Alice Chen',
-        roles: ['combat_veteran', 'caretaker'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.78434,
-        lng: -122.4354,
-      },
-    ]
-  }
-
-  getVeteransTemp() {
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
       console.log(response);
+      this.setState({ veterans: response });
     }).catch((error) => {
       console.log(error);
     });
   }
 
   /**
-   * Placeholder until backend data is collected.
+   * Gets all POs from the server and sets state once retrieved.
    */
   getParterOrgs() {
-    return [
-      {
-        id: 15,
-        name: 'Veterans 360',
-        email: 'kenchen@berkeley.edu',
-        lat: 37.78354,
-        lng: -122.4224,
-      },
-    ]
+    const route = APIRoutes.parterOrgsPath();
+    BaseRequester.get(route).then((response) => {
+      console.log(response);
+      this.setState({ parterOrgs: response });
+    }).catch((error) => {
+      console.log(error);
+    })
   }
 
   openHelpModal() {
@@ -209,8 +164,8 @@ export default class ConnectScreen extends React.Component {
   renderVeteranMarkers() {
     return this.state.veterans.map((veteran) => {
       const coordinate = {
-        latitude: veteran.lat,
-        longitude: veteran.lng,
+        latitude: parseFloat(veteran.lat),
+        longitude: parseFloat(veteran.lng),
       };
       return (
         <MapView.Marker
@@ -232,8 +187,8 @@ export default class ConnectScreen extends React.Component {
   renderParterOrgMarkers() {
     return this.state.parterOrgs.map((org) => {
       const coordinate = {
-        latitude: org.lat,
-        longitude: org.lng,
+        latitude: parseFloat(org.lat),
+        longitude: parseFloat(org.lng),
       };
       return (
         <MapView.Marker

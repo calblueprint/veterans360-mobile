@@ -13,7 +13,7 @@ class APIRoutes {
   static veteransSignUpPath() {
     return APIRoutes.create('/veterans');
   }
-  
+
   // Veterans
   static veteransPath() {
     return APIRoutes.create('/veterans');
@@ -26,6 +26,10 @@ class APIRoutes {
   }
   static veteransMilitaryBranch() {
     return APIRoutes.create('/veterans/get_military_branch');
+
+  // Partnering Orgs
+  static parterOrgsPath() {
+    return APIRoutes.create('/partnering_organizations');
   }
 }
 
