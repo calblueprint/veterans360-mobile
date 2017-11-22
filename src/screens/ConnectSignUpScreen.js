@@ -7,6 +7,8 @@ import { AppRegistry, Text, StyleSheet, TextInput, View, ScrollView, TouchableHi
 import { Form, t } from '../components/Form';
 import Button from '../components/Button';
 import ConnectSignUpRequester from '../helpers/requesters/ConnectSignUpRequester';
+import BaseRequester from '../helpers/requesters/BaseRequester';
+import { APIRoutes } from '../helpers/routes/routes';
 
 export default class ConnectSignUp extends React.Component {
   constructor(props) {
@@ -15,11 +17,43 @@ export default class ConnectSignUp extends React.Component {
     this.state = {
       formValues: this.getInitialFormValues(),
       errors: {},
+      stillLoading: true,
+      militaryBranches : null
     };
 
     this.onFormChange = this.onFormChange.bind(this);
     this.signUp = this.signUp.bind(this);
     this.navigateToConnect = this.navigateToConnect.bind(this);
+  }
+
+  async componentDidMount() {
+    try {
+      const endpoint = APIRoutes.veteransMilitaryBranch();
+      let response_json = await BaseRequester.get(endpoint);
+      let militaryBranchDict = {};
+      for(var key in response_json) {
+        if(response_json.hasOwnProperty(key)) {
+          militaryBranchDict[response_json[key]] = this.formatDict(key);
+        }
+      }
+      this.setState({ stillLoading: false, militaryBranches: militaryBranchDict });
+      return Promise.resolve(response_json);
+    } catch (error) {
+      console.log(error);
+      return Promise.reject(error);
+    }
+  }
+
+  formatDict(str) {
+    newStr = "";
+    for(var i = 0; i < str.length; i++) {
+      if(str[i]=='_') {
+        newStr += " ";
+      } else {
+        newStr += str[i];
+      }
+    }
+    return newStr;
   }
 
   /**
@@ -38,14 +72,7 @@ export default class ConnectSignUp extends React.Component {
     */
   getFormType() {
     return t.struct({
-      militaryBranch: t.enums({
-        1: 'Army',
-        2: 'Navy',
-        3: 'Marines',
-        4: 'Air Force',
-        5: 'Coast Guard',
-        6: 'First Responder',
-      }),
+      militaryBranch: t.enums(this.state.militaryBranches),
       unit: t.String,
       notes: t.String,
       acceptMessages: t.Boolean,
@@ -92,34 +119,40 @@ export default class ConnectSignUp extends React.Component {
   }
 
   render() {
-  	return (
-  		<View style={ styles.backgroundContainer }>
-        <View style={{flex: 1,}}>
-          <View style={ styles.backgroundDisplay }>
-          </View>
-          <View style={ styles.contentContainer }>
-            <Text style={ styles.titleText }>Sign Up for Connect</Text>
-            <View style={ styles.formContainer }>
-              <View style={ styles.formWrapper }>
-                <ScrollView>
-                  <Form
-                    refCallback={(ref) => this.form = ref}
-                    type={this.getFormType()}
-                    value={this.state.formValues}
-                    onChange={this.onFormChange}
-                  />
-                   <Button
-                    style={margins.marginTop.md}
-                    onPress={this.signUp}
-                    text="SIGN UP"
-                  />
-                </ScrollView>
+    if(this.state.stillLoading) {
+      return (
+        <View/>
+      );
+    } else {
+    	return (
+    		<View style={ styles.backgroundContainer }>
+          <View style={{flex: 1,}}>
+            <View style={ styles.backgroundDisplay }>
+            </View>
+            <View style={ styles.contentContainer }>
+              <Text style={ styles.titleText }>Sign Up for Connect</Text>
+              <View style={ styles.formContainer }>
+                <View style={ styles.formWrapper }>
+                  <ScrollView>
+                    <Form
+                      refCallback={(ref) => this.form = ref}
+                      type={this.getFormType()}
+                      value={this.state.formValues}
+                      onChange={this.onFormChange}
+                    />
+                     <Button
+                      style={margins.marginTop.md}
+                      onPress={this.signUp}
+                      text="SIGN UP"
+                    />
+                  </ScrollView>
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
-  	)
+    	)
+    }
   }
 }
 

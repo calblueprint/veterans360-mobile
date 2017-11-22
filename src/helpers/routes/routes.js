@@ -19,6 +19,9 @@ class APIRoutes {
   static veteransConnectStatus(id) {
     return APIRoutes.create(`/veterans/${id}`);
   }
+  static veteransMilitaryBranch() {
+    return APIRoutes.create('/veterans/get_military_branch');
+  }
 }
 
 export { APIRoutes };
