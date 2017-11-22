@@ -74,8 +74,6 @@ export default class ConnectBox extends React.Component {
 
   connectWithVeteran(event, onSuccess, onFailure) {
     event.preventDefault();
-    console.log("HEY");
-    console.log(this.props.currentVeteran);
     const id = this.props.currentVeteran.id;
     const route = APIRoutes.veteranFriendshipsPath(id);
     const params = {

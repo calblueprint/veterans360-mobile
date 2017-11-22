@@ -215,6 +215,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <FriendRequestModal
           veteran={veteran}
+          currentVeteran={this.props.navigation.state.params}
           onClose={this.closeFriendRequestModal(i)}
           key={`friend_request_${i}`}
         />

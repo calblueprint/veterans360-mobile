@@ -13,6 +13,8 @@ import { StyleSheet, Text, View, Image, Animated, Easing } from 'react-native';
 
 import { margins } from '../styles/layout';
 import { colors } from '../styles/colors';
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 import Animations from '../styles/animations';
 import Button from '../components/Button';
 
@@ -26,12 +28,12 @@ export default class FriendRequestModal extends React.Component {
     };
 
     this.closeModal = this.closeModal.bind(this);
+    this.acceptFriendRequest = this.acceptFriendRequest.bind(this);
+    this.rejectFriendRequest = this.rejectFriendRequest.bind(this);
   }
 
   componentDidMount() {
     Animations.fade(this.state.helpAnimationValue, toValue = 1).start();
-    console.log('VETERAN');
-    console.log(this.props.veteran);
   }
 
   closeModal() {
@@ -50,6 +52,40 @@ export default class FriendRequestModal extends React.Component {
         }),
       }],
     };
+  }
+
+  /**
+   * Accepts this veteran's friend request. Creates the friendship
+   * model association between currentVeteran and veteran.
+   */
+  acceptFriendRequest(event, onSuccess, onError) {
+    const id = this.props.currentVeteran.id;
+    const route = APIRoutes.veteranFriendshipsPath(id);
+    const params = {
+      friendship: {
+        veteran_id: id,
+        friend_id: this.props.veteran.id,
+      },
+    };
+    BaseRequester.post(route, params).then((response) => {
+      console.log(response);
+      onSuccess && onSuccess(response);
+      this.closeModal();
+    }).catch((error) => {
+      console.error(error);
+      onError && onError(error);
+    });
+  }
+
+  /**
+   * Rejects this veteran's friend request.
+   *
+   * TODO (Ken): Currently a placeholder and will actually do the
+   * rejection by removing the inverse friendships instance.
+   */
+  rejectFriendRequest(event, onSuccess, onError) {
+    this.closeModal();
+    onSuccess && onSuccess();
   }
 
   render() {
@@ -80,12 +116,13 @@ export default class FriendRequestModal extends React.Component {
             style={[styles.acceptButton, margins.marginTop.md]}
             textStyle={styles.buttonText}
             text="ACCEPT"
+            onPress={this.acceptFriendRequest}
           />
           <Button
             style={[styles.rejectButton, margins.marginTop.md]}
             textStyle={styles.buttonText}
             text="REJECT"
-            disabled={true}
+            onPress={this.rejectFriendRequest}
           />
         </View>
       </Animated.View>
