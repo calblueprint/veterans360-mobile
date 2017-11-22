@@ -8,7 +8,7 @@ class UpvoteRequester {
       upvote: {
         veteran_id: veteranId,
         resource_id: resourceId
-      };
+      }
     };
     try {
       let response_json = await BaseRequester.post(endpoint, params);
@@ -16,6 +16,9 @@ class UpvoteRequester {
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+  static async getUpvoteId(resourceId, veteranId) {
+    const endpoint = APIRoutes.getUpvoteId(resourceId, veteranId);
   }
 }
 

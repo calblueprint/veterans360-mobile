@@ -5,6 +5,7 @@ import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import ResourceRequester from '../helpers/requesters/ResourceRequester';
+import UpvoteRequester from '../helpers/requesters/UpvoteRequester';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {
@@ -50,6 +51,10 @@ export default class VaultScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.retrieveResources();
+  }
+
+  retrieveResources() {
     ResourceRequester.resources().then((response) => {
       data = response.map(function(item) {
         return {
@@ -141,13 +146,23 @@ export default class VaultScreen extends React.Component {
   /**
    * Upon call, returns the filter category elements based on the category array in the state.
    */
-  upvote(resourceId) {
-    const veteranId = this.state.navigation.params.id;
-    UpvoteRequester.createUpvote(resourceId, veteranId).then((response) => {
-      console.log(response);
-    }).catch((error) => {
-      console.log(error);
-    });
+  upvote(resourceId, hasUpvoted) {
+    const veteranId = this.props.navigation.state.params.id;
+    if(hasUpvoted) {
+      UpvoteRequester.getUpvoteId(resourceId, veteranId).then((response) => {
+        console.log(response);
+        this.retrieveResources();
+      }).catch((error) => {
+        console.log(error);
+      })
+    } else {
+      UpvoteRequester.createUpvote(resourceId, veteranId).then((response) => {
+        console.log(response);
+        this.retrieveResources();
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
   }
 
   /**
@@ -184,7 +199,7 @@ export default class VaultScreen extends React.Component {
               <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
             </View>
             <View style={ styles.upvote }>
-              <TouchableHighlight onPress={() => { this.upvote(item.id); }}>
+              <TouchableHighlight onPress={() => { this.upvote(item.id, item.veteran_has_upvoted); }}>
                 <View style={{ flexDirection: 'row',}}>
                   <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 5,}}>
                     {item.veteran_has_upvoted ? (
@@ -193,7 +208,11 @@ export default class VaultScreen extends React.Component {
                       <Icon name="thumbs-up" size={15} color={'#949494'} />
                     )}
                   </View>
-                  <Text style={ styles.upvoteText }>{ item.upvotes }</Text>
+                  {item.veteran_has_upvoted ? (
+                    <Text style={[styles.upvoteText, {color:'#18B671'}]}>{ item.upvotes }</Text>
+                  ) : (
+                    <Text style={[styles.upvoteText, {color:'#949494'}]}>{ item.upvotes }</Text>
+                  )}
                 </View>
               </TouchableHighlight>
             </View>
@@ -369,7 +388,6 @@ const styles = StyleSheet.create({
   upvoteText: {
     fontFamily: 'source-sans-pro-bold',
     fontSize: 12,
-    color:'#949494',
   },
   upvote: {
     justifyContent:'center',

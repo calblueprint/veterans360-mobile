@@ -17,7 +17,10 @@ class APIRoutes {
     return APIRoutes.create('/resources');
   }
   static newUpvote() {
-    return APIRoutes.create('/upvotes')
+    return APIRoutes.create('/upvotes');
+  }
+  static getUpvoteId(resourceId, veteranId) {
+    return APIRoutes.create(`/upvotes/${resourceId}/${veteranId}`);
   }
 }
 
