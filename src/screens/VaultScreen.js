@@ -38,6 +38,7 @@ export default class VaultScreen extends React.Component {
           upvotes: 0,
           category: 2,
           id: 1,
+          veteran_has_upvoted: boolean
         },
         */
       ],
@@ -50,7 +51,6 @@ export default class VaultScreen extends React.Component {
 
   componentDidMount() {
     ResourceRequester.resources().then((response) => {
-      console.log(response);
       data = response.map(function(item) {
         return {
           id: item.id,
@@ -60,7 +60,8 @@ export default class VaultScreen extends React.Component {
           partner_org: item.owner_id,
           description: item.description,
           category: this.getCategory(parseInt(item.category)),
-          upvotes: 0
+          upvotes: item.num_upvotes,
+          veteran_has_upvoted: item.veteran_has_upvoted,
         };
       }, this);
       this.setState({ resources: data });
@@ -140,14 +141,13 @@ export default class VaultScreen extends React.Component {
   /**
    * Upon call, returns the filter category elements based on the category array in the state.
    */
-  upvote(itemId) {
-    var resourcesArr = this.state.resources.slice()
-    for(var i = 0; i < resourcesArr.length; i++) {
-      if(resourcesArr[i].id == itemId) {
-        resourcesArr[i].upvotes = resourcesArr[i].upvotes+1;
-      }
-    };
-    this.setState({ resources:resourcesArr });
+  upvote(resourceId) {
+    const veteranId = this.state.navigation.params.id;
+    UpvoteRequester.createUpvote(resourceId, veteranId).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   /**
@@ -187,7 +187,11 @@ export default class VaultScreen extends React.Component {
               <TouchableHighlight onPress={() => { this.upvote(item.id); }}>
                 <View style={{ flexDirection: 'row',}}>
                   <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 5,}}>
-                    <Icon name="thumbs-up" size={15} color={'#949494'} />
+                    {item.veteran_has_upvoted ? (
+                      <Icon name="thumbs-up" size={15} color={'#18B671'} />
+                    ) : (
+                      <Icon name="thumbs-up" size={15} color={'#949494'} />
+                    )}
                   </View>
                   <Text style={ styles.upvoteText }>{ item.upvotes }</Text>
                 </View>

@@ -16,6 +16,9 @@ class APIRoutes {
   static resourcePath() {
     return APIRoutes.create('/resources');
   }
+  static newUpvote() {
+    return APIRoutes.create('/upvotes')
+  }
 }
 
 export { APIRoutes };
