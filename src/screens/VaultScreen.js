@@ -4,6 +4,7 @@ import { Font } from 'expo';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
+import ResourceRequester from '../helpers/requesters/ResourceRequester';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {
@@ -39,7 +40,8 @@ export default class VaultScreen extends React.Component {
           id: 1,
         },
         */
-      ]
+      ],
+      stillLoading: true,
     };
     this.falseState = this.falseState.bind(this);
     this.setOpposite = this.setOpposite.bind(this);
@@ -47,12 +49,34 @@ export default class VaultScreen extends React.Component {
   }
 
   componentDidMount() {
+    ResourceRequester.resources().then((response) => {
+      console.log(response);
+      data = response.map(function(item) {
+        return {
+          id: item.id,
+          title: item.file_name,
+          date: this.formatDate(item.updated_at),
+          link: item.url,
+          partner_org: item.owner_id,
+          description: item.description,
+          category: this.getCategory(parseInt(item.category)),
+          upvotes: 0
+        };
+      }, this);
+      this.setState({ resources: data });
+    }).catch((error) => {
+      console.log(error);
+      this.setState({ stillLoading: false });
+    })
+  }
 
+  formatDate(date) {
+    return date.substring(5, 7) + "/" + date.substring(8, 10) + "/" + date.substring(0, 4)
   }
 
   /**
    * Updates the category filter and set state to updated categories
-   * @param {Number} itemId 
+   * @param {Number} itemId
    * @param {Boolean} newState
    */
   updateFilter(itemId, newState) {
@@ -67,7 +91,7 @@ export default class VaultScreen extends React.Component {
 
   /**
    * Sets the category with the provided ID to have the opposite filter selection
-   * @param {Number} itemId 
+   * @param {Number} itemId
    */
   setOpposite(itemId) {
     this.state.categories.forEach((i) => {
@@ -80,7 +104,7 @@ export default class VaultScreen extends React.Component {
   /**
    * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
    * @param {String} name
-   * @param {Number} itemId 
+   * @param {Number} itemId
    */
   falseState(name, itemId) {
     if(name==='CLEAR') {
@@ -161,11 +185,16 @@ export default class VaultScreen extends React.Component {
             </View>
             <View style={ styles.upvote }>
               <TouchableHighlight onPress={() => { this.upvote(item.id); }}>
-                <Text style={ styles.upvoteText }>{ item.upvotes }</Text>
+                <View style={{ flexDirection: 'row',}}>
+                  <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 5,}}>
+                    <Icon name="thumbs-up" size={15} color={'#949494'} />
+                  </View>
+                  <Text style={ styles.upvoteText }>{ item.upvotes }</Text>
+                </View>
               </TouchableHighlight>
             </View>
             <View style={ styles.resourceCategory }>
-              <Text style={ styles.categoryText }>{ this.getCategory(item.category) }</Text>
+              <Text style={ styles.categoryText }>{ item.category }</Text>
             </View>
           </View>
         </View>
@@ -195,7 +224,7 @@ export default class VaultScreen extends React.Component {
                   <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
                 </View>
               </View>
-              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>  
+              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>
                 {this.filterScroller()}
               </ScrollView>
               <View style={styles.contentContainer}>
@@ -228,7 +257,7 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 12,
-    fontFamily: 'source-sans-pro-black',
+    fontFamily: 'source-sans-pro-regular',
   },
   contentContainer: {
     flexDirection:'column',
