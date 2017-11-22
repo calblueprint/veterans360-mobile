@@ -41,7 +41,7 @@ class BaseRequester {
    */
   static destroy(endpoint) {
     return this._request(
-      'DESTROY', endpoint, {}
+      'DELETE', endpoint, {}
     );
   }
 

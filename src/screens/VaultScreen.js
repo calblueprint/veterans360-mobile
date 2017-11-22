@@ -149,7 +149,7 @@ export default class VaultScreen extends React.Component {
   upvote(resourceId, hasUpvoted) {
     const veteranId = this.props.navigation.state.params.id;
     if(hasUpvoted) {
-      UpvoteRequester.getUpvoteId(resourceId, veteranId).then((response) => {
+      UpvoteRequester.deleteUpvote(resourceId, veteranId).then((response) => {
         console.log(response);
         this.retrieveResources();
       }).catch((error) => {
