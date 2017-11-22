@@ -20,8 +20,8 @@ export default class ConnectScreen extends React.Component {
       veterans: this.getVeterans(),
       parterOrgs: this.getParterOrgs(),
       activeConnection: null,  // Indicates if a veteran/org has been focused
-      stillLoading: true, 
-      onConnect: false, 
+      stillLoading: true,
+      onConnect: false,
     }
 
     this.onRegionChange = this.onRegionChange.bind(this);
@@ -31,10 +31,13 @@ export default class ConnectScreen extends React.Component {
 
   componentDidMount() {
     params = this.props.navigation.state.params;
-    const id = params.id; 
+    const id = params.id;
     ConnectSignUpRequester.connectStatus(id).then((response) => {
-      console.log(response)
-      this.setState({ stillLoading: false, onConnect: true });
+      if(response.on_connect) {
+        this.setState({ stillLoading: false, onConnect: true });
+      } else {
+        this.setState({ stillLoading: false, onConnect: false });
+      }
     }).catch((error) => {
       console.log(error)
       this.setState({ stillLoading: false, onConnect: false });
@@ -232,11 +235,11 @@ export default class ConnectScreen extends React.Component {
   }
 
   render() {
-    
+
     if (this.state.stillLoading) {
       return <View/>
     }
-   
+
     if (this.state.onConnect) {
       return (
         <View style={styles.baseContainer}>
@@ -347,7 +350,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.7)',
-  }, 
+  },
   contentContainer: {
     position: 'absolute',
     top: 40,
