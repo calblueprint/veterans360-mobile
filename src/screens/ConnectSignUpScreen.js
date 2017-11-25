@@ -31,8 +31,8 @@ export default class ConnectSignUp extends React.Component {
       const endpoint = APIRoutes.veteransMilitaryBranch();
       let response_json = await BaseRequester.get(endpoint);
       let militaryBranchDict = {};
-      for(var key in response_json) {
-        if(response_json.hasOwnProperty(key)) {
+      for (var key in response_json) {
+        if (response_json.hasOwnProperty(key)) {
           militaryBranchDict[response_json[key]] = this.formatDict(key);
         }
       }
@@ -46,8 +46,8 @@ export default class ConnectSignUp extends React.Component {
 
   formatDict(str) {
     newStr = "";
-    for(var i = 0; i < str.length; i++) {
-      if(str[i]=='_') {
+    for (var i = 0; i < str.length; i++) {
+      if (str[i] == '_') {
         newStr += " ";
       } else {
         newStr += str[i];
