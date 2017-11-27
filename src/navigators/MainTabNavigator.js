@@ -7,7 +7,7 @@ import VaultScreen from '../screens/VaultScreen';
 import ResponseScreen from '../screens/ResponseScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { colors } from '../styles/colors';
-
+import ConnectSignUpStackNavigator from '../navigators/ConnectSignUpStackNavigator';
 
 const MainTabNavigator = TabNavigator({
   Home: {
@@ -20,7 +20,7 @@ const MainTabNavigator = TabNavigator({
     },
   },
   Connect: {
-    screen: ConnectScreen,
+    screen: ConnectSignUpStackNavigator,
     navigationOptions: {
       tabBarLabel: 'Connect',
       tabBarIcon: ({ tintColor }) => (

@@ -1,11 +1,14 @@
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
+import { StyleSheet, Text, View, TouchableHighlight, Modal, Image, Dimensions } from 'react-native';
+import { imageStyles } from '../styles/images';
+import { layoutStyles } from '../styles/layout';
+import ConnectSignUpRequester from '../helpers/requesters/ConnectSignUpRequester';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { StyleSheet, Text, View, Modal } from 'react-native';
-
 import InfoModal from '../components/InfoModal';
 import ConnectPin from '../components/ConnectPin';
 import ConnectBox from '../components/ConnectBox';
+
 
 export default class ConnectScreen extends React.Component {
 
@@ -17,11 +20,33 @@ export default class ConnectScreen extends React.Component {
       veterans: this.getVeterans(),
       parterOrgs: this.getParterOrgs(),
       activeConnection: null,  // Indicates if a veteran/org has been focused
+      stillLoading: true,
+      onConnect: false,
     }
 
     this.onRegionChange = this.onRegionChange.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
     this.closeConnectBox = this.closeConnectBox.bind(this);
+  }
+
+  componentDidMount() {
+    params = this.props.navigation.state.params;
+    const id = params.id;
+    ConnectSignUpRequester.connectStatus(id).then((response) => {
+      console.log(response);
+      if(response.on_connect) {
+        this.setState({ stillLoading: false, onConnect: true });
+      } else {
+        this.setState({ stillLoading: false, onConnect: false });
+      }
+    }).catch((error) => {
+      console.log(error)
+      this.setState({ stillLoading: false, onConnect: false });
+    });
+  }
+
+  navigateToSignUp() {
+    this.props.navigation.navigate('ConnectSignUp', this.props.navigation.state.params);
   }
 
   /**
@@ -206,28 +231,97 @@ export default class ConnectScreen extends React.Component {
     return this.state.activeConnection ? (
       <ConnectBox
         connection={this.state.activeConnection}
-        onClose={this.closeConnectBox}
-      />
+        onClose={this.closeConnectBox}/>
     ) : null;
   }
 
   render() {
-    return (
-      <View style={styles.baseContainer}>
-        {this.renderHelpModal()}
-        <MapView
-          ref={(ref) => this.mapView = ref}
-          style={styles.baseMapContainer}
-          initialRegion={this.getInitialRegion()}
-        >
-          {this.renderVeteranMarkers()}
-          {this.renderParterOrgMarkers()}
-        </MapView>
-        {this.renderConnectBox()}
-      </View>
-    );
-  }
 
+    if (this.state.stillLoading) {
+      return <View/>
+    }
+
+    if (this.state.onConnect) {
+      return (
+        <View style={styles.baseContainer}>
+          {this.renderHelpModal()}
+          <MapView
+            ref={(ref) => this.mapView = ref}
+            style={styles.baseMapContainer}
+            initialRegion={this.getInitialRegion()}
+          >
+            {this.renderVeteranMarkers()}
+            {this.renderParterOrgMarkers()}
+          </MapView>
+          {this.renderConnectBox()}
+        </View>
+      );
+    } else {
+      return (
+        <View style= {{ flex: 1 }}>
+          <Image style={ styles.backgroundImg } source={require('../../assets/images/map.jpg')}/>
+          <View style={ styles.backgroundOverlay }>
+            <View style={ styles.contentContainer}>
+              <Text style={ styles.subtitleText }>
+                Get started with
+              </Text>
+              <Text style={ styles.titleText }>
+                Veterans 360 Connect
+              </Text>
+              <View style={{ marginTop: 20, flex: 1, marginBottom: 60, alignItems: 'center' }}>
+                <View style={ styles.tile }>
+                  <View style={ styles.tileIcon }>
+                    <Icon name="map-marker" size={50} color={'#18B671'} />
+                  </View>
+                  <View style={ styles.tileText }>
+                    <Text style={ styles.tileTitleText }>
+                      EXPLORE
+                    </Text>
+                    <Text style={ styles.bodyText }>
+                      veterans and partnered veteran organizations around your area.
+                    </Text>
+                  </View>
+                </View>
+                <View style={ styles.line }>
+                </View>
+                <View style={ styles.tile }>
+                  <View style={ styles.tileIcon }>
+                    <Icon name="users" size={50} color={'#18B671'} />
+                  </View>
+                  <View style={ styles.tileText }>
+                    <Text style={ styles.tileTitleText }>
+                      CONNECT
+                    </Text>
+                    <Text style={ styles.bodyText }>
+                      with other veterans like you and get in touch.
+                    </Text>
+                  </View>
+                </View>
+                <View style={ styles.line }>
+                </View>
+                <View style={ styles.tile }>
+                  <View style={ styles.tileIcon }>
+                    <Icon name="calendar-check-o" size={50} color={'#18B671'} />
+                  </View>
+                  <View style={ styles.tileText }>
+                    <Text style={ styles.tileTitleText }>
+                      STAY UP TO DATE
+                    </Text>
+                    <Text style={ styles.bodyText }>
+                      with every new event and resource created by your connections.
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <TouchableHighlight onPress={ () => { this.navigateToSignUp(); } } style={styles.button}>
+                <Text style={styles.buttonText}>SIGN UP</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </View>
+      );
+    }
+  }
 }
 
 
@@ -245,5 +339,87 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  backgroundImg: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+  backgroundOverlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+  },
+  contentContainer: {
+    position: 'absolute',
+    top: 40,
+    bottom: 40,
+    left: 40,
+    right: 40,
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    fontFamily: 'source-sans-pro-semibold',
+    textAlign: 'center',
+  },
+  subtitleText: {
+    fontSize: 24,
+    fontFamily: 'source-sans-pro-light',
+    textAlign: 'center',
+  },
+  bodyText: {
+    fontSize: 12,
+    fontFamily: 'source-sans-pro-regular',
+  },
+  tileTitleText: {
+    fontFamily: 'source-sans-pro-bold',
+    fontSize: 12,
+    color:'#949494',
+  },
+  tile: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    flex: 3,
+    shadowColor:'black',
+    shadowOpacity:0.05,
+    shadowOffset:{width:5, height:10},
+    flexDirection: 'row',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingRight: 20,
+    paddingLeft: 20,
+  },
+  line: {
+    flex: 2,
+    width: 2,
+    backgroundColor: '#18B671',
+  },
+  tileIcon: {
+    flex: 1,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tileText: {
+    flex: 3,
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontFamily: 'source-sans-pro-bold',
+    fontSize: 20,
+    color:'#ffffff',
+  },
+  button: {
+    alignItems: 'center',
+    paddingLeft: 12,
+    paddingRight: 12,
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderRadius: 30,
+    marginRight: 60,
+    marginLeft:60,
+    backgroundColor:'#18B671',
   }
 });

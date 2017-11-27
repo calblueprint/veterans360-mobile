@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import LoginStackNavigator from './src/navigators/LoginStackNavigator';
 import { loadFonts } from './src/styles/fonts';
+import ConnectSignUpStackNavigator from './src/navigators/ConnectSignUpStackNavigator';
 
 export default class App extends React.Component {
 
