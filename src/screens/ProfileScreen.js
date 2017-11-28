@@ -1,6 +1,16 @@
 /**
  * Profile screen that either renders information about
- * the current user.
+ * the current user. Can be used to render EITHER the
+ * current user or another user by passing in a prop
+ * called `params`, more detail below. Consider @params
+ * to be `this.props.navigation.state.params`:
+ *
+ * @params.source        - source screen that user has
+ *                        navigated from
+ * @params.first_name
+ * @params.last_name
+ * @params.email
+ * @params.roles
  */
 
 import React from 'react';
@@ -16,10 +26,12 @@ export default class ProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.connect = this.connect.bind(this);
   }
 
   getParams() {
-    return this.props.params || this.props.navigation.state.params;
+    return this.props.navigation.state.params;
   }
 
   connect(event, onSuccess, onFailure) {
@@ -67,11 +79,13 @@ export default class ProfileScreen extends React.Component {
           {this.renderDetails()}
           <View style={styles.bioContainer}>
           </View>
-          <Button
-            style={margins.marginTop.md}
-            onPress={this.login}
-            text="CONNECT"
-          />
+          { params.source == 'connect' ? (
+            <Button
+              style={margins.marginTop.md}
+              onPress={this.connect}
+              text="CONNECT"
+            />
+          ) : null }
         </View>
       </View>
     );

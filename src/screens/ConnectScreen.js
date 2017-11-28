@@ -43,6 +43,7 @@ export default class ConnectScreen extends React.Component {
     this.onConnectRequest = this.onConnectRequest.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
     this.closeConnectBox = this.closeConnectBox.bind(this);
+    this.navigateToConnectProfile = this.navigateToConnectProfile.bind(this);
   }
 
   componentDidMount() {
@@ -136,7 +137,7 @@ export default class ConnectScreen extends React.Component {
    * isn't rendered until the next refresh.
    *
    * @param {integer} i: the index of the friend request
-   *                     to be removed from the list 
+   *                     to be removed from the list
    */
   closeFriendRequestModal(i) {
     return () => {
@@ -208,6 +209,13 @@ export default class ConnectScreen extends React.Component {
     this.setState({ activeConnection: this.state.activeConnection });
   }
 
+  navigateToConnectProfile(params) {
+    const navParams = update(params, {$merge: {
+      source: 'connect',
+    }});
+    this.props.navigation.navigate('ConnectProfile', navParams);
+  }
+
   renderNotifications() {
     return (
       <View style={styles.notificationBox}>
@@ -241,6 +249,7 @@ export default class ConnectScreen extends React.Component {
           veteran={veteran}
           currentVeteran={this.props.navigation.state.params}
           onClose={this.closeFriendRequestModal(i)}
+          showProfile={this.navigateToConnectProfile}
           key={`friend_request_${i}`}
         />
       );

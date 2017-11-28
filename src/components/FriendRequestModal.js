@@ -5,6 +5,8 @@
  * @prop style            - style override
  * @prop veteran          - veteran object that sent the friend request
  * @prop onClose          - callback executed when modal is closed
+ * @prop showProfile      - function that navigates to
+ *                          a user or PO's profile
  */
 
 import React from 'react';
@@ -105,6 +107,7 @@ export default class FriendRequestModal extends React.Component {
       <Animated.View
         style={[styles.baseContainer, this.getHelpAnimationStyle()]}
       >
+
         <Icon
           name="times"
           size={18}
@@ -113,15 +116,27 @@ export default class FriendRequestModal extends React.Component {
           onPress={this.closeModal}
         />
         <Text style={styles.title}>{`NEW FRIEND REQUEST`}</Text>
-        <View style={styles.nameImageContainer}>
-          <Image
-            source={require('../../assets/images/photogenic.jpg')}
-            style={styles.image}
-          />
-        <Text style={styles.name}>
-          {`${veteran.first_name} ${veteran.last_name}`}
-        </Text>
+
+        <View style={styles.profileRowContainer}>
+          <View style={styles.nameImageContainer}>
+            <Image
+              source={require('../../assets/images/photogenic.jpg')}
+              style={styles.image}
+            />
+            <Text style={styles.name}>
+              {`${veteran.first_name} ${veteran.last_name}`}
+            </Text>
+          </View>
+          <View style={styles.seeMoreIconContainer}>
+            <Icon
+              name="eye"
+              size={28}
+              color={colors.green}
+              onPress={() => {this.props.showProfile(veteran)}}
+            />
+          </View>
         </View>
+
         <View style={styles.buttonsContainer}>
           <Button
             style={[styles.acceptButton, margins.marginTop.md]}
@@ -136,6 +151,7 @@ export default class FriendRequestModal extends React.Component {
             onPress={this.rejectFriendRequest}
           />
         </View>
+
       </Animated.View>
     );
   }
@@ -163,11 +179,22 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     zIndex: 100,
   },
+  profileRowContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+    alignItems: 'center',
+  },
   nameImageContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 10,
+  },
+  seeMoreIconContainer: {
+    minWidth: 35,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonsContainer: {
     flexDirection: 'row',
