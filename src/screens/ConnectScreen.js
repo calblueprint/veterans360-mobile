@@ -108,6 +108,10 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+  /**
+   * Gets all the friend requests of this veteran
+   * to render on the screen.
+   */
   getVeteranFriendRequests() {
     const id = this.props.navigation.state.params.id;
     const route = APIRoutes.veteranFriendRequestsPath(id);
@@ -127,12 +131,18 @@ export default class ConnectScreen extends React.Component {
     this.setState({ isHelpModalOpen: false });
   }
 
+  /**
+   * Removes the friend request from the state so it
+   * isn't rendered until the next refresh.
+   *
+   * @param {integer} i: the index of the friend request
+   *                     to be removed from the list 
+   */
   closeFriendRequestModal(i) {
     return () => {
       const newFriendRequests = update(this.state.friendRequests, {
         $apply: (reqs) => {return reqs.splice(i, 1)},
       });
-      console.log("NEW FIRENDS");
       console.log(newFriendRequests);
       this.setState({ friendRequests: newFriendRequests });
     };

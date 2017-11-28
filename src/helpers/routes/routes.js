@@ -1,5 +1,6 @@
 import { HOST_ADDR } from '../secrets';
 
+
 class APIRoutes {
 
   static create(route) {
@@ -27,11 +28,14 @@ class APIRoutes {
   static veteransMilitaryBranch() {
     return APIRoutes.create('/veterans/get_military_branch');
   }
+  static veteranFriendRequestsPath(id) {
+    return APIRoutes.create(`/veterans/${id}/requests`);
+  }
   static veteranFriendshipsPath(veteran_id) {
     return APIRoutes.create(`/veterans/${veteran_id}/friendships`);
   }
-  static veteranFriendRequestsPath(id) {
-    return APIRoutes.create(`/veterans/${id}/requests`);
+  static veteranRejectFriendshipPath(id) {
+    return APIRoutes.create(`/veterans/${id}/friendships/reject`);
   }
 
   // Partnering Orgs

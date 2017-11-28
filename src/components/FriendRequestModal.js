@@ -63,7 +63,6 @@ export default class FriendRequestModal extends React.Component {
     const route = APIRoutes.veteranFriendshipsPath(id);
     const params = {
       friendship: {
-        veteran_id: id,
         friend_id: this.props.veteran.id,
       },
     };
@@ -78,14 +77,26 @@ export default class FriendRequestModal extends React.Component {
   }
 
   /**
-   * Rejects this veteran's friend request.
-   *
-   * TODO (Ken): Currently a placeholder and will actually do the
-   * rejection by removing the inverse friendships instance.
+   * Rejects this veteran's friend request by removing
+   * the inverse friendship between this veteran and the
+   * friend who is requesting the friendship.
    */
   rejectFriendRequest(event, onSuccess, onError) {
-    this.closeModal();
-    onSuccess && onSuccess();
+    const id = this.props.currentVeteran.id;
+    const route = APIRoutes.veteranRejectFriendshipPath(id);
+    const params = {
+      friendship: {
+        friend_id: this.props.veteran.id,
+      },
+    };
+    BaseRequester.patch(route, params).then((response) => {
+      console.log(response);
+      this.closeModal();
+      onSuccess && onSuccess();
+    }).catch((error) => {
+      console.error(error);
+      onError && onError(error);
+    });
   }
 
   render() {
