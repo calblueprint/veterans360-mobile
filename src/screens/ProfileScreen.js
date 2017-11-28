@@ -16,7 +16,7 @@
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
@@ -28,6 +28,7 @@ export default class ProfileScreen extends React.Component {
     super(props);
 
     this.connect = this.connect.bind(this);
+    this.goBack = this.goBack.bind(this);
   }
 
   getParams() {
@@ -36,6 +37,32 @@ export default class ProfileScreen extends React.Component {
 
   connect(event, onSuccess, onFailure) {
 
+  }
+
+  goBack() {
+    return this.props.navigation.goBack();
+  }
+
+  renderBackButton() {
+    const params = this.getParams();
+    if (params.source == 'connect') {
+      return (
+        <TouchableOpacity
+          onPress={this.goBack}
+        >
+          <View style={styles.backButtonContainer}>
+            <Icon
+              name="chevron-left"
+              size={20}
+              color={colors.white}
+            />
+            <Text style={[fontStyles.boldTextWhite, margins.marginLeft.md]}>
+              BACK
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
   }
 
   renderDetailRow(label, value) {
@@ -66,15 +93,18 @@ export default class ProfileScreen extends React.Component {
     console.log(params);
     return (
       <View style={styles.baseContainer}>
+
         <View style={styles.coverContainer}>
           <Image
             source={require('../../assets/images/photogenic.jpg')}
             style={styles.profilePicture}
           />
-        <Text style={styles.profileName}>
-          {`${params.first_name} ${params.last_name}`}
-        </Text>
+          <Text style={styles.profileName}>
+            {`${params.first_name} ${params.last_name}`}
+          </Text>
+          {this.renderBackButton()}
         </View>
+
         <View style={styles.bodyContainer}>
           {this.renderDetails()}
           <View style={styles.bioContainer}>
@@ -87,6 +117,7 @@ export default class ProfileScreen extends React.Component {
             />
           ) : null }
         </View>
+
       </View>
     );
   }
@@ -119,7 +150,7 @@ const styles = StyleSheet.create({
   /* Container for the details of this veteran/PO */
   detailsContainer: {
     margin: 20,
-    padding: 20,
+    padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -142,7 +173,7 @@ const styles = StyleSheet.create({
 
   /* Container for value field in a row */
   detailValueContainer: {
-    flex: 1,
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
@@ -152,6 +183,17 @@ const styles = StyleSheet.create({
     margin: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  /* Back button and text container */
+  backButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 25,
+    left: 10,
+    padding: 5,
   },
 
   /* Individual items */

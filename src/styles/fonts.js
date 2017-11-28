@@ -21,18 +21,18 @@ async function loadFonts() {
 }
 
 const fontStyles = StyleSheet.create({
-  main_header: {
+  mainHeader: {
     fontSize: 32,
     fontFamily: 'source-sans-pro-bold',
     color: colors.charcoal,
   },
-  main_header_white: {
+  mainHeaderWhite: {
     fontSize: 32,
     fontFamily: 'source-sans-pro-bold',
     color: colors.white,
   },
   labelText: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'source-sans-pro-bold',
     letterSpacing: 1,
     color: colors.light_charcoal,
@@ -41,6 +41,16 @@ const fontStyles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'source-sans-pro-semibold-italic',
     color: colors.gray,
+  },
+  boldText: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-bold', 
+    color: colors.charcoal,
+  },
+  boldTextWhite: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-bold',
+    color: colors.white,
   },
   bodyText: {
     fontSize: 18,
