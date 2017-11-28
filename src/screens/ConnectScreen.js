@@ -209,15 +209,31 @@ export default class ConnectScreen extends React.Component {
     this.setState({ activeConnection: this.state.activeConnection });
   }
 
+  /**
+   * Callback function used by components within this component in order
+   * to navigate user to the profile of another veteran or PO.
+   * The params are supplied by the subcomponent and consists of the
+   * object (veteran or PO) for which the profile page displays. Then, we
+   * add additional fields like `source` and `currentVeteran` to indicate
+   * additional information that the profile page needs to properly render
+   * the fields and buttons.
+   *
+   * @param params: an object (veteran or PO) supplied by the component
+   *                that uses this callback
+   */
   navigateToConnectProfile(params) {
     const navParams = update(params, {$merge: {
       source: 'connect',
       currentVeteran: this.props.navigation.state.params,
-      onConnect: this.onConnectRequest, 
+      onConnect: this.onConnectRequest,
     }});
     this.props.navigation.navigate('ConnectProfile', navParams);
   }
 
+  /**
+   * Renders the help modal, which is static information, and a list
+   * of all friend requests sent to this user.
+   */
   renderNotifications() {
     return (
       <View style={styles.notificationBox}>
@@ -316,6 +332,11 @@ export default class ConnectScreen extends React.Component {
     ) : null;
   }
 
+  /**
+   * If the user has not signed up for connect yet, then this will
+   * render in place of the Connect map, directing the user to sign
+   * up first. 
+   */
   renderConnectSignUp() {
     return (
       <View style= {{ flex: 1 }}>

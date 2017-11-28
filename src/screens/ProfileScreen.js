@@ -42,11 +42,21 @@ export default class ProfileScreen extends React.Component {
     return this.props.navigation.state.params;
   }
 
+  /**
+   * Gets profile display name.
+   */
   getName() {
     const params = this.getParams();
     return params.name || `${params.first_name} ${params.last_name}`;
   }
 
+  /**
+   * Attempts to connect with this veteran whose profile is shown.
+   * The currently signed up veteran object is given in the navigation
+   * params and is supplied by the Connect screen.
+   *
+   * TODO (Ken): Need to add compatibility for PO requests
+   */
   connect(event, onSuccess, onFailure) {
     event.preventDefault();
     const navParams = this.getParams();
@@ -68,13 +78,20 @@ export default class ProfileScreen extends React.Component {
     });
   }
 
+  /**
+   * Goes to the previous screen.
+   */
   goBack() {
     return this.props.navigation.goBack();
   }
 
+  /**
+   * Renders the back button and label unless comes from the main
+   * tab navigator (then source is none).
+   */
   renderBackButton() {
     const params = this.getParams();
-    if (params.source == 'connect') {
+    if (!params.source) {
       return (
         <TouchableOpacity
           onPress={this.goBack}
@@ -94,6 +111,11 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
+  /**
+   * Renders a detail row, which consists of a label and text.
+   *
+   * Ex. NAME    Rob Jones
+   */
   renderDetailRow(label, value) {
     return (
       <View style={styles.detailRowContainer}>
@@ -107,6 +129,14 @@ export default class ProfileScreen extends React.Component {
     );
   }
 
+  /**
+   * Renders all detail rows applicable to this object.
+   * Adds each of the fields manually since some might need additional
+   * processing from the backend.
+   *
+   * TODO (Ken): Finish adding fields as they are finished being
+   * added to the backend.
+   */
   renderDetails() {
     const params = this.getParams();
     return (
@@ -117,11 +147,17 @@ export default class ProfileScreen extends React.Component {
         {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
         {!!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
         {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
-
       </View>
     );
   }
 
+  /**
+   * Renders the connect button UNLESS:
+   *   - If own profile, don't render anything
+   *   - If profile is a veteran friend, don't render anything
+   *   - If profile is a veteran whom sent friend request to, render
+   *     a disabled button
+   */
   renderConnectButton() {
     const params = this.getParams();
     if (params.is_friend || !params.source) {
