@@ -15,17 +15,24 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
 import Button from '../components/Button';
 
+
 export default class ProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      sentConnectRequest: false,
+    };
 
     this.connect = this.connect.bind(this);
     this.goBack = this.goBack.bind(this);
@@ -35,8 +42,31 @@ export default class ProfileScreen extends React.Component {
     return this.props.navigation.state.params;
   }
 
-  connect(event, onSuccess, onFailure) {
+  getName() {
+    const params = this.getParams();
+    return params.name || `${params.first_name} ${params.last_name}`;
+  }
 
+  connect(event, onSuccess, onFailure) {
+    event.preventDefault();
+    const navParams = this.getParams();
+    const id = navParams.currentVeteran.id;
+    const route = APIRoutes.veteranFriendshipsPath(id);
+    const params = {
+      friendship: {
+        veteran_id: id,
+        friend_id: navParams.id,
+      },
+    };
+    BaseRequester.post(route, params).then((response) => {
+      console.log(response);
+      navParams.onConnect();
+      this.setState({ sentConnectRequest: true });
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      console.error(error);
+      onError && onError(error);
+    });
   }
 
   goBack() {
@@ -82,10 +112,39 @@ export default class ProfileScreen extends React.Component {
     const params = this.getParams();
     return (
       <View style={styles.detailsContainer}>
-        {this.renderDetailRow("EMAIL", params.email)}
-        {this.renderDetailRow("BRANCH OF SERVICE", params.roles.join(", "))}
+        {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
+        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles.join(", ")) : null}
+
+        {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
+        {!!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
+        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
+
       </View>
     );
+  }
+
+  renderConnectButton() {
+    const params = this.getParams();
+    if (params.is_friend || !params.source) {
+      return;
+    } else if (params.sent_friend_request || this.state.sentConnectRequest) {
+      return (
+        <Button
+          style={margins.marginTop.md}
+          onPress={this.connect}
+          text="CONNECT"
+          disabled={true}
+        />
+      );
+    } else {
+      return (
+        <Button
+          style={margins.marginTop.md}
+          onPress={this.connect}
+          text="CONNECT"
+        />
+      );
+    }
   }
 
   render() {
@@ -100,7 +159,7 @@ export default class ProfileScreen extends React.Component {
             style={styles.profilePicture}
           />
           <Text style={styles.profileName}>
-            {`${params.first_name} ${params.last_name}`}
+            {this.getName()}
           </Text>
           {this.renderBackButton()}
         </View>
@@ -109,13 +168,7 @@ export default class ProfileScreen extends React.Component {
           {this.renderDetails()}
           <View style={styles.bioContainer}>
           </View>
-          { params.source == 'connect' ? (
-            <Button
-              style={margins.marginTop.md}
-              onPress={this.connect}
-              text="CONNECT"
-            />
-          ) : null }
+          {this.renderConnectButton()}
         </View>
 
       </View>

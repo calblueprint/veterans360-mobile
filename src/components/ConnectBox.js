@@ -13,6 +13,8 @@
  * @prop currentVeteran   - veteran that is currently logged in
  * @prop onConnect        - callback to be executed after connect request
  * @prop onClose          - callback to be executed when close button pressed
+ * @prop showProfile      - function that navigates to
+ *                          a user or PO's profile
  */
 
 import React from 'react';
@@ -37,6 +39,7 @@ export default class ConnectBox extends React.Component {
 
     this.onBoxClose = this.onBoxClose.bind(this);
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
+    this.showProfile = this.showProfile.bind(this);
   }
 
   componentDidMount() {
@@ -92,6 +95,11 @@ export default class ConnectBox extends React.Component {
     });
   }
 
+  showProfile(event, onSuccess, onFailure) {
+    this.props.showProfile(this.props.connection);
+    onSuccess && onSuccess();
+  }
+
   renderProfileImage() {
     if (this.props.connection.image) {
       return (
@@ -138,6 +146,7 @@ export default class ConnectBox extends React.Component {
               style={styles.profileButton}
               textStyle={styles.profileButtonText}
               text="VIEW"
+              onPress={this.showProfile}
             />
             <Button
               style={[buttonStyle, margins.marginTop.md]}

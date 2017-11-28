@@ -212,6 +212,8 @@ export default class ConnectScreen extends React.Component {
   navigateToConnectProfile(params) {
     const navParams = update(params, {$merge: {
       source: 'connect',
+      currentVeteran: this.props.navigation.state.params,
+      onConnect: this.onConnectRequest, 
     }});
     this.props.navigation.navigate('ConnectProfile', navParams);
   }
@@ -309,6 +311,7 @@ export default class ConnectScreen extends React.Component {
         onClose={this.closeConnectBox}
         onConnect={this.onConnectRequest}
         currentVeteran={this.props.navigation.state.params}
+        showProfile={this.navigateToConnectProfile}
       />
     ) : null;
   }
