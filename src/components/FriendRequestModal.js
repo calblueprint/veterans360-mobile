@@ -69,7 +69,6 @@ export default class FriendRequestModal extends React.Component {
       },
     };
     BaseRequester.post(route, params).then((response) => {
-      console.log(response);
       onSuccess && onSuccess(response);
       this.closeModal();
     }).catch((error) => {
@@ -92,7 +91,6 @@ export default class FriendRequestModal extends React.Component {
       },
     };
     BaseRequester.patch(route, params).then((response) => {
-      console.log(response);
       this.closeModal();
       onSuccess && onSuccess();
     }).catch((error) => {

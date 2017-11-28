@@ -59,7 +59,6 @@ export default class ProfileScreen extends React.Component {
       },
     };
     BaseRequester.post(route, params).then((response) => {
-      console.log(response);
       navParams.onConnect();
       this.setState({ sentConnectRequest: true });
       onSuccess && onSuccess(response);
@@ -149,7 +148,6 @@ export default class ProfileScreen extends React.Component {
 
   render() {
     const params = this.getParams();
-    console.log(params);
     return (
       <View style={styles.baseContainer}>
 
