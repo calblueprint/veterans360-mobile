@@ -34,12 +34,9 @@ export default class ConnectScreen extends React.Component {
       veterans: [],
       parterOrgs: [],
       activeConnection: null,  // Indicates if a veteran/org has been focused
-<<<<<<< 8e3c01dff4932bf78c0d3e41f4fa7605928049ab
       stillLoading: true,
       onConnect: false,
-=======
       friendRequests: [],
->>>>>>> Adds friend request modal YUS.
     }
 
     this.onRegionChange = this.onRegionChange.bind(this);
@@ -50,11 +47,32 @@ export default class ConnectScreen extends React.Component {
 
   componentDidMount() {
     params = this.props.navigation.state.params;
+    this.getConnectStatus(() => {
+      this.getVeterans();
+      this.getParterOrgs();
+      this.getVeteranFriendRequests();
+    });
+  }
+
+  navigateToSignUp() {
+    this.props.navigation.navigate('ConnectSignUp', this.props.navigation.state.params);
+  }
+
+  /**
+   * Gets whether current veteran is signed up with connect and
+   * renders the appropriate screen, either sign up or the connect
+   * map.
+   *
+   * @param {function} onConnectCallback: callback if veteran already
+   *                                      signed up with connect
+   */
+  getConnectStatus(onConnectCallback) {
     const id = params.id;
     ConnectSignUpRequester.connectStatus(id).then((response) => {
       console.log(response);
       if(response.on_connect) {
         this.setState({ stillLoading: false, onConnect: true });
+        onConnectCallback && onConnectCallback();
       } else {
         this.setState({ stillLoading: false, onConnect: false });
       }
@@ -62,10 +80,6 @@ export default class ConnectScreen extends React.Component {
       console.log(error)
       this.setState({ stillLoading: false, onConnect: false });
     });
-  }
-
-  navigateToSignUp() {
-    this.props.navigation.navigate('ConnectSignUp', this.props.navigation.state.params);
   }
 
   /**
@@ -280,7 +294,79 @@ export default class ConnectScreen extends React.Component {
     ) : null;
   }
 
+  renderConnectSignUp() {
+    return (
+      <View style= {{ flex: 1 }}>
+        <Image style={ styles.backgroundImg } source={require('../../assets/images/map.jpg')}/>
+        <View style={ styles.backgroundOverlay }>
+          <View style={ styles.contentContainer}>
+            <Text style={ styles.subtitleText }>
+              Get started with
+            </Text>
+            <Text style={ styles.titleText }>
+              Veterans 360 Connect
+            </Text>
+            <View style={{ marginTop: 20, flex: 1, marginBottom: 60, alignItems: 'center' }}>
+              <View style={ styles.tile }>
+                <View style={ styles.tileIcon }>
+                  <Icon name="map-marker" size={50} color={'#18B671'} />
+                </View>
+                <View style={ styles.tileText }>
+                  <Text style={ styles.tileTitleText }>
+                    EXPLORE
+                  </Text>
+                  <Text style={ styles.bodyText }>
+                    veterans and partnered veteran organizations around your area.
+                  </Text>
+                </View>
+              </View>
+              <View style={ styles.line }>
+              </View>
+              <View style={ styles.tile }>
+                <View style={ styles.tileIcon }>
+                  <Icon name="users" size={50} color={'#18B671'} />
+                </View>
+                <View style={ styles.tileText }>
+                  <Text style={ styles.tileTitleText }>
+                    CONNECT
+                  </Text>
+                  <Text style={ styles.bodyText }>
+                    with other veterans like you and get in touch.
+                  </Text>
+                </View>
+              </View>
+              <View style={ styles.line }>
+              </View>
+              <View style={ styles.tile }>
+                <View style={ styles.tileIcon }>
+                  <Icon name="calendar-check-o" size={50} color={'#18B671'} />
+                </View>
+                <View style={ styles.tileText }>
+                  <Text style={ styles.tileTitleText }>
+                    STAY UP TO DATE
+                  </Text>
+                  <Text style={ styles.bodyText }>
+                    with every new event and resource created by your connections.
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <TouchableHighlight onPress={ () => { this.navigateToSignUp(); } } style={styles.button}>
+              <Text style={styles.buttonText}>SIGN UP</Text>
+            </TouchableHighlight>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   render() {
+    if (this.state.stillLoading) {
+      return <View />
+    } else if (!this.state.onConnect) {
+      return this.renderConnectSignUp();
+    }
+
     return (
       <View style={styles.baseContainer}>
         {this.renderNotifications()}
@@ -295,92 +381,6 @@ export default class ConnectScreen extends React.Component {
         {this.renderConnectBox()}
       </View>
     );
-  }
-
-    if (this.state.stillLoading) {
-      return <View/>
-    }
-
-    if (this.state.onConnect) {
-      return (
-        <View style={styles.baseContainer}>
-          {this.renderHelpModal()}
-          <MapView
-            ref={(ref) => this.mapView = ref}
-            style={styles.baseMapContainer}
-            initialRegion={this.getInitialRegion()}
-          >
-            {this.renderVeteranMarkers()}
-            {this.renderParterOrgMarkers()}
-          </MapView>
-          {this.renderConnectBox()}
-        </View>
-      );
-    } else {
-      return (
-        <View style= {{ flex: 1 }}>
-          <Image style={ styles.backgroundImg } source={require('../../assets/images/map.jpg')}/>
-          <View style={ styles.backgroundOverlay }>
-            <View style={ styles.contentContainer}>
-              <Text style={ styles.subtitleText }>
-                Get started with
-              </Text>
-              <Text style={ styles.titleText }>
-                Veterans 360 Connect
-              </Text>
-              <View style={{ marginTop: 20, flex: 1, marginBottom: 60, alignItems: 'center' }}>
-                <View style={ styles.tile }>
-                  <View style={ styles.tileIcon }>
-                    <Icon name="map-marker" size={50} color={'#18B671'} />
-                  </View>
-                  <View style={ styles.tileText }>
-                    <Text style={ styles.tileTitleText }>
-                      EXPLORE
-                    </Text>
-                    <Text style={ styles.bodyText }>
-                      veterans and partnered veteran organizations around your area.
-                    </Text>
-                  </View>
-                </View>
-                <View style={ styles.line }>
-                </View>
-                <View style={ styles.tile }>
-                  <View style={ styles.tileIcon }>
-                    <Icon name="users" size={50} color={'#18B671'} />
-                  </View>
-                  <View style={ styles.tileText }>
-                    <Text style={ styles.tileTitleText }>
-                      CONNECT
-                    </Text>
-                    <Text style={ styles.bodyText }>
-                      with other veterans like you and get in touch.
-                    </Text>
-                  </View>
-                </View>
-                <View style={ styles.line }>
-                </View>
-                <View style={ styles.tile }>
-                  <View style={ styles.tileIcon }>
-                    <Icon name="calendar-check-o" size={50} color={'#18B671'} />
-                  </View>
-                  <View style={ styles.tileText }>
-                    <Text style={ styles.tileTitleText }>
-                      STAY UP TO DATE
-                    </Text>
-                    <Text style={ styles.bodyText }>
-                      with every new event and resource created by your connections.
-                    </Text>
-                  </View>
-                </View>
-              </View>
-              <TouchableHighlight onPress={ () => { this.navigateToSignUp(); } } style={styles.button}>
-                <Text style={styles.buttonText}>SIGN UP</Text>
-              </TouchableHighlight>
-            </View>
-          </View>
-        </View>
-      );
-    }
   }
 }
 
@@ -400,7 +400,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-<<<<<<< 8e3c01dff4932bf78c0d3e41f4fa7605928049ab
   backgroundImg: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
@@ -482,8 +481,7 @@ const styles = StyleSheet.create({
     marginRight: 60,
     marginLeft:60,
     backgroundColor:'#18B671',
-  }
-=======
+  },
   notificationBox: {
     position: 'absolute',
     top: 0,
@@ -493,5 +491,4 @@ const styles = StyleSheet.create({
     marginTop: 30,
     zIndex: 100,
   },
->>>>>>> Adds friend request modal YUS.
 });
