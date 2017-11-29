@@ -1,3 +1,8 @@
+/**
+ * Navigator controls the main 5 pages of the application: Home, Connect,
+ * Vault, Profile, and Responses. 
+ */
+
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { TabNavigator } from 'react-navigation';

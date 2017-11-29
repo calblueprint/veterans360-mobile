@@ -2,7 +2,7 @@
  * Modal that represents a friend request from another
  * veteran, in which the user has the choice of either
  * accepting or rejecting the request, or pressing a
- * link to see the user's profile. 
+ * link to see the user's profile.
  *
  * @prop style            - style override
  * @prop veteran          - veteran object that sent the friend request
@@ -13,7 +13,14 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, Image, Animated, Easing } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Animated,
+  Easing, 
+} from 'react-native';
 
 import { margins } from '../styles/layout';
 import { colors } from '../styles/colors';

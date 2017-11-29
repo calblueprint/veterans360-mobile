@@ -19,7 +19,13 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, Animated, Image } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Image, 
+} from 'react-native';
 
 import { colors } from '../styles/colors';
 import { layoutStyles, margins } from '../styles/layout';

@@ -1,3 +1,7 @@
+/**
+ * Helper methods to retrieve all the routes to connect with the API.
+ */
+
 import { HOST_ADDR } from '../secrets';
 
 

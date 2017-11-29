@@ -1,3 +1,9 @@
+/**
+ * Navigator stack that controls the Connect and Connect Sign Up flow
+ * to ensure that the user doesn't see the Connect screen until the
+ * Connect sign up process has concluded.
+ */
+ 
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import ConnectScreen from '../screens/ConnectScreen';

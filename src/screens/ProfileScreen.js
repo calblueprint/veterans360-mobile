@@ -15,7 +15,13 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity, 
+} from 'react-native';
 
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
@@ -30,6 +36,12 @@ export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
 
+    /**
+     * TODO (Ken): Currently this is a hard coded state change on the profile
+     * screen when a user has presesed the connect button, but it would
+     * be best if this were handled in tandem with refreshing the parent
+     * component's veteran `sent_friend_request` state.
+     */
     this.state = {
       sentConnectRequest: false,
     };

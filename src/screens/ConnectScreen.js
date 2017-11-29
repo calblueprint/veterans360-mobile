@@ -8,7 +8,15 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, TouchableHighlight, Modal, Image, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  Modal,
+  Image,
+  Dimensions, 
+} from 'react-native';
 
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
@@ -457,6 +465,15 @@ const styles = StyleSheet.create({
     left: 40,
     right: 40,
   },
+  notificationBox: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    margin: 10,
+    marginTop: 30,
+    zIndex: 100,
+  },
   titleText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -519,14 +536,5 @@ const styles = StyleSheet.create({
     marginRight: 60,
     marginLeft:60,
     backgroundColor:'#18B671',
-  },
-  notificationBox: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    margin: 10,
-    marginTop: 30,
-    zIndex: 100,
   },
 });
