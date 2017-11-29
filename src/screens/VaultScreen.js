@@ -4,14 +4,15 @@ import { Font } from 'expo';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
-import ResourceRequester from '../helpers/requesters/ResourceRequester';
-import UpvoteRequester from '../helpers/requesters/UpvoteRequester';
+import { colors } from '../styles/colors';
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {
     tabBarLabel: 'Vault',
     tabBarIcon: ({ tintColor }) => (
-      <Icon name="briefcase" size={22} color="#e91e63" />
+      <Icon name="briefcase" size={22} color={ tintColor } />
     ),
   };
 
@@ -54,9 +55,11 @@ export default class VaultScreen extends React.Component {
     this.retrieveResources();
   }
 
-  retrieveResources() {
-    ResourceRequester.resources().then((response) => {
-      data = response.map(function(item) {
+  async retrieveResources() {
+    try {
+      const endpoint = APIRoutes.resourcePath();
+      let response_json = await BaseRequester.get(endpoint);
+      data = response_json.map(function(item) {
         return {
           id: item.id,
           title: item.file_name,
@@ -69,11 +72,12 @@ export default class VaultScreen extends React.Component {
           veteran_has_upvoted: item.veteran_has_upvoted,
         };
       }, this);
-      this.setState({ resources: data });
-    }).catch((error) => {
-      console.log(error);
+      this.setState({ resources: data, stillLoading: false });
       this.setState({ stillLoading: false });
-    })
+      return Promise.resolve(response_json);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   formatDate(date) {
@@ -146,22 +150,39 @@ export default class VaultScreen extends React.Component {
   /**
    * Upon call, returns the filter category elements based on the category array in the state.
    */
-  upvote(resourceId, hasUpvoted) {
+  async upvote(resourceId, hasUpvoted) {
     const veteranId = this.props.navigation.state.params.id;
-    if(hasUpvoted) {
-      UpvoteRequester.deleteUpvote(resourceId, veteranId).then((response) => {
-        console.log(response);
+    if (hasUpvoted) {
+      try {
+        const endpoint = APIRoutes.deleteUpvote();
+    		const params = {
+    			upvote: {
+    				resource_id: resourceId,
+    				veteran_id: veteranId
+    			}
+    		};
+        let response_json = await BaseRequester.patch(endpoint, params);
         this.retrieveResources();
-      }).catch((error) => {
-        console.log(error);
-      })
+        return Promise.resolve(response_json);
+      } catch(error) {
+        return Promise.reject(error);
+      }
     } else {
-      UpvoteRequester.createUpvote(resourceId, veteranId).then((response) => {
-        console.log(response);
+      try {
+        const endpoint = APIRoutes.newUpvote();
+        const params = {
+          upvote: {
+            veteran_id: veteranId,
+            resource_id: resourceId
+          }
+        };
+        let response_json = await BaseRequester.post(endpoint, params);
         this.retrieveResources();
-      }).catch((error) => {
+        return Promise.resolve(response_json);
+      } catch(error) {
         console.log(error);
-      });
+        return Promise.reject(error);
+      }
     }
   }
 
@@ -209,9 +230,9 @@ export default class VaultScreen extends React.Component {
                     )}
                   </View>
                   {item.veteran_has_upvoted ? (
-                    <Text style={[styles.upvoteText, {color:'#18B671'}]}>{ item.upvotes }</Text>
+                    <Text style={[styles.upvoteText, { color:colors.green }]}>{ item.upvotes }</Text>
                   ) : (
-                    <Text style={[styles.upvoteText, {color:'#949494'}]}>{ item.upvotes }</Text>
+                    <Text style={[styles.upvoteText, { color:colors.gray }]}>{ item.upvotes }</Text>
                   )}
                 </View>
               </TouchableHighlight>

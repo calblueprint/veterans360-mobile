@@ -205,7 +205,8 @@ export default class ConnectScreen extends React.Component {
     return this.state.activeConnection ? (
       <ConnectBox
         connection={this.state.activeConnection}
-        onClose={this.closeConnectBox}/>
+        onClose={this.closeConnectBox}
+      />
     ) : null;
   }
 

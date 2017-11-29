@@ -19,8 +19,8 @@ class APIRoutes {
   static newUpvote() {
     return APIRoutes.create('/upvotes');
   }
-  static deleteUpvote(resourceId, veteranId) {
-    return APIRoutes.create(`/upvotes/delete_upvote/${resourceId}/${veteranId}`);
+  static deleteUpvote() {
+    return APIRoutes.create('/upvotes/delete_upvote');
   }
 }
 
