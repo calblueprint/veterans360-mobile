@@ -101,7 +101,8 @@ export default class ConnectSignUp extends React.Component {
    */
   signUp(event, onSuccess, onFailure) {
     event.preventDefault();
-    const values = this.form.getValue();
+    const values = this.state.formValues;
+    values.militaryBranch = parseInt(values.militaryBranch);
     if (values) {
       ConnectSignUpRequester.signUp(
         this.props.navigation.state.params.id,
