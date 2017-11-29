@@ -70,7 +70,6 @@ export default class ConnectScreen extends React.Component {
   getConnectStatus(onConnectCallback) {
     const id = params.id;
     ConnectSignUpRequester.connectStatus(id).then((response) => {
-      console.log(response);
       if(response.on_connect) {
         this.setState({ stillLoading: false, onConnect: true });
         onConnectCallback && onConnectCallback();
@@ -78,7 +77,7 @@ export default class ConnectScreen extends React.Component {
         this.setState({ stillLoading: false, onConnect: false });
       }
     }).catch((error) => {
-      console.log(error)
+      console.error(error)
       this.setState({ stillLoading: false, onConnect: false });
     });
   }
@@ -89,10 +88,9 @@ export default class ConnectScreen extends React.Component {
   getVeterans() {
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
-      console.log(response[0]);
       this.setState({ veterans: response });
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }
 
@@ -102,10 +100,9 @@ export default class ConnectScreen extends React.Component {
   getParterOrgs() {
     const route = APIRoutes.parterOrgsPath();
     BaseRequester.get(route).then((response) => {
-      console.log(response[0]);
       this.setState({ parterOrgs: response });
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }
 
@@ -117,7 +114,6 @@ export default class ConnectScreen extends React.Component {
     const id = this.props.navigation.state.params.id;
     const route = APIRoutes.veteranFriendRequestsPath(id);
     BaseRequester.get(route).then((response) => {
-      console.log(response);
       this.setState({ friendRequests: response });
     }).catch((error) => {
       console.error(error);
@@ -144,7 +140,6 @@ export default class ConnectScreen extends React.Component {
       const newFriendRequests = update(this.state.friendRequests, {
         $apply: (reqs) => {return reqs.splice(i, 1)},
       });
-      console.log(newFriendRequests);
       this.setState({ friendRequests: newFriendRequests });
     };
   }
@@ -335,7 +330,7 @@ export default class ConnectScreen extends React.Component {
   /**
    * If the user has not signed up for connect yet, then this will
    * render in place of the Connect map, directing the user to sign
-   * up first. 
+   * up first.
    */
   renderConnectSignUp() {
     return (

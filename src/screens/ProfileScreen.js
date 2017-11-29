@@ -91,7 +91,7 @@ export default class ProfileScreen extends React.Component {
    */
   renderBackButton() {
     const params = this.getParams();
-    if (!params.source) {
+    if (!!params.source) {
       return (
         <TouchableOpacity
           onPress={this.goBack}

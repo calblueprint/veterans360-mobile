@@ -1,6 +1,8 @@
 /**
- * Simple hovering info modal that displays a title and a paragraph text
- * and can be closed.
+ * Modal that represents a friend request from another
+ * veteran, in which the user has the choice of either
+ * accepting or rejecting the request, or pressing a
+ * link to see the user's profile. 
  *
  * @prop style            - style override
  * @prop veteran          - veteran object that sent the friend request
