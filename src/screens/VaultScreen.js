@@ -127,7 +127,7 @@ export default class VaultScreen extends React.Component {
   }
 
   /**
-   * Upon call, returns the filter category elements based on the category array in the state.
+   * Upon call, returns the category elements based on the categories in the state
    */
   filterScroller() {
     return this.state.categories.map((item) => {
@@ -224,9 +224,9 @@ export default class VaultScreen extends React.Component {
                 <View style={{ flexDirection: 'row',}}>
                   <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 5,}}>
                     {item.veteran_has_upvoted ? (
-                      <Icon name="thumbs-up" size={15} color={'#18B671'} />
+                      <Icon name="thumbs-up" size={15} color={ colors.green } />
                     ) : (
-                      <Icon name="thumbs-up" size={15} color={'#949494'} />
+                      <Icon name="thumbs-up" size={15} color={ colors.gray } />
                     )}
                   </View>
                   {item.veteran_has_upvoted ? (
@@ -314,13 +314,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    backgroundColor:'#F2F2F2',
+    backgroundColor: colors.light_snow,
   },
   backgroundDisplay: {
     height: 400,
     width: 1000,
     transform: [{rotate: '-8deg'}],
-    backgroundColor: '#B8C4D0',
+    backgroundColor: colors.light_steel,
     zIndex: -1,
     left: -200,
     top: -200,
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   contentPanel: {
     backgroundColor: 'white',
     borderLeftWidth: 10,
-    borderLeftColor: '#18B671',
+    borderLeftColor: colors.green,
     paddingLeft:10,
     paddingRight: 10,
     paddingTop:15,
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontFamily: 'source-sans-pro-bold',
     fontSize: 12,
-    color: '#949494',
+    color: colors.gray,
   },
   button: {
     alignItems: 'center',
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 3,
     borderRadius: 20,
-    backgroundColor:'#18B671',
+    backgroundColor: colors.green,
   },
   upvote: {
     justifyContent:'center',
@@ -421,6 +421,6 @@ const styles = StyleSheet.create({
   categoryText: {
     fontFamily: 'source-sans-pro-light-italic',
     fontSize: 12,
-    color:'#949494',
+    color: colors.gray,
   },
 });
