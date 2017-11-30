@@ -68,11 +68,7 @@ export default class VaultScreen extends React.Component {
       return Promise.reject(error);
     }
   }
-
-  formatDate(date) {
-    return date.substring(5, 7) + "/" + date.substring(8, 10) + "/" + date.substring(0, 4)
-  }
-
+  
   /**
    * Updates the category filter and set state to updated categories
    * @param {Number} itemId
