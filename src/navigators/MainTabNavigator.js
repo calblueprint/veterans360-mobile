@@ -1,6 +1,6 @@
 /**
  * Navigator controls the main 5 pages of the application: Home, Connect,
- * Vault, Profile, and Responses. 
+ * Vault, Profile, and Responses.
  */
 
 import React from 'react';
@@ -65,7 +65,10 @@ const MainTabNavigator = TabNavigator({
   animationEnabled: true,
   tabBarOptions: {
     activeTintColor: colors.green,
-  }
+  },
+  navigationOptions: {
+    gesturesEnabled: false,
+  },
 });
 
 export default MainTabNavigator;

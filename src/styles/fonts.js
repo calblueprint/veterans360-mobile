@@ -1,7 +1,7 @@
 /**
  * Module that contains a function that loads all app fonts (called in
  * application.js) and fontStyles that includes basic styles for
- * the typography in the application. 
+ * the typography in the application.
  */
 
 import React, { Component } from 'react';
@@ -58,6 +58,11 @@ const fontStyles = StyleSheet.create({
     fontFamily: 'source-sans-pro-bold',
     color: colors.white,
   },
+  boldTextRed: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-bold',
+    color: colors.red,
+  }, 
   bodyText: {
     fontSize: 18,
     fontFamily: 'source-sans-pro-regular',

@@ -63,8 +63,12 @@ class BaseRequester {
 
     return fetch(endpoint, payload).then((response) => {
       if (!response.ok) { throw response; }
+      if (response.status === 204) { return {}; }
+      console.log(response);
       return response.json();
     }).then((json) => {
+      console.log("JSON");
+      console.log(json);
       return json;
     }).catch((error) => {
       if (!error.json) {

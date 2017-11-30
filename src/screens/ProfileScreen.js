@@ -19,12 +19,14 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
-  TouchableOpacity, 
+  TouchableOpacity,
 } from 'react-native';
 
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
+import LoginRequester from '../helpers/requesters/LoginRequester';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
@@ -48,6 +50,7 @@ export default class ProfileScreen extends React.Component {
 
     this.connect = this.connect.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   getParams() {
@@ -95,6 +98,17 @@ export default class ProfileScreen extends React.Component {
    */
   goBack() {
     return this.props.navigation.goBack();
+  }
+
+  /**
+   * Logs out the user from the app.
+   */
+  logout() {
+    LoginRequester.logout().then((response) => {
+      this.props.navigation.navigate('Login');
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   /**
@@ -194,6 +208,27 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
+  /**
+   * Renders the logout button IF the params.source
+   * does not exist (user accessed profile through)
+   * the tab navigator.
+   */
+  renderLogoutButton() {
+    const params = this.getParams();
+    if (!params.source) {
+      return (
+        <TouchableOpacity
+          onPress={this.logout}
+          style={styles.logoutButton}
+        >
+          <Text style={fontStyles.boldTextRed}>
+            LOG OUT
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+  }
+
   render() {
     const params = this.getParams();
     return (
@@ -210,12 +245,15 @@ export default class ProfileScreen extends React.Component {
           {this.renderBackButton()}
         </View>
 
-        <View style={styles.bodyContainer}>
-          {this.renderDetails()}
-          <View style={styles.bioContainer}>
+        <ScrollView style={styles.scrollContainer}>
+          <View style={styles.bodyContainer}>
+            {this.renderDetails()}
+            <View style={styles.bioContainer}>
+            </View>
+            {this.renderConnectButton()}
+            {this.renderLogoutButton()}
           </View>
-          {this.renderConnectButton()}
-        </View>
+        </ScrollView>
 
       </View>
     );
@@ -233,17 +271,23 @@ const styles = StyleSheet.create({
 
   /* Container for the header bg/photo */
   coverContainer: {
-    flex: 1,
+    height: '30%',
     width: '100%',
     backgroundColor: colors.green,
     zIndex: 100,
   },
 
+  /* Container for the ScrollView */
+  scrollContainer: {
+    flex: 1,
+  },
+
   /* Container for the body content */
   bodyContainer: {
-    flex: 2.5,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20,
   },
 
   /* Container for the details of this veteran/PO */
@@ -318,5 +362,16 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'source-sans-pro-regular',
     color: colors.white,
+  },
+  logoutButton: {
+    marginTop: 30,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 5,
+    borderColor: colors.red,
+    borderWidth: 2,
+    backgroundColor: colors.white,
   },
 });
