@@ -7,10 +7,7 @@ import VaultScreen from '../screens/VaultScreen';
 import ResponseScreen from '../screens/ResponseScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { colors } from '../styles/colors';
-<<<<<<< HEAD
-=======
 import ConnectSignUpStackNavigator from '../navigators/ConnectSignUpStackNavigator';
->>>>>>> origin/master
 
 const MainTabNavigator = TabNavigator({
   Home: {

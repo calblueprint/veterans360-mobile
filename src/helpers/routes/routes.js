@@ -13,16 +13,6 @@ class APIRoutes {
   static veteransSignUpPath() {
     return APIRoutes.create('/veterans');
   }
-<<<<<<< HEAD
-  static resourcePath() {
-    return APIRoutes.create('/resources');
-  }
-  static newUpvote() {
-    return APIRoutes.create('/upvotes');
-  }
-  static deleteUpvote() {
-    return APIRoutes.create('/upvotes/delete_upvote');
-=======
   static veteransConnectSignUpPath(id) {
     return APIRoutes.create(`/veterans/${id}/connect_sign_up`);
   }
@@ -31,7 +21,15 @@ class APIRoutes {
   }
   static veteransMilitaryBranch() {
     return APIRoutes.create('/veterans/get_military_branch');
->>>>>>> origin/master
+  }
+  static resourcePath() {
+    return APIRoutes.create('/resources');
+  }
+  static newUpvote() {
+    return APIRoutes.create('/upvotes');
+  }
+  static deleteUpvote() {
+    return APIRoutes.create('/upvotes/delete_upvote');
   }
 }
 

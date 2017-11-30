@@ -8,7 +8,6 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import InfoModal from '../components/InfoModal';
 import ConnectPin from '../components/ConnectPin';
 import ConnectBox from '../components/ConnectBox';
-import { StyleSheet, Text, View, Modal } from 'react-native';
 
 
 export default class ConnectScreen extends React.Component {
@@ -237,22 +236,6 @@ export default class ConnectScreen extends React.Component {
   }
 
   render() {
-<<<<<<< HEAD
-    return (
-      <View style={styles.baseContainer}>
-        {this.renderHelpModal()}
-        <MapView
-          ref={(ref) => this.mapView = ref}
-          style={styles.baseMapContainer}
-          initialRegion={this.getInitialRegion()}
-        >
-          {this.renderVeteranMarkers()}
-          {this.renderParterOrgMarkers()}
-        </MapView>
-        {this.renderConnectBox()}
-      </View>
-    );
-=======
 
     if (this.state.stillLoading) {
       return <View/>
@@ -338,7 +321,6 @@ export default class ConnectScreen extends React.Component {
         </View>
       );
     }
->>>>>>> origin/master
   }
 }
 
