@@ -68,7 +68,7 @@ export default class VaultScreen extends React.Component {
       return Promise.reject(error);
     }
   }
-  
+
   /**
    * Updates the category filter and set state to updated categories
    * @param {Number} itemId
