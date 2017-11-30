@@ -30,20 +30,7 @@ export default class VaultScreen extends React.Component {
         {name: 'MENTAL HEALTH', selected:true, id: 6},
       ],
 
-      resources: [
-        /*
-        {title: 'Title of Resource',
-          partner_org: 'Name of Partner Org',
-          date:'8 Oct 2018',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et aliquam neque. Proin lectus neque, tincidunt eget elementum sit amet, rhoncus ut libero.',
-          link: 'something',
-          upvotes: 0,
-          category: 2,
-          id: 1,
-          veteran_has_upvoted: boolean
-        },
-        */
-      ],
+      resources: [],
       stillLoading: true,
     };
     this.falseState = this.falseState.bind(this);
@@ -60,10 +47,12 @@ export default class VaultScreen extends React.Component {
       const endpoint = APIRoutes.resourcePath();
       let response_json = await BaseRequester.get(endpoint);
       data = response_json.map(function(item) {
+        dateRaw = item.updated_at;
+        date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
         return {
           id: item.id,
           title: item.file_name,
-          date: this.formatDate(item.updated_at),
+          date: date.toLocaleDateString("en-US"),
           link: item.url,
           partner_org: item.owner_id,
           description: item.description,
