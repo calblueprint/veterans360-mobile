@@ -18,13 +18,14 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '@expo/vector-icons/FontAwesome';
 import {
   StyleSheet,
   Text,
   View,
   Animated,
-  Image, 
+  Image,
 } from 'react-native';
 
 import { colors } from '../styles/colors';
@@ -177,6 +178,13 @@ export default class ConnectBox extends React.Component {
   }
 }
 
+ConnectBox.propTypes = {
+  connection: PropTypes.object.isRequired,
+  currentVeteran: PropTypes.object.isRequired,
+  onConnect: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  showProfile: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   /* Container of the entire box */

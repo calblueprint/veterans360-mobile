@@ -19,6 +19,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Platform } from 'react-native';
 import { colors } from '../styles/colors';
 import t from 'tcomb-form-native';
@@ -144,6 +145,12 @@ class Form extends React.Component {
   }
 }
 
+Form.propTypes = {
+  refCallback: PropTypes.func.isRequired,
+  options: PropTypes.object,
+  value: PropTypes.object,
+  onChange: PropTypes.func,
+};
 
 const styles = StyleSheet.create({
   formStyle: {

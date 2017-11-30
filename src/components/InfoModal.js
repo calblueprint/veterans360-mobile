@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, Animated, Easing } from 'react-native';
 import { colors } from '../styles/colors';
@@ -67,6 +68,11 @@ export default class InfoModal extends React.Component {
   }
 }
 
+InfoModal.propTypes = {
+  title: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   modal: {
@@ -78,7 +84,7 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
   },
   baseContainer: {
-    marginTop: 5, 
+    marginTop: 5,
     marginBottom: 5,
     padding: 20,
     borderRadius: 4,
