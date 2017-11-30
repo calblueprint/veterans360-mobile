@@ -10,15 +10,28 @@
  *                            - roles
  *                            - image
  *                            - bio
+ * @prop currentVeteran   - veteran that is currently logged in
+ * @prop onConnect        - callback to be executed after connect request
  * @prop onClose          - callback to be executed when close button pressed
+ * @prop showProfile      - function that navigates to
+ *                          a user or PO's profile
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, Animated, Image } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Image,
+} from 'react-native';
 
 import { colors } from '../styles/colors';
 import { layoutStyles, margins } from '../styles/layout';
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 import Animations from '../styles/animations';
 import Button from '../components/Button';
 
@@ -32,6 +45,8 @@ export default class ConnectBox extends React.Component {
     };
 
     this.onBoxClose = this.onBoxClose.bind(this);
+    this.connectWithVeteran = this.connectWithVeteran.bind(this);
+    this.showProfile = this.showProfile.bind(this);
   }
 
   componentDidMount() {
@@ -42,6 +57,11 @@ export default class ConnectBox extends React.Component {
     Animations.fade(this.state.animationValue).start(() => {
       this.props.onClose();
     });
+  }
+
+  getConnectionName() {
+    const connection = this.props.connection;
+    return connection.name || `${connection.first_name} ${connection.last_name}`;
   }
 
   getConnectionTitle() {
@@ -60,6 +80,30 @@ export default class ConnectBox extends React.Component {
         }),
       }],
     };
+  }
+
+  connectWithVeteran(event, onSuccess, onFailure) {
+    event.preventDefault();
+    const id = this.props.currentVeteran.id;
+    const route = APIRoutes.veteranFriendshipsPath(id);
+    const params = {
+      friendship: {
+        veteran_id: id,
+        friend_id: this.props.connection.id,
+      }
+    };
+    BaseRequester.post(route, params).then((response) => {
+      this.props.onConnect();
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      console.error(error);
+      onError && onError(error);
+    });
+  }
+
+  showProfile(event, onSuccess, onFailure) {
+    this.props.showProfile(this.props.connection);
+    onSuccess && onSuccess();
   }
 
   renderProfileImage() {
@@ -93,6 +137,8 @@ export default class ConnectBox extends React.Component {
   }
 
   render() {
+    const connection = this.props.connection;
+    const buttonStyle = connection.is_friend ? styles.friendButton : styles.profileButton;
     return (
       <Animated.View
         style={[styles.baseContainer,
@@ -106,21 +152,24 @@ export default class ConnectBox extends React.Component {
               style={styles.profileButton}
               textStyle={styles.profileButtonText}
               text="VIEW"
+              onPress={this.showProfile}
             />
             <Button
-              style={[styles.profileButton, margins.marginTop.md]}
+              style={[buttonStyle, margins.marginTop.md]}
               textStyle={styles.profileButtonText}
-              text="CONNECT"
+              text={connection.is_friend ? 'FRIEND' : 'CONNECT'}
+              disabled={connection.is_friend || connection.sent_friend_request}
+              onPress={this.connectWithVeteran}
             />
           </View>
         </View>
         <View style={styles.rightContainer}>
           <View style={styles.nameContainer}>
-            <Text style={styles.name}>{this.props.connection.name}</Text>
+            <Text style={styles.name}>{this.getConnectionName()}</Text>
             <Text style={styles.title}>{this.getConnectionTitle()}</Text>
           </View>
           <View style={styles.bioContainer}>
-            <Text style={styles.bio}>{this.props.connection.bio}</Text>
+            <Text style={styles.bio}>{connection.bio}</Text>
           </View>
         </View>
         {this.renderCloseButton()}
@@ -129,6 +178,13 @@ export default class ConnectBox extends React.Component {
   }
 }
 
+ConnectBox.propTypes = {
+  connection: PropTypes.object.isRequired,
+  currentVeteran: PropTypes.object.isRequired,
+  onConnect: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  showProfile: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   /* Container of the entire box */
@@ -192,6 +248,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingLeft: 12,
     paddingRight: 12,
+  },
+  friendButton: {
+    height: 25,
+    borderRadius: 4,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: colors.blue,
   },
   profileButtonText: {
     fontSize: 12,

@@ -18,7 +18,7 @@ function createStyles(styleNames) {
     let style = {};
     styleNames.forEach((styleName) => {
       style[styleName] = eval(size);
-    })
+    });
     styles[size] = style;
   });
   return StyleSheet.create(styles);
@@ -31,17 +31,17 @@ const margins = {
   marginRight: createStyles(['marginRight']),
   marginTopBottom: createStyles(['marginTop', 'marginBottom']),
   marginLeftRight: createStyles(['marginLeft', 'marginRight']),
-}
+};
 
 const layoutStyles = StyleSheet.create({
   flexCenter: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  }
-})
+  },
+});
 
 export {
-  margins, 
+  margins,
   layoutStyles,
 };
