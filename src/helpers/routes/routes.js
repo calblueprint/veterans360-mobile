@@ -1,4 +1,9 @@
+/**
+ * Helper methods to retrieve all the routes to connect with the API.
+ */
+
 import { HOST_ADDR } from '../secrets';
+
 
 class APIRoutes {
 
@@ -13,6 +18,11 @@ class APIRoutes {
   static veteransSignUpPath() {
     return APIRoutes.create('/veterans');
   }
+
+  // Veterans
+  static veteransPath() {
+    return APIRoutes.create('/veterans');
+  }
   static veteransConnectSignUpPath(id) {
     return APIRoutes.create(`/veterans/${id}/connect_sign_up`);
   }
@@ -22,14 +32,19 @@ class APIRoutes {
   static veteransMilitaryBranch() {
     return APIRoutes.create('/veterans/get_military_branch');
   }
-  static resourcePath() {
-    return APIRoutes.create('/resources');
+  static veteranFriendRequestsPath(id) {
+    return APIRoutes.create(`/veterans/${id}/requests`);
   }
-  static newUpvote() {
-    return APIRoutes.create('/upvotes');
+  static veteranFriendshipsPath(veteran_id) {
+    return APIRoutes.create(`/veterans/${veteran_id}/friendships`);
   }
-  static deleteUpvote() {
-    return APIRoutes.create('/upvotes/delete_upvote');
+  static veteranRejectFriendshipPath(id) {
+    return APIRoutes.create(`/veterans/${id}/friendships/reject`);
+  }
+
+  // Partnering Orgs
+  static parterOrgsPath() {
+    return APIRoutes.create('/partnering_organizations');
   }
 }
 

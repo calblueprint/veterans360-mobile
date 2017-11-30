@@ -1,11 +1,33 @@
+/**
+ * Connect Screen that shows a map view of the neighborhood
+ * around the user and renders pins corresponding to veterans
+ * that are using the app and also signed up for Connect.
+ *
+ * @prop navigation.state.params      - current signed in veteran obj
+ */
+
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, TouchableHighlight, Modal, Image, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  Modal,
+  Image,
+  Dimensions,
+} from 'react-native';
+
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import ConnectSignUpRequester from '../helpers/requesters/ConnectSignUpRequester';
+import update from 'immutability-helper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 import InfoModal from '../components/InfoModal';
+import FriendRequestModal from '../components/FriendRequestModal';
 import ConnectPin from '../components/ConnectPin';
 import ConnectBox from '../components/ConnectBox';
 
@@ -17,31 +39,27 @@ export default class ConnectScreen extends React.Component {
 
     this.state = {
       isHelpModalOpen: true,
-      veterans: this.getVeterans(),
-      parterOrgs: this.getParterOrgs(),
+      veterans: [],
+      parterOrgs: [],
       activeConnection: null,  // Indicates if a veteran/org has been focused
       stillLoading: true,
       onConnect: false,
+      friendRequests: [],
     }
 
     this.onRegionChange = this.onRegionChange.bind(this);
+    this.onConnectRequest = this.onConnectRequest.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
     this.closeConnectBox = this.closeConnectBox.bind(this);
+    this.navigateToConnectProfile = this.navigateToConnectProfile.bind(this);
   }
 
   componentDidMount() {
     params = this.props.navigation.state.params;
-    const id = params.id;
-    ConnectSignUpRequester.connectStatus(id).then((response) => {
-      console.log(response);
-      if(response.on_connect) {
-        this.setState({ stillLoading: false, onConnect: true });
-      } else {
-        this.setState({ stillLoading: false, onConnect: false });
-      }
-    }).catch((error) => {
-      console.log(error)
-      this.setState({ stillLoading: false, onConnect: false });
+    this.getConnectStatus(() => {
+      this.getVeterans();
+      this.getParterOrgs();
+      this.getVeteranFriendRequests();
     });
   }
 
@@ -50,62 +68,64 @@ export default class ConnectScreen extends React.Component {
   }
 
   /**
-   * Placeholder until backend data is collected.
+   * Gets whether current veteran is signed up with connect and
+   * renders the appropriate screen, either sign up or the connect
+   * map.
+   *
+   * @param {function} onConnectCallback: callback if veteran already
+   *                                      signed up with connect
    */
-  getVeterans() {
-    return [
-      {
-        id: 15,
-        name: 'Ken Chen',
-        roles: ['veteran', 'caretaker'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.78825,
-        lng: -122.4324,
-      },
-      {
-        id: 16,
-        name: 'James Chen',
-        roles: ['family_member'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.77825,
-        lng: -122.4123,
-      },
-      {
-        id: 17,
-        name: 'Sarah Chen',
-        roles: ['combat_veteran', 'post_911'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.78240,
-        lng: -122.4344,
-      },
-      {
-        id: 18,
-        name: 'Alice Chen',
-        roles: ['combat_veteran', 'caretaker'],
-        email: 'kenchen@berkeley.edu',
-        bio: 'Hi! I am a former Signal Corps officer currently residing in Berkeley, CA. Looking for assistance with finaces and benefits.',
-        lat: 37.78434,
-        lng: -122.4354,
-      },
-    ]
+  getConnectStatus(onConnectCallback) {
+    const id = params.id;
+    ConnectSignUpRequester.connectStatus(id).then((response) => {
+      if(response.on_connect) {
+        this.setState({ stillLoading: false, onConnect: true });
+        onConnectCallback && onConnectCallback();
+      } else {
+        this.setState({ stillLoading: false, onConnect: false });
+      }
+    }).catch((error) => {
+      console.error(error)
+      this.setState({ stillLoading: false, onConnect: false });
+    });
   }
 
   /**
-   * Placeholder until backend data is collected.
+   * Gets all veterans from the server and sets state once retrieved.
+   */
+  getVeterans() {
+    const route = APIRoutes.veteransPath();
+    BaseRequester.get(route).then((response) => {
+      this.setState({ veterans: response });
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
+  /**
+   * Gets all POs from the server and sets state once retrieved.
    */
   getParterOrgs() {
-    return [
-      {
-        id: 15,
-        name: 'Veterans 360',
-        email: 'kenchen@berkeley.edu',
-        lat: 37.78354,
-        lng: -122.4224,
-      },
-    ]
+    const route = APIRoutes.parterOrgsPath();
+    BaseRequester.get(route).then((response) => {
+      this.setState({ parterOrgs: response });
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
+  /**
+   * Gets all the friend requests of this veteran
+   * to render on the screen.
+   */
+  getVeteranFriendRequests() {
+    const id = this.props.navigation.state.params.id;
+    const route = APIRoutes.veteranFriendRequestsPath(id);
+    BaseRequester.get(route).then((response) => {
+      this.setState({ friendRequests: response });
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   openHelpModal() {
@@ -116,8 +136,26 @@ export default class ConnectScreen extends React.Component {
     this.setState({ isHelpModalOpen: false });
   }
 
+  /**
+   * Removes the friend request from the state so it
+   * isn't rendered until the next refresh.
+   *
+   * @param {integer} i: the index of the friend request
+   *                     to be removed from the list
+   */
+  closeFriendRequestModal(i) {
+    return () => {
+      const newFriendRequests = update(this.state.friendRequests, {
+        $apply: (reqs) => {return reqs.splice(i, 1)},
+      });
+      this.setState({ friendRequests: newFriendRequests });
+    };
+  }
+
   openConnectBox(connection) {
-    this.setState({ activeConnection: connection });
+    this.setState({
+      activeConnection: connection,
+    });
   }
 
   closeConnectBox() {
@@ -165,6 +203,50 @@ export default class ConnectScreen extends React.Component {
   }
 
   /**
+   * Called when the ConnectBox "CONNECT" button is pressed by
+   * this user, indicating a friend request sent to the other
+   * user.
+   */
+  onConnectRequest() {
+    this.state.activeConnection.sent_friend_request = true;
+    this.setState({ activeConnection: this.state.activeConnection });
+  }
+
+  /**
+   * Callback function used by components within this component in order
+   * to navigate user to the profile of another veteran or PO.
+   * The params are supplied by the subcomponent and consists of the
+   * object (veteran or PO) for which the profile page displays. Then, we
+   * add additional fields like `source` and `currentVeteran` to indicate
+   * additional information that the profile page needs to properly render
+   * the fields and buttons.
+   *
+   * @param params: an object (veteran or PO) supplied by the component
+   *                that uses this callback
+   */
+  navigateToConnectProfile(params) {
+    const navParams = update(params, {$merge: {
+      source: 'connect',
+      currentVeteran: this.props.navigation.state.params,
+      onConnect: this.onConnectRequest,
+    }});
+    this.props.navigation.navigate('ConnectProfile', navParams);
+  }
+
+  /**
+   * Renders the help modal, which is static information, and a list
+   * of all friend requests sent to this user.
+   */
+  renderNotifications() {
+    return (
+      <View style={styles.notificationBox}>
+        {this.renderHelpModal()}
+        {this.renderFriendRequests()}
+      </View>
+    )
+  }
+
+  /**
    * Renders a help modal with some information when the user first
    * sees the page.
    */
@@ -181,6 +263,20 @@ export default class ConnectScreen extends React.Component {
     }
   }
 
+  renderFriendRequests() {
+    return this.state.friendRequests.map((veteran, i) => {
+      return (
+        <FriendRequestModal
+          veteran={veteran}
+          currentVeteran={this.props.navigation.state.params}
+          onClose={this.closeFriendRequestModal(i)}
+          showProfile={this.navigateToConnectProfile}
+          key={`friend_request_${i}`}
+        />
+      );
+    });
+  }
+
   /**
    * Return a list of MapView Markers that represent veterans.
    * TODO (Ken): See if you can use underscore.js partials instead of
@@ -189,8 +285,8 @@ export default class ConnectScreen extends React.Component {
   renderVeteranMarkers() {
     return this.state.veterans.map((veteran) => {
       const coordinate = {
-        latitude: veteran.lat,
-        longitude: veteran.lng,
+        latitude: parseFloat(veteran.lat),
+        longitude: parseFloat(veteran.lng),
       };
       return (
         <MapView.Marker
@@ -212,8 +308,8 @@ export default class ConnectScreen extends React.Component {
   renderParterOrgMarkers() {
     return this.state.parterOrgs.map((org) => {
       const coordinate = {
-        latitude: org.lat,
-        longitude: org.lng,
+        latitude: parseFloat(org.lat),
+        longitude: parseFloat(org.lng),
       };
       return (
         <MapView.Marker
@@ -231,96 +327,106 @@ export default class ConnectScreen extends React.Component {
     return this.state.activeConnection ? (
       <ConnectBox
         connection={this.state.activeConnection}
-        onClose={this.closeConnectBox}/>
+        onClose={this.closeConnectBox}
+        onConnect={this.onConnectRequest}
+        currentVeteran={this.props.navigation.state.params}
+        showProfile={this.navigateToConnectProfile}
+      />
     ) : null;
   }
 
-  render() {
-
-    if (this.state.stillLoading) {
-      return <View/>
-    }
-
-    if (this.state.onConnect) {
-      return (
-        <View style={styles.baseContainer}>
-          {this.renderHelpModal()}
-          <MapView
-            ref={(ref) => this.mapView = ref}
-            style={styles.baseMapContainer}
-            initialRegion={this.getInitialRegion()}
-          >
-            {this.renderVeteranMarkers()}
-            {this.renderParterOrgMarkers()}
-          </MapView>
-          {this.renderConnectBox()}
-        </View>
-      );
-    } else {
-      return (
-        <View style= {{ flex: 1 }}>
-          <Image style={ styles.backgroundImg } source={require('../../assets/images/map.jpg')}/>
-          <View style={ styles.backgroundOverlay }>
-            <View style={ styles.contentContainer}>
-              <Text style={ styles.subtitleText }>
-                Get started with
-              </Text>
-              <Text style={ styles.titleText }>
-                Veterans 360 Connect
-              </Text>
-              <View style={{ marginTop: 20, flex: 1, marginBottom: 60, alignItems: 'center' }}>
-                <View style={ styles.tile }>
-                  <View style={ styles.tileIcon }>
-                    <Icon name="map-marker" size={50} color={'#18B671'} />
-                  </View>
-                  <View style={ styles.tileText }>
-                    <Text style={ styles.tileTitleText }>
-                      EXPLORE
-                    </Text>
-                    <Text style={ styles.bodyText }>
-                      veterans and partnered veteran organizations around your area.
-                    </Text>
-                  </View>
+  /**
+   * If the user has not signed up for connect yet, then this will
+   * render in place of the Connect map, directing the user to sign
+   * up first.
+   */
+  renderConnectSignUp() {
+    return (
+      <View style= {{ flex: 1 }}>
+        <Image style={ styles.backgroundImg } source={require('../../assets/images/map.jpg')}/>
+        <View style={ styles.backgroundOverlay }>
+          <View style={ styles.contentContainer}>
+            <Text style={ styles.subtitleText }>
+              Get started with
+            </Text>
+            <Text style={ styles.titleText }>
+              Veterans 360 Connect
+            </Text>
+            <View style={{ marginTop: 20, flex: 1, marginBottom: 60, alignItems: 'center' }}>
+              <View style={ styles.tile }>
+                <View style={ styles.tileIcon }>
+                  <Icon name="map-marker" size={50} color={'#18B671'} />
                 </View>
-                <View style={ styles.line }>
-                </View>
-                <View style={ styles.tile }>
-                  <View style={ styles.tileIcon }>
-                    <Icon name="users" size={50} color={'#18B671'} />
-                  </View>
-                  <View style={ styles.tileText }>
-                    <Text style={ styles.tileTitleText }>
-                      CONNECT
-                    </Text>
-                    <Text style={ styles.bodyText }>
-                      with other veterans like you and get in touch.
-                    </Text>
-                  </View>
-                </View>
-                <View style={ styles.line }>
-                </View>
-                <View style={ styles.tile }>
-                  <View style={ styles.tileIcon }>
-                    <Icon name="calendar-check-o" size={50} color={'#18B671'} />
-                  </View>
-                  <View style={ styles.tileText }>
-                    <Text style={ styles.tileTitleText }>
-                      STAY UP TO DATE
-                    </Text>
-                    <Text style={ styles.bodyText }>
-                      with every new event and resource created by your connections.
-                    </Text>
-                  </View>
+                <View style={ styles.tileText }>
+                  <Text style={ styles.tileTitleText }>
+                    EXPLORE
+                  </Text>
+                  <Text style={ styles.bodyText }>
+                    veterans and partnered veteran organizations around your area.
+                  </Text>
                 </View>
               </View>
-              <TouchableHighlight onPress={ () => { this.navigateToSignUp(); } } style={styles.button}>
-                <Text style={styles.buttonText}>SIGN UP</Text>
-              </TouchableHighlight>
+              <View style={ styles.line }>
+              </View>
+              <View style={ styles.tile }>
+                <View style={ styles.tileIcon }>
+                  <Icon name="users" size={50} color={'#18B671'} />
+                </View>
+                <View style={ styles.tileText }>
+                  <Text style={ styles.tileTitleText }>
+                    CONNECT
+                  </Text>
+                  <Text style={ styles.bodyText }>
+                    with other veterans like you and get in touch.
+                  </Text>
+                </View>
+              </View>
+              <View style={ styles.line }>
+              </View>
+              <View style={ styles.tile }>
+                <View style={ styles.tileIcon }>
+                  <Icon name="calendar-check-o" size={50} color={'#18B671'} />
+                </View>
+                <View style={ styles.tileText }>
+                  <Text style={ styles.tileTitleText }>
+                    STAY UP TO DATE
+                  </Text>
+                  <Text style={ styles.bodyText }>
+                    with every new event and resource created by your connections.
+                  </Text>
+                </View>
+              </View>
             </View>
+            <TouchableHighlight onPress={ () => { this.navigateToSignUp(); } } style={styles.button}>
+              <Text style={styles.buttonText}>SIGN UP</Text>
+            </TouchableHighlight>
           </View>
         </View>
-      );
+      </View>
+    );
+  }
+
+  render() {
+    if (this.state.stillLoading) {
+      return <View />
+    } else if (!this.state.onConnect) {
+      return this.renderConnectSignUp();
     }
+
+    return (
+      <View style={styles.baseContainer}>
+        {this.renderNotifications()}
+        <MapView
+          ref={(ref) => this.mapView = ref}
+          style={styles.baseMapContainer}
+          initialRegion={this.getInitialRegion()}
+        >
+          {this.renderVeteranMarkers()}
+          {this.renderParterOrgMarkers()}
+        </MapView>
+        {this.renderConnectBox()}
+      </View>
+    );
   }
 }
 
@@ -358,6 +464,15 @@ const styles = StyleSheet.create({
     bottom: 40,
     left: 40,
     right: 40,
+  },
+  notificationBox: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    margin: 10,
+    marginTop: 30,
+    zIndex: 100,
   },
   titleText: {
     fontSize: 24,
@@ -421,5 +536,5 @@ const styles = StyleSheet.create({
     marginRight: 60,
     marginLeft:60,
     backgroundColor:'#18B671',
-  }
+  },
 });

@@ -4,9 +4,14 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
-import { Form, t } from '../components/Form';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+} from 'react-native';
 
+import { Form, t } from '../components/Form';
 import { imageStyles } from '../styles/images';
 import { layoutStyles, margins } from '../styles/layout';
 import { colors } from '../styles/colors';

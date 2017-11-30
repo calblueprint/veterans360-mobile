@@ -8,9 +8,11 @@
  * @prop onPress      - callback function with three arguments (see bottom)
  *                      to be executed when button pressed
  * @prop text         - the text to be displayed in the button
+ * @prop disabled     - if true then the button cannot be pressed
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { colors } from '../styles/colors';
@@ -55,6 +57,9 @@ export default class Button extends React.Component {
   }
 
   getStyle() {
+    if (this.props.disabled) {
+      return [styles.buttonStyle, styles.disabledButtonStyle, this.props.style];
+    }
     let buttonStyle;
     switch (this.state.currentAction) {
       case 'saving':
@@ -96,6 +101,7 @@ export default class Button extends React.Component {
         style={this.getStyle()}
         onPress={this.submit}
         underlayColor={colors.dark_green}
+        disabled={this.props.disabled}
       >
         <View style={styles.innerButtonStyle}>
           {this.getIcon()}
@@ -106,6 +112,11 @@ export default class Button extends React.Component {
   }
 }
 
+Button.propTypes = {
+  onPress: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+};
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -127,6 +138,9 @@ const styles = StyleSheet.create({
   },
   errorButtonStyle: {
     backgroundColor: colors.red,
+  },
+  disabledButtonStyle: {
+    backgroundColor: colors.dark_green,
   },
   innerButtonStyle: {
     flexDirection: 'row',

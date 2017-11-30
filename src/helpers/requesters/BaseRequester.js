@@ -37,7 +37,7 @@ class BaseRequester {
   }
 
   /**
-   * DESTROY request on endpoint.
+   * DELETE request on endpoint.
    */
   static destroy(endpoint) {
     return this._request(
@@ -67,6 +67,9 @@ class BaseRequester {
     }).then((json) => {
       return json;
     }).catch((error) => {
+      if (!error.json) {
+        throw error;
+      }
       return error.json().then((json) => {
         throw json;
       });
