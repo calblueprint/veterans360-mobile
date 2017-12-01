@@ -10,9 +10,12 @@ import update from 'immutability-helper';
 
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
+import { fontStyles } from '../styles/fonts';
 import { APIRoutes } from '../helpers/routes/routes';
+import { colors } from '../styles/colors';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import ProfileGallery from '../components/ProfileGallery';
+import BackgroundOverlay from '../components/BackgroundOverlay';
 
 
 export default class HomeScreen extends React.Component {
@@ -58,25 +61,47 @@ export default class HomeScreen extends React.Component {
     const currentVeteran = this.props.navigation.state.params;
 
     return (
-      <ScrollView>
-        <View style={styles.baseContainer}>
+      <BackgroundOverlay
+        style={styles.baseContainer}
+        color={colors.light_steel}
+        bottom="80%"
+      >
+        <ScrollView>
+          <View style={styles.welcomeContainer}>
+            <Text style={fontStyles.welcomeHeader}>
+              {`Welcome back, ${currentVeteran.first_name}!`}
+            </Text>
+          </View>
           <ProfileGallery
             veterans={this.state.veterans}
             currentVeteran={currentVeteran}
             onConnect={this.onConnectRequest}
           />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </BackgroundOverlay>
     );
   }
 
 }
 
 const styles = StyleSheet.create({
+  /* Container for the entire screen */
   baseContainer: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+
+  /* Container for the welcome text */
+  welcomeContainer: {
+    margin: 20,
+    marginTop: 40,
+    marginBottom: 0,
+    backgroundColor: 'transparent',
+  },
+
+  /* Individual items */
 });

@@ -4,6 +4,8 @@
  * of the components on the page.
  *
  * @prop children     - elements contained in this container
+ * @prop bottom       - bottom percentage style
+ * @prop color        - color value of the background
  */
 
 import React from 'react';
@@ -15,16 +17,31 @@ import { colors } from '../styles/colors';
 
 export default class BackgroundOverlay extends React.Component {
 
+  getOverlayStyle() {
+    let propStyles = {};
+    if (!!this.props.bottom) {
+      propStyles.bottom = this.props.bottom;
+    }
+    if (!!this.props.color) {
+      propStyles.backgroundColor = this.props.color;
+    }
+    return [styles.rotatedContainer, propStyles]
+  }
+
   render() {
     return (
-      <View style={styles.baseContainer}>
-        <View style={styles.rotatedContainer} />
+      <View style={[styles.baseContainer, this.props.style]}>
+        <View style={this.getOverlayStyle()} />
         {this.props.children}
       </View>
     );
   }
 }
 
+BackgroundOverlay.defaultProps = {
+  bottom: '50%',
+  backgroundColor: colors.green,
+};
 
 const styles = StyleSheet.create({
   baseContainer: {
@@ -40,5 +57,5 @@ const styles = StyleSheet.create({
     bottom: '50%',
     transform: [{rotate: '-16deg'}],
     backgroundColor: colors.green,
-  }
+  },
 });

@@ -28,7 +28,7 @@ async function loadFonts() {
 
 const fontStyles = StyleSheet.create({
   centered: {
-    textAlign: 'center', 
+    textAlign: 'center',
   },
   mainHeader: {
     fontSize: 32,
@@ -40,6 +40,11 @@ const fontStyles = StyleSheet.create({
     fontFamily: 'source-sans-pro-bold',
     color: colors.white,
   },
+  welcomeHeader: {
+    fontSize: 32,
+    fontFamily: 'source-sans-pro-light',
+    color: colors.white,
+  }, 
   labelText: {
     fontSize: 16,
     fontFamily: 'source-sans-pro-bold',
