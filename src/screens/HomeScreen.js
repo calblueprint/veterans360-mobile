@@ -74,9 +74,7 @@ export default class HomeScreen extends React.Component {
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
-    return (
-
-    );
+    return null;
   }
 
   render() {
