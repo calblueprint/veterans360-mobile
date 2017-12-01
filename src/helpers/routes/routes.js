@@ -51,6 +51,9 @@ class APIRoutes {
     return APIRoutes.create('/upvotes/delete_upvote');
   }
 
+  static resourceCategories() {
+    return APIRoutes.create('/resources/get_resource_categories');
+  }
 
   // Partnering Orgs
   static parterOrgsPath() {
