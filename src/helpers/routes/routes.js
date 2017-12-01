@@ -41,6 +41,16 @@ class APIRoutes {
   static veteranRejectFriendshipPath(id) {
     return APIRoutes.create(`/veterans/${id}/friendships/reject`);
   }
+  static resourcePath() {
+    return APIRoutes.create(`/resources`);
+  }
+  static newUpvote() {
+    return APIRoutes.create('/upvotes');
+  }
+  static deleteUpvote() {
+    return APIRoutes.create('/upvotes/delete_upvote');
+  }
+
 
   // Partnering Orgs
   static parterOrgsPath() {
