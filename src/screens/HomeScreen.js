@@ -70,6 +70,15 @@ export default class HomeScreen extends React.Component {
     this.props.navigation.navigate('HomeProfile', params);
   }
 
+  /**
+   * TODO (Claire): You can return all your stuff here
+   */
+  renderResources() {
+    return (
+
+    );
+  }
+
   render() {
     const currentVeteran = this.props.navigation.state.params;
 
@@ -91,6 +100,7 @@ export default class HomeScreen extends React.Component {
             onConnect={this.onConnectRequest}
             showProfile={this.navigateToProfile}
           />
+          {this.renderResources()}
         </ScrollView>
       </BackgroundOverlay>
     );
