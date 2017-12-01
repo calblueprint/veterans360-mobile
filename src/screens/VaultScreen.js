@@ -147,7 +147,16 @@ export default class VaultScreen extends React.Component {
     			}
     		};
         let response_json = await BaseRequester.patch(endpoint, params);
-        this.retrieveResources();
+
+        let resourceArr = this.state.resources.slice()
+        resourceArr.forEach((i) => {
+          if (i.id == resourceId) {
+            i.upvotes = i.upvotes - 1;
+            i.veteran_has_upvoted = false;
+          }
+        })
+        this.setState({ resources:resourceArr });
+
         return Promise.resolve(response_json);
       } catch(error) {
         return Promise.reject(error);
@@ -162,7 +171,16 @@ export default class VaultScreen extends React.Component {
           }
         };
         let response_json = await BaseRequester.post(endpoint, params);
-        this.retrieveResources();
+
+        let resourceArr = this.state.resources.slice()
+        resourceArr.forEach((i) => {
+          if (i.id == resourceId) {
+            i.upvotes = i.upvotes + 1;
+            i.veteran_has_upvoted = true;
+          }
+        })
+        this.setState({ resources:resourceArr });
+
         return Promise.resolve(response_json);
       } catch(error) {
         console.log(error);
