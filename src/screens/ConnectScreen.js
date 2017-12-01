@@ -17,11 +17,11 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import update from 'immutability-helper';
 
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import ConnectSignUpRequester from '../helpers/requesters/ConnectSignUpRequester';
-import update from 'immutability-helper';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 import { APIRoutes } from '../helpers/routes/routes';

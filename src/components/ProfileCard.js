@@ -79,7 +79,7 @@ export default class ProfileCard extends React.Component {
           />
         </View>
       </View>
-    )
+    );
   }
 
 }
@@ -87,7 +87,7 @@ export default class ProfileCard extends React.Component {
 ProfileCard.propTypes = {
   veteran: PropTypes.object.isRequired,
   currentVeteran: PropTypes.object.isRequired,
-  onConnect: PropTypes.func.isRequired, 
+  onConnect: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({

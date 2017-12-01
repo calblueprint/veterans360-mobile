@@ -97,6 +97,7 @@ export default class LoginScreen extends React.Component {
       }).catch((error) => {
         onFailure && onFailure(error.error);
         this.setState({ errors: error.error });
+        console.error(error);
       });
     } else {
       onFailure && onFailure();

@@ -8,12 +8,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore'; 
+import _ from 'underscore';
+import update from 'immutability-helper';
 
 import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
 } from 'react-native';
 import { colors } from '../styles/colors';
 import ProfileCard from '../components/ProfileCard';
@@ -35,11 +37,19 @@ export default class ProfileGallery extends React.Component {
    * want to mutate props.
    */
   getVeteransCopy() {
-    return JSON.parse(JSON.stringify(this.props.veterans));
+    const copy = JSON.parse(JSON.stringify(this.props.veterans))
+    return copy;
   }
 
   onConnectRequest(i) {
-
+    const newVeterans = update(this.state.veterans, {
+      veterans: {
+        [i]: {
+          sent_friend_request: { $set: true },  
+        },
+      },
+    });
+    this.setState({ veterans: newVeterans });
   }
 
   renderProfileCards() {
@@ -48,15 +58,28 @@ export default class ProfileGallery extends React.Component {
         <ProfileCard
           veteran={veteran}
           currentVeteran={this.props.currentVeteran}
-          onConnect={this.onConnectRequest}
+          onConnect={_.partial(this.onConnectRequest, i)}
         />
-      )
+      );
     });
   }
 
   render() {
-
-
+    return (
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+      >
+        {this.renderProfileCards()}
+      </ScrollView>
+    );
   }
 
 }
+
+styles = StyleSheet.create({
+  scrollContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
