@@ -28,6 +28,7 @@ export default class HomeScreen extends React.Component {
     };
 
     this.onConnectRequest = this.onConnectRequest.bind(this);
+    this.navigateToProfile = this.navigateToProfile.bind(this);
   }
 
   componentDidMount() {
@@ -48,6 +49,14 @@ export default class HomeScreen extends React.Component {
     });
   }
 
+  /**
+   * Passed down and called by the ProfileCard when
+   * the connect button is pressed so that it updates
+   * the state of the i-th veteran in this state to
+   * have sent the friend request.
+   *
+   * @param {integer} i: the i-th veteran to update
+   */
   onConnectRequest(i) {
     const newVeterans = update(this.state.veterans, {
       [i]: {
@@ -57,6 +66,10 @@ export default class HomeScreen extends React.Component {
     this.setState({ veterans: newVeterans });
   }
 
+  navigateToProfile(params) {
+    this.props.navigation.navigate('HomeProfile', params);
+  }
+
   render() {
     const currentVeteran = this.props.navigation.state.params;
 
@@ -64,7 +77,7 @@ export default class HomeScreen extends React.Component {
       <BackgroundOverlay
         style={styles.baseContainer}
         color={colors.light_steel}
-        bottom="80%"
+        bottom="70%"
       >
         <ScrollView>
           <View style={styles.welcomeContainer}>
@@ -76,6 +89,7 @@ export default class HomeScreen extends React.Component {
             veterans={this.state.veterans}
             currentVeteran={currentVeteran}
             onConnect={this.onConnectRequest}
+            showProfile={this.navigateToProfile}
           />
         </ScrollView>
       </BackgroundOverlay>

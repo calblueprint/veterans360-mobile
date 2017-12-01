@@ -38,11 +38,6 @@ export default class BackgroundOverlay extends React.Component {
   }
 }
 
-BackgroundOverlay.defaultProps = {
-  bottom: '50%',
-  backgroundColor: colors.green,
-};
-
 const styles = StyleSheet.create({
   baseContainer: {
     flex: 1,

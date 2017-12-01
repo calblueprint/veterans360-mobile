@@ -5,6 +5,7 @@
  * @prop veteran         - veteran object
  * @prop currentVeteran  - currently logged in veteran obj
  * @prop onConnect       - callback when connect pressed
+ * @prop showProfile     - callback to show profile
  */
 
 import React from 'react';
@@ -14,7 +15,10 @@ import {
   Text,
   View,
   Image,
+  TouchableOpacity,
 } from 'react-native';
+import _ from 'underscore';
+import update from 'immutability-helper';
 
 import { margins } from '../styles/layout';
 import { colors } from '../styles/colors';
@@ -53,34 +57,42 @@ export default class ProfileCard extends React.Component {
 
   render() {
     const veteran = this.props.veteran;
-
+    const navParams = update(veteran, {$merge: {
+      source: 'home',
+      currentVeteran: this.props.currentVeteran,
+      onConnect: this.props.onConnect,
+    }});
     return (
-      <View style={[styles.baseContainer, this.props.style]}>
-        <View style={styles.backgroundBox} />
+      <TouchableOpacity
+        onPress={_.partial(this.props.showProfile, navParams)}
+      >
+        <View style={[styles.baseContainer, this.props.style]}>
+          <View style={styles.backgroundBox} />
 
-        <View style={styles.contentContainer}>
-          <Image
-            source={require('../../assets/images/photogenic.jpg')}
-            style={styles.veteranImage}
-          />
-        <Text style={[fontStyles.boldText, margins.marginTop.md, fontStyles.centered]}>
-            {`${veteran.first_name} ${veteran.last_name}`}
-          </Text>
-          <Text style={[fontStyles.bodyTextSmall, margins.marginTop.xs, fontStyles.centered]}>
-            {`${veteran.military_branch}`}
-          </Text>
-        </View>
+          <View style={styles.contentContainer}>
+            <Image
+              source={require('../../assets/images/photogenic.jpg')}
+              style={styles.veteranImage}
+            />
+          <Text style={[fontStyles.boldText, margins.marginTop.md, fontStyles.centered]}>
+              {`${veteran.first_name} ${veteran.last_name}`}
+            </Text>
+            <Text style={[fontStyles.bodyTextSmall, margins.marginTop.xs, fontStyles.centered]}>
+              {`${veteran.military_branch}`}
+            </Text>
+          </View>
 
-        <View style={styles.buttonContainer}>
-          <Button
-            style={styles.connectButton}
-            textStyle={styles.connectButtonText}
-            text={veteran.is_friend ? 'FRIEND' : 'CONNECT'}
-            disabled={veteran.is_friend || veteran.sent_friend_request}
-            onPress={this.connectWithVeteran}
-          />
+          <View style={styles.buttonContainer}>
+            <Button
+              style={styles.connectButton}
+              textStyle={styles.connectButtonText}
+              text={veteran.is_friend ? 'FRIEND' : 'CONNECT'}
+              disabled={veteran.is_friend || veteran.sent_friend_request}
+              onPress={this.connectWithVeteran}
+            />
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
@@ -90,6 +102,7 @@ ProfileCard.propTypes = {
   veteran: PropTypes.object.isRequired,
   currentVeteran: PropTypes.object.isRequired,
   onConnect: PropTypes.func.isRequired,
+  showProfile: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({

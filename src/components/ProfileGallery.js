@@ -5,6 +5,7 @@
  * @prop veterans         - list of veterans to display
  * @prop currentVeteran   - current veteran logged in
  * @prop onConnect        - callback when connect pressed
+ * @prop showProfile      - callback to show profile
  */
 
 import React from 'react';
@@ -26,19 +27,6 @@ export default class ProfileGallery extends React.Component {
     super(props);
   }
 
-  // componentDidMount() {
-  //   this.setState({ veterans: this.getVeteransCopy() });
-  // }
-
-  /**
-   * Get a deep copy of the veterans list since we don't
-   * want to mutate props.
-   */
-  getVeteransCopy() {
-    const copy = JSON.parse(JSON.stringify(this.props.veterans));
-    return copy;
-  }
-
   renderProfileCards() {
     return this.props.veterans.map((veteran, i) => {
       return (
@@ -46,6 +34,7 @@ export default class ProfileGallery extends React.Component {
           veteran={veteran}
           currentVeteran={this.props.currentVeteran}
           onConnect={_.partial(this.props.onConnect, i)}
+          showProfile={this.props.showProfile}
           key={`profile_card_${i}`}
         />
       );
@@ -67,6 +56,8 @@ export default class ProfileGallery extends React.Component {
 ProfileGallery.propTypes = {
   veterans: PropTypes.arrayOf(PropTypes.object).isRequired,
   currentVeteran: PropTypes.object.isRequired,
+  onConnect: PropTypes.func.isRequired,
+  showProfile: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -74,5 +65,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginBottom: 20,
   },
 });
