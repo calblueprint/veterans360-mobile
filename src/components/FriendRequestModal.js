@@ -12,6 +12,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '@expo/vector-icons/FontAwesome';
 import {
   StyleSheet,
@@ -19,7 +20,7 @@ import {
   View,
   Image,
   Animated,
-  Easing, 
+  Easing,
 } from 'react-native';
 
 import { margins } from '../styles/layout';
@@ -164,6 +165,11 @@ export default class FriendRequestModal extends React.Component {
   }
 }
 
+FriendRequestModal.propTypes = {
+  veteran: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+  showProfile: PropTypes.func.isRequired,
+};
 
 const styles = StyleSheet.create({
   modal: {

@@ -19,7 +19,7 @@ const LoginStackNavigator = StackNavigator({
   initialRouteName: 'Login',
   headerMode: 'none',
   navigationOptions: {
-    gesturesEnabled: false, 
+    gesturesEnabled: false,
   },
 });
 

@@ -62,7 +62,7 @@ const fontStyles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'source-sans-pro-bold',
     color: colors.red,
-  }, 
+  },
   bodyText: {
     fontSize: 18,
     fontFamily: 'source-sans-pro-regular',

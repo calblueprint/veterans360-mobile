@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, View, Image } from 'react-native';
 
 export default class ConnectPin extends React.Component {
@@ -45,6 +46,10 @@ export default class ConnectPin extends React.Component {
     );
   }
 }
+
+ConnectPin.propTypes = {
+  pinType: PropTypes.oneOf(['veteran', 'parterOrg']).isRequired,
+};
 
 /* Change these as you see fit */
 const properties = {

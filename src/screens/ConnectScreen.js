@@ -15,7 +15,7 @@ import {
   TouchableHighlight,
   Modal,
   Image,
-  Dimensions, 
+  Dimensions,
 } from 'react-native';
 
 import { imageStyles } from '../styles/images';

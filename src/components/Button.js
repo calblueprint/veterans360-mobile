@@ -12,6 +12,7 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
 import { colors } from '../styles/colors';
@@ -111,6 +112,11 @@ export default class Button extends React.Component {
   }
 }
 
+Button.propTypes = {
+  onPress: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+};
 
 const styles = StyleSheet.create({
   buttonStyle: {
