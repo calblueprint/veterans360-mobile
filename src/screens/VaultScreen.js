@@ -36,7 +36,8 @@ export default class VaultScreen extends React.Component {
 
   componentDidMount() {
     this.retrieveCategories().then((response) => {
-      this.retrieveResources();
+      let categories = this.categoriesToDisplay();
+      this.retrieveResources(categories);
     });
   }
 
@@ -62,9 +63,9 @@ export default class VaultScreen extends React.Component {
     }
   }
 
-  async retrieveResources() {
+  async retrieveResources(categories) {
     try {
-      const endpoint = APIRoutes.resourcePath();
+      const endpoint = APIRoutes.resourcePath(encodeURIComponent(JSON.stringify(categories)));
       let response_json = await BaseRequester.get(endpoint);
       data = response_json.map(function(item) {
         dateRaw = item.updated_at;
@@ -86,6 +87,16 @@ export default class VaultScreen extends React.Component {
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+
+  categoriesToDisplay() {
+    let arr = []
+    for (var i = 1; i < this.state.categories.length; i++) {
+      if (this.state.categories[i].selected == true) {
+        arr.push(this.state.categories[i].id);
+      }
+    }
+    return arr;
   }
 
   /**
@@ -139,6 +150,8 @@ export default class VaultScreen extends React.Component {
         this.updateFilter(itemId, !i.selected);
       }
     })
+    let categories = this.categoriesToDisplay();
+    this.retrieveResources(categories);
   }
 
   /**
@@ -151,6 +164,8 @@ export default class VaultScreen extends React.Component {
       for(var i = 1; i < this.state.categories.length; i++) {
         this.updateFilter(this.state.categories[i].id, false)
       }
+      let categories = this.categoriesToDisplay();
+      this.retrieveResources(categories);
     } else {
       this.setOpposite(itemId);
     }
