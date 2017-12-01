@@ -4,12 +4,12 @@
  *
  * @prop veterans         - list of veterans to display
  * @prop currentVeteran   - current veteran logged in
+ * @prop onConnect        - callback when connect pressed
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import update from 'immutability-helper';
 
 import {
   StyleSheet,
@@ -24,8 +24,6 @@ import ProfileCard from '../components/ProfileCard';
 export default class ProfileGallery extends React.Component {
   constructor(props) {
     super(props);
-
-    this.onConnectRequest = this.onConnectRequest.bind(this);
   }
 
   // componentDidMount() {
@@ -41,25 +39,13 @@ export default class ProfileGallery extends React.Component {
     return copy;
   }
 
-  /* TODO: MOVE TO HOME SCREEN */
-  onConnectRequest(i) {
-    const newVeterans = update(this.state.veterans, {
-      veterans: {
-        [i]: {
-          sent_friend_request: { $set: true },
-        },
-      },
-    });
-    this.setState({ veterans: newVeterans });
-  }
-
   renderProfileCards() {
     return this.props.veterans.map((veteran, i) => {
       return (
         <ProfileCard
           veteran={veteran}
           currentVeteran={this.props.currentVeteran}
-          onConnect={_.partial(this.onConnectRequest, i)}
+          onConnect={_.partial(this.props.onConnect, i)}
           key={`profile_card_${i}`}
         />
       );
@@ -86,7 +72,7 @@ ProfileGallery.propTypes = {
 const styles = StyleSheet.create({
   baseContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
 });

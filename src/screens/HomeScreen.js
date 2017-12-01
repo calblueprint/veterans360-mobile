@@ -1,6 +1,12 @@
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+} from 'react-native';
+import update from 'immutability-helper';
 
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
@@ -17,6 +23,8 @@ export default class HomeScreen extends React.Component {
     this.state = {
       veterans: [],
     };
+
+    this.onConnectRequest = this.onConnectRequest.bind(this);
   }
 
   componentDidMount() {
@@ -37,16 +45,28 @@ export default class HomeScreen extends React.Component {
     });
   }
 
+  onConnectRequest(i) {
+    const newVeterans = update(this.state.veterans, {
+      [i]: {
+        sent_friend_request: { $set: true },
+      },
+    });
+    this.setState({ veterans: newVeterans });
+  }
+
   render() {
     const currentVeteran = this.props.navigation.state.params;
 
     return (
-      <View style={[layoutStyles.flexCenter, styles.baseContainer]}>
-        <ProfileGallery
-          veterans={this.state.veterans}
-          currentVeteran={currentVeteran}
-        />
-      </View>
+      <ScrollView>
+        <View style={styles.baseContainer}>
+          <ProfileGallery
+            veterans={this.state.veterans}
+            currentVeteran={currentVeteran}
+            onConnect={this.onConnectRequest}
+          />
+        </View>
+      </ScrollView>
     );
   }
 
@@ -54,7 +74,9 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   baseContainer: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
 });
