@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: 150,
-    height: 300,
+    height: 270,
     margin: 5,
     padding: 15,
   },
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   /* Absolute positioned box that is slightly offset from top */
   backgroundBox: {
     position: 'absolute',
-    height: '80%',
+    height: '90%',
     bottom: 0,
     left: 0,
     right: 0,
@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 20,
     backgroundColor: 'transparent',
   },
 
@@ -130,7 +129,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 10,
     backgroundColor: 'transparent',
   },
 
