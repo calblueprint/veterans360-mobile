@@ -206,6 +206,8 @@ export default class ConnectScreen extends React.Component {
    * Called when the ConnectBox "CONNECT" button is pressed by
    * this user, indicating a friend request sent to the other
    * user.
+   * FIXME (Ken): FIX THIS as bugged in certain situations
+   * See how solved in HomeScreen->ProfileCard
    */
   onConnectRequest() {
     this.state.activeConnection.sent_friend_request = true;
