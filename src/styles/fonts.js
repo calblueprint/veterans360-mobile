@@ -1,7 +1,7 @@
 /**
  * Module that contains a function that loads all app fonts (called in
  * application.js) and fontStyles that includes basic styles for
- * the typography in the application. 
+ * the typography in the application.
  */
 
 import React, { Component } from 'react';
@@ -27,6 +27,9 @@ async function loadFonts() {
 }
 
 const fontStyles = StyleSheet.create({
+  centered: {
+    textAlign: 'center', 
+  },
   mainHeader: {
     fontSize: 32,
     fontFamily: 'source-sans-pro-bold',

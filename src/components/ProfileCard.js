@@ -63,10 +63,10 @@ export default class ProfileCard extends React.Component {
             source={require('../../assets/images/photogenic.jpg')}
             style={styles.veteranImage}
           />
-          <Text style={[fontStyles.boldText, margins.marginTop.md]}>
+        <Text style={[fontStyles.boldText, margins.marginTop.md, fontStyles.centered]}>
             {`${veteran.first_name} ${veteran.last_name}`}
           </Text>
-          <Text style={[fontStyles.bodyTextSmall, margins.marginTop.xs]}>
+          <Text style={[fontStyles.bodyTextSmall, margins.marginTop.xs, fontStyles.centered]}>
             {`${veteran.military_branch}`}
           </Text>
         </View>
