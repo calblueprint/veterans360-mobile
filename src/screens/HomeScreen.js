@@ -39,9 +39,9 @@ export default class HomeScreen extends React.Component {
 
   render() {
     const currentVeteran = this.props.navigation.state.params;
-    
+
     return (
-      <View style={layoutStyles.flexCenter}>
+      <View style={[layoutStyles.flexCenter, styles.baseContainer]}>
         <ProfileGallery
           veterans={this.state.veterans}
           currentVeteran={currentVeteran}
@@ -51,3 +51,10 @@ export default class HomeScreen extends React.Component {
   }
 
 }
+
+const styles = StyleSheet.create({
+  baseContainer: {
+    width: '100%',
+    height: '100%',
+  },
+});

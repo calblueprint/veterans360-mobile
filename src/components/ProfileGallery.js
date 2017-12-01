@@ -25,27 +25,28 @@ export default class ProfileGallery extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      veterans: this.getVeteransCopy(),
-    };
-
     this.onConnectRequest = this.onConnectRequest.bind(this);
   }
+
+  // componentDidMount() {
+  //   this.setState({ veterans: this.getVeteransCopy() });
+  // }
 
   /**
    * Get a deep copy of the veterans list since we don't
    * want to mutate props.
    */
   getVeteransCopy() {
-    const copy = JSON.parse(JSON.stringify(this.props.veterans))
+    const copy = JSON.parse(JSON.stringify(this.props.veterans));
     return copy;
   }
 
+  /* TODO: MOVE TO HOME SCREEN */
   onConnectRequest(i) {
     const newVeterans = update(this.state.veterans, {
       veterans: {
         [i]: {
-          sent_friend_request: { $set: true },  
+          sent_friend_request: { $set: true },
         },
       },
     });
@@ -53,12 +54,13 @@ export default class ProfileGallery extends React.Component {
   }
 
   renderProfileCards() {
-    return this.state.veterans.map((veteran, i) => {
+    return this.props.veterans.map((veteran, i) => {
       return (
         <ProfileCard
           veteran={veteran}
           currentVeteran={this.props.currentVeteran}
           onConnect={_.partial(this.onConnectRequest, i)}
+          key={`profile_card_${i}`}
         />
       );
     });
@@ -66,18 +68,23 @@ export default class ProfileGallery extends React.Component {
 
   render() {
     return (
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-      >
-        {this.renderProfileCards()}
+      <ScrollView horizontal>
+        <View style={styles.baseContainer}>
+          {this.renderProfileCards()}
+        </View>
       </ScrollView>
     );
   }
 
 }
 
-styles = StyleSheet.create({
-  scrollContainer: {
+ProfileGallery.propTypes = {
+  veterans: PropTypes.arrayOf(PropTypes.object).isRequired,
+  currentVeteran: PropTypes.object.isRequired,
+};
+
+const styles = StyleSheet.create({
+  baseContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

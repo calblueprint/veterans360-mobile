@@ -16,6 +16,7 @@ import {
   Image,
 } from 'react-native';
 
+import { margins } from '../styles/layout';
 import { colors } from '../styles/colors';
 import { fontStyles } from '../styles/fonts';
 import { APIRoutes } from '../helpers/routes/routes';
@@ -52,24 +53,25 @@ export default class ProfileCard extends React.Component {
 
   render() {
     const veteran = this.props.veteran;
+
     return (
       <View style={[styles.baseContainer, this.props.style]}>
         <View style={styles.backgroundBox} />
 
-        <View style={styles.imageContainer}>
+        <View style={styles.contentContainer}>
           <Image
             source={require('../../assets/images/photogenic.jpg')}
             style={styles.veteranImage}
           />
-        </View>
-
-        <View style={styles.contentContainer}>
-          <Text style={fontStyles.boldText}>
+          <Text style={[fontStyles.boldText, margins.marginTop.md]}>
             {`${veteran.first_name} ${veteran.last_name}`}
           </Text>
-          <Text style={fontStyles.bodyTextSmall}>
+          <Text style={[fontStyles.bodyTextSmall, margins.marginTop.xs]}>
             {`${veteran.military_branch}`}
           </Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
           <Button
             style={styles.connectButton}
             textStyle={styles.connectButtonText}
@@ -93,9 +95,10 @@ ProfileCard.propTypes = {
 const styles = StyleSheet.create({
   /* Contains the entire component */
   baseContainer: {
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     width: 150,
+    height: 300,
     margin: 5,
     padding: 15,
   },
@@ -103,8 +106,7 @@ const styles = StyleSheet.create({
   /* Absolute positioned box that is slightly offset from top */
   backgroundBox: {
     position: 'absolute',
-    width: '100%',
-    height: '85%',
+    height: '80%',
     bottom: 0,
     left: 0,
     right: 0,
@@ -116,17 +118,20 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
   },
 
-  /* Contains the veteran image */
-  imageContainer: {
-    width: 100,
-    height: 100,
+  /* Contains the veteran image, name, title */
+  contentContainer: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 20,
+    backgroundColor: 'transparent',
   },
 
-  /* Contains the veteran name, title, and connect button */
-  contentContainer: {
-    marginTop: 10,
-    justifyContent: 'center',
+  /* Contains the connect button */
+  buttonContainer: {
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: 'transparent',
   },
 
   /* Individual items */
@@ -142,8 +147,8 @@ const styles = StyleSheet.create({
   },
   connectButton: {
     width: '100%',
-    height: 30,
-    borderRadius: 15,
+    height: 36,
+    borderRadius: 18,
   },
   connectButtonText: {
     fontSize: 16,
