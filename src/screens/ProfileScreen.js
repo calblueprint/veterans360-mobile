@@ -73,7 +73,7 @@ export default class ProfileScreen extends React.Component {
    *
    * TODO (Ken): Need to add compatibility for PO requests
    */
-  connectWithVeteran(event, onSuccess, onError) {
+  connectWithVeteran(event, onSuccess, onFailure) {
     event.preventDefault();
     const navParams = this.getParams();
     const id = navParams.currentVeteran.id;
@@ -89,11 +89,11 @@ export default class ProfileScreen extends React.Component {
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
     });
   }
 
-  connectWithPO(event, onSuccess, onError) {
+  connectWithPO(event, onSuccess, onFailure) {
     event.preventDefault();
     const navParams = this.getParams();
     const id = navParams.currentVeteran.id;
@@ -109,7 +109,7 @@ export default class ProfileScreen extends React.Component {
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
     });
   }
 

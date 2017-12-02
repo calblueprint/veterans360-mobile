@@ -100,7 +100,7 @@ export default class ConnectBox extends React.Component {
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
     });
   }
 
@@ -119,7 +119,7 @@ export default class ConnectBox extends React.Component {
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
     });
   }
 
