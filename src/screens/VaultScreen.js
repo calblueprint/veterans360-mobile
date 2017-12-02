@@ -22,12 +22,7 @@ export default class VaultScreen extends React.Component {
       searchText: '',
       filter: [],
       categories: [
-        {name: 'CLEAR', selected:false, id: 1},
-        {name: 'FINANCE', selected:true, id: 2},
-        {name: 'HOUSING', selected:true, id: 3},
-        {name: 'EMPLOYMENT', selected:true, id: 4},
-        {name: 'LEGAL', selected:true, id: 5},
-        {name: 'MENTAL HEALTH', selected:true, id: 6},
+        {name: 'CLEAR', selected:false, id: 0}
       ],
 
       resources: [],
@@ -36,15 +31,41 @@ export default class VaultScreen extends React.Component {
     this.falseState = this.falseState.bind(this);
     this.setOpposite = this.setOpposite.bind(this);
     this.renderResourceContent = this.renderResourceContent.bind(this);
+    this.getCategory = this.getCategory.bind(this);
   }
 
   componentDidMount() {
-    this.retrieveResources();
+    this.retrieveCategories().then((response) => {
+      let categories = this.categoriesToDisplay();
+      this.retrieveResources(categories);
+    });
   }
 
-  async retrieveResources() {
+  async retrieveCategories() {
     try {
-      const endpoint = APIRoutes.resourcePath();
+      const endpoint = APIRoutes.resourceCategories();
+      let response_json = await BaseRequester.get(endpoint);
+      let categories = this.state.categories.slice();
+      for (var key in response_json) {
+        if (response_json.hasOwnProperty(key)) {
+          let category = {
+            name: this.formatDict(key),
+            selected: true,
+            id: parseInt(response_json[key])
+          };
+          categories.push(category);
+        }
+      }
+      this.setState({ categories: categories });
+      return Promise.resolve(response_json);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async retrieveResources(categories) {
+    try {
+      const endpoint = APIRoutes.resourcePath(encodeURIComponent(JSON.stringify(categories)));
       let response_json = await BaseRequester.get(endpoint);
       data = response_json.map(function(item) {
         dateRaw = item.updated_at;
@@ -56,17 +77,56 @@ export default class VaultScreen extends React.Component {
           link: item.url,
           partner_org: item.owner_id,
           description: item.description,
-          category: this.getCategory(parseInt(item.category)),
+          category: this.getCategory(item.category),
           upvotes: item.num_upvotes,
           veteran_has_upvoted: item.veteran_has_upvoted,
         };
       }, this);
       this.setState({ resources: data, stillLoading: false });
-      this.setState({ stillLoading: false });
       return Promise.resolve(response_json);
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+
+  categoriesToDisplay() {
+    let arr = []
+    for (var i = 1; i < this.state.categories.length; i++) {
+      if (this.state.categories[i].selected == true) {
+        arr.push(this.state.categories[i].id);
+      }
+    }
+    return arr;
+  }
+
+  /**
+   * Retrieves the string name of the category given the category ID.
+   * @param {number} categoryId
+   */
+  getCategory(categoryId) {
+    categoryName = "";
+    this.state.categories.forEach((i) => {
+      if (i.id == categoryId) {
+        categoryName = i.name;
+      }
+    });
+    return categoryName;
+  }
+
+  /**
+   * TODO: serialize categories on backend in resource model
+   * @param {string} str
+   */
+  formatDict(str) {
+    newStr = "";
+    for (var i = 0; i < str.length; i++) {
+      if (str[i] == '_') {
+        newStr += " ";
+      } else {
+        newStr += str[i];
+      }
+    }
+    return newStr.toUpperCase();
   }
 
   /**
@@ -94,6 +154,8 @@ export default class VaultScreen extends React.Component {
         this.updateFilter(itemId, !i.selected);
       }
     })
+    let categories = this.categoriesToDisplay();
+    this.retrieveResources(categories);
   }
 
   /**
@@ -106,6 +168,8 @@ export default class VaultScreen extends React.Component {
       for(var i = 1; i < this.state.categories.length; i++) {
         this.updateFilter(this.state.categories[i].id, false)
       }
+      let categories = this.categoriesToDisplay();
+      this.retrieveResources(categories);
     } else {
       this.setOpposite(itemId);
     }
@@ -190,18 +254,6 @@ export default class VaultScreen extends React.Component {
   }
 
   /**
-   * Retrieves the string name of the category given the category ID.
-   * @param {number} categoryId
-   */
-  getCategory(categoryId) {
-    for(var i = 0; i < this.state.categories.length; i++) {
-      if(this.state.categories[i].id==categoryId) {
-        return this.state.categories[i].name;
-      }
-    }
-  }
-
-  /**
    * Returns the resource element based on the resources provided in the state.
    */
   displayResources() {
@@ -250,7 +302,6 @@ export default class VaultScreen extends React.Component {
   }
 
   onSubmitEdit = () => {
-    //add options
   }
 
   renderResourceContent() {
@@ -424,6 +475,6 @@ const styles = StyleSheet.create({
   categoryText: {
     fontFamily: 'source-sans-pro-light-italic',
     fontSize: 12,
-    color: colors.gray,
+    color: "rgb(0,0,0)",
   },
 });
