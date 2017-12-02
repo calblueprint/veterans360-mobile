@@ -5,8 +5,11 @@
  * called `params`, more detail below. Consider @params
  * to be `this.props.navigation.state.params`:
  *
- * @params.source        - source screen that user has
- *                        navigated from
+ * @params.source           - source screen that user has
+ *                            navigated from
+ * @params.currentVeteran   - currently logged in veteran
+ * @params.onConnect        - callback for connecting
+ * @params.profileType      - either 'veteran' or 'po'
  * @params.first_name
  * @params.last_name
  * @params.email
@@ -20,7 +23,7 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity, 
+  TouchableOpacity,
 } from 'react-native';
 
 import { APIRoutes } from '../helpers/routes/routes';
@@ -46,7 +49,8 @@ export default class ProfileScreen extends React.Component {
       sentConnectRequest: false,
     };
 
-    this.connect = this.connect.bind(this);
+    this.connectWithVeteran = this.connectWithVeteran.bind(this);
+    this.connectWithPO = this.connectWithPO.bind(this);
     this.goBack = this.goBack.bind(this);
   }
 
@@ -69,15 +73,34 @@ export default class ProfileScreen extends React.Component {
    *
    * TODO (Ken): Need to add compatibility for PO requests
    */
-  connect(event, onSuccess, onFailure) {
+  connectWithVeteran(event, onSuccess, onFailure) {
     event.preventDefault();
     const navParams = this.getParams();
     const id = navParams.currentVeteran.id;
     const route = APIRoutes.veteranFriendshipsPath(id);
     const params = {
       friendship: {
-        veteran_id: id,
         friend_id: navParams.id,
+      },
+    };
+    BaseRequester.post(route, params).then((response) => {
+      navParams.onConnect();
+      this.setState({ sentConnectRequest: true });
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      console.error(error);
+      onError && onError(error);
+    });
+  }
+
+  connectWithPO(event, onSuccess, onFailure) {
+    event.preventDefault();
+    const navParams = this.getParams();
+    const id = navParams.currentVeteran.id;
+    const route = APIRoutes.veteranSubscribePath(id);
+    const params = {
+      subscription: {
+        partnering_organization_id: navParams.id,
       },
     };
     BaseRequester.post(route, params).then((response) => {
@@ -172,13 +195,14 @@ export default class ProfileScreen extends React.Component {
    */
   renderConnectButton() {
     const params = this.getParams();
+    const connectMethod = params.profileType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
     if (params.is_friend || !params.source) {
       return;
-    } else if (params.sent_friend_request || this.state.sentConnectRequest) {
+    } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
           style={margins.marginTop.md}
-          onPress={this.connect}
+          onPress={connectMethod}
           text="CONNECT"
           disabled={true}
         />
@@ -187,7 +211,7 @@ export default class ProfileScreen extends React.Component {
       return (
         <Button
           style={margins.marginTop.md}
-          onPress={this.connect}
+          onPress={connectMethod}
           text="CONNECT"
         />
       );
