@@ -46,6 +46,7 @@ class APIRoutes {
   }
   static resourcePath(categories) {
     return APIRoutes.create(`/resources/filter_resources/${categories}`);
+  }
   static newUpvote() {
     return APIRoutes.create('/upvotes');
   }
