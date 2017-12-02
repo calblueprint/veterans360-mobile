@@ -113,6 +113,10 @@ export default class VaultScreen extends React.Component {
     return categoryName;
   }
 
+  /**
+   * TODO: serialize categories on backend in resource model
+   * @param {string} str
+   */
   formatDict(str) {
     newStr = "";
     for (var i = 0; i < str.length; i++) {
