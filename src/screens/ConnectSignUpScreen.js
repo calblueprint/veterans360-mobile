@@ -113,6 +113,7 @@ export default class ConnectSignUp extends React.Component {
       }).catch((error) => {
         onFailure && onFailure(error);
         this.setState({ errors: error });
+        console.error(error);
       });
     } else {
       onFailure && onFailure();

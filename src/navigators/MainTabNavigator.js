@@ -12,11 +12,12 @@ import VaultScreen from '../screens/VaultScreen';
 import ResponseScreen from '../screens/ResponseScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { colors } from '../styles/colors';
+import HomeStackNavigator from '../navigators/HomeStackNavigator';
 import ConnectSignUpStackNavigator from '../navigators/ConnectSignUpStackNavigator';
 
 const MainTabNavigator = TabNavigator({
   Home: {
-    screen: HomeScreen,
+    screen: HomeStackNavigator,
     navigationOptions: {
       tabBarLabel: 'Home',
       tabBarIcon: ({ tintColor }) => (

@@ -4,12 +4,15 @@ import { Font } from 'expo';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
+import { colors } from '../styles/colors';
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {
     tabBarLabel: 'Vault',
     tabBarIcon: ({ tintColor }) => (
-      <Icon name="briefcase" size={22} color="#e91e63" />
+      <Icon name="briefcase" size={22} color={ tintColor } />
     ),
   };
 
@@ -19,40 +22,116 @@ export default class VaultScreen extends React.Component {
       searchText: '',
       filter: [],
       categories: [
-        {name: 'CLEAR', selected:false, id: 1},
-        {name: 'FINANCE', selected:true, id: 2},
-        {name: 'HOUSING', selected:true, id: 3},
-        {name: 'EMPLOYMENT', selected:true, id: 4},
-        {name: 'LEGAL', selected:true, id: 5},
-        {name: 'MENTAL HEALTH', selected:true, id: 6},
+        {name: 'CLEAR', selected:false, id: 0}
       ],
 
-      resources: [
-        /*
-        {title: 'Title of Resource',
-          partner_org: 'Name of Partner Org',
-          date:'8 Oct 2018',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et aliquam neque. Proin lectus neque, tincidunt eget elementum sit amet, rhoncus ut libero.',
-          link: 'something',
-          upvotes: 0,
-          category: 2,
-          id: 1,
-        },
-        */
-      ]
+      resources: [],
+      stillLoading: true,
     };
     this.falseState = this.falseState.bind(this);
     this.setOpposite = this.setOpposite.bind(this);
     this.renderResourceContent = this.renderResourceContent.bind(this);
+    this.getCategory = this.getCategory.bind(this);
   }
 
   componentDidMount() {
+    this.retrieveCategories().then((response) => {
+      let categories = this.categoriesToDisplay();
+      this.retrieveResources(categories);
+    });
+  }
 
+  async retrieveCategories() {
+    try {
+      const endpoint = APIRoutes.resourceCategories();
+      let response_json = await BaseRequester.get(endpoint);
+      let categories = this.state.categories.slice();
+      for (var key in response_json) {
+        if (response_json.hasOwnProperty(key)) {
+          let category = {
+            name: this.formatDict(key),
+            selected: true,
+            id: parseInt(response_json[key])
+          };
+          categories.push(category);
+        }
+      }
+      this.setState({ categories: categories });
+      return Promise.resolve(response_json);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async retrieveResources(categories) {
+    try {
+      const endpoint = APIRoutes.resourcePath(encodeURIComponent(JSON.stringify(categories)));
+      let response_json = await BaseRequester.get(endpoint);
+      data = response_json.map(function(item) {
+        dateRaw = item.updated_at;
+        date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
+        return {
+          id: item.id,
+          title: item.file_name,
+          date: date.toLocaleDateString("en-US"),
+          link: item.url,
+          partner_org: item.owner_id,
+          description: item.description,
+          category: this.getCategory(item.category),
+          upvotes: item.num_upvotes,
+          veteran_has_upvoted: item.veteran_has_upvoted,
+        };
+      }, this);
+      this.setState({ resources: data, stillLoading: false });
+      return Promise.resolve(response_json);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  categoriesToDisplay() {
+    let arr = []
+    for (var i = 1; i < this.state.categories.length; i++) {
+      if (this.state.categories[i].selected == true) {
+        arr.push(this.state.categories[i].id);
+      }
+    }
+    return arr;
+  }
+
+  /**
+   * Retrieves the string name of the category given the category ID.
+   * @param {number} categoryId
+   */
+  getCategory(categoryId) {
+    categoryName = "";
+    this.state.categories.forEach((i) => {
+      if (i.id == categoryId) {
+        categoryName = i.name;
+      }
+    });
+    return categoryName;
+  }
+
+  /**
+   * TODO: serialize categories on backend in resource model
+   * @param {string} str
+   */
+  formatDict(str) {
+    newStr = "";
+    for (var i = 0; i < str.length; i++) {
+      if (str[i] == '_') {
+        newStr += " ";
+      } else {
+        newStr += str[i];
+      }
+    }
+    return newStr.toUpperCase();
   }
 
   /**
    * Updates the category filter and set state to updated categories
-   * @param {Number} itemId 
+   * @param {Number} itemId
    * @param {Boolean} newState
    */
   updateFilter(itemId, newState) {
@@ -67,7 +146,7 @@ export default class VaultScreen extends React.Component {
 
   /**
    * Sets the category with the provided ID to have the opposite filter selection
-   * @param {Number} itemId 
+   * @param {Number} itemId
    */
   setOpposite(itemId) {
     this.state.categories.forEach((i) => {
@@ -75,25 +154,29 @@ export default class VaultScreen extends React.Component {
         this.updateFilter(itemId, !i.selected);
       }
     })
+    let categories = this.categoriesToDisplay();
+    this.retrieveResources(categories);
   }
 
   /**
    * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
    * @param {String} name
-   * @param {Number} itemId 
+   * @param {Number} itemId
    */
   falseState(name, itemId) {
     if(name==='CLEAR') {
       for(var i = 1; i < this.state.categories.length; i++) {
         this.updateFilter(this.state.categories[i].id, false)
       }
+      let categories = this.categoriesToDisplay();
+      this.retrieveResources(categories);
     } else {
       this.setOpposite(itemId);
     }
   }
 
   /**
-   * Upon call, returns the filter category elements based on the category array in the state.
+   * Upon call, returns the category elements based on the categories in the state
    */
   filterScroller() {
     return this.state.categories.map((item) => {
@@ -116,24 +199,56 @@ export default class VaultScreen extends React.Component {
   /**
    * Upon call, returns the filter category elements based on the category array in the state.
    */
-  upvote(itemId) {
-    var resourcesArr = this.state.resources.slice()
-    for(var i = 0; i < resourcesArr.length; i++) {
-      if(resourcesArr[i].id == itemId) {
-        resourcesArr[i].upvotes = resourcesArr[i].upvotes+1;
-      }
-    };
-    this.setState({ resources:resourcesArr });
-  }
+  async upvote(resourceId, hasUpvoted) {
+    const veteranId = this.props.navigation.state.params.id;
+    if (hasUpvoted) {
+      try {
+        const endpoint = APIRoutes.deleteUpvote();
+    		const params = {
+    			upvote: {
+    				resource_id: resourceId,
+    				veteran_id: veteranId
+    			}
+    		};
+        let response_json = await BaseRequester.patch(endpoint, params);
 
-  /**
-   * Retrieves the string name of the category given the category ID.
-   * @param {number} categoryId
-   */
-  getCategory(categoryId) {
-    for(var i = 0; i < this.state.categories.length; i++) {
-      if(this.state.categories[i].id==categoryId) {
-        return this.state.categories[i].name;
+        let resourceArr = this.state.resources.slice()
+        resourceArr.forEach((i) => {
+          if (i.id == resourceId) {
+            i.upvotes = i.upvotes - 1;
+            i.veteran_has_upvoted = false;
+          }
+        })
+        this.setState({ resources:resourceArr });
+
+        return Promise.resolve(response_json);
+      } catch(error) {
+        return Promise.reject(error);
+      }
+    } else {
+      try {
+        const endpoint = APIRoutes.newUpvote();
+        const params = {
+          upvote: {
+            veteran_id: veteranId,
+            resource_id: resourceId
+          }
+        };
+        let response_json = await BaseRequester.post(endpoint, params);
+
+        let resourceArr = this.state.resources.slice()
+        resourceArr.forEach((i) => {
+          if (i.id == resourceId) {
+            i.upvotes = i.upvotes + 1;
+            i.veteran_has_upvoted = true;
+          }
+        })
+        this.setState({ resources:resourceArr });
+
+        return Promise.resolve(response_json);
+      } catch(error) {
+        console.log(error);
+        return Promise.reject(error);
       }
     }
   }
@@ -160,12 +275,25 @@ export default class VaultScreen extends React.Component {
               <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
             </View>
             <View style={ styles.upvote }>
-              <TouchableHighlight onPress={() => { this.upvote(item.id); }}>
-                <Text style={ styles.upvoteText }>{ item.upvotes }</Text>
+              <TouchableHighlight onPress={() => { this.upvote(item.id, item.veteran_has_upvoted); }}>
+                <View style={{ flexDirection: 'row',}}>
+                  <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 5,}}>
+                    {item.veteran_has_upvoted ? (
+                      <Icon name="thumbs-up" size={15} color={ colors.green } />
+                    ) : (
+                      <Icon name="thumbs-up" size={15} color={ colors.gray } />
+                    )}
+                  </View>
+                  {item.veteran_has_upvoted ? (
+                    <Text style={[styles.upvoteText, { color:colors.green }]}>{ item.upvotes }</Text>
+                  ) : (
+                    <Text style={[styles.upvoteText, { color:colors.gray }]}>{ item.upvotes }</Text>
+                  )}
+                </View>
               </TouchableHighlight>
             </View>
             <View style={ styles.resourceCategory }>
-              <Text style={ styles.categoryText }>{ this.getCategory(item.category) }</Text>
+              <Text style={ styles.categoryText }>{ item.category }</Text>
             </View>
           </View>
         </View>
@@ -174,7 +302,6 @@ export default class VaultScreen extends React.Component {
   }
 
   onSubmitEdit = () => {
-    //add options
   }
 
   renderResourceContent() {
@@ -195,7 +322,7 @@ export default class VaultScreen extends React.Component {
                   <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
                 </View>
               </View>
-              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>  
+              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>
                 {this.filterScroller()}
               </ScrollView>
               <View style={styles.contentContainer}>
@@ -228,7 +355,7 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 12,
-    fontFamily: 'source-sans-pro-black',
+    fontFamily: 'source-sans-pro-regular',
   },
   contentContainer: {
     flexDirection:'column',
@@ -241,13 +368,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    backgroundColor:'#F2F2F2',
+    backgroundColor: colors.light_snow,
   },
   backgroundDisplay: {
     height: 400,
     width: 1000,
     transform: [{rotate: '-8deg'}],
-    backgroundColor: '#B8C4D0',
+    backgroundColor: colors.light_steel,
     zIndex: -1,
     left: -200,
     top: -200,
@@ -288,7 +415,7 @@ const styles = StyleSheet.create({
   contentPanel: {
     backgroundColor: 'white',
     borderLeftWidth: 10,
-    borderLeftColor: '#18B671',
+    borderLeftColor: colors.green,
     paddingLeft:10,
     paddingRight: 10,
     paddingTop:15,
@@ -318,7 +445,7 @@ const styles = StyleSheet.create({
   dateText: {
     fontFamily: 'source-sans-pro-bold',
     fontSize: 12,
-    color: '#949494',
+    color: colors.gray,
   },
   button: {
     alignItems: 'center',
@@ -327,7 +454,7 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 3,
     borderRadius: 20,
-    backgroundColor:'#18B671',
+    backgroundColor: colors.green,
   },
   upvote: {
     justifyContent:'center',
@@ -336,7 +463,6 @@ const styles = StyleSheet.create({
   upvoteText: {
     fontFamily: 'source-sans-pro-bold',
     fontSize: 12,
-    color:'#949494',
   },
   upvote: {
     justifyContent:'center',
@@ -349,6 +475,6 @@ const styles = StyleSheet.create({
   categoryText: {
     fontFamily: 'source-sans-pro-light-italic',
     fontSize: 12,
-    color:'#949494',
+    color: "rgb(0,0,0)",
   },
 });
