@@ -44,6 +44,9 @@ class APIRoutes {
   static veteranRejectFriendshipPath(id) {
     return APIRoutes.create(`/veterans/${id}/friendships/reject`);
   }
+  static veteranSubscribePath(veteran_id) {
+    return APIRoutes.create(`/veterans/${veteran_id}/subscriptions`);
+  }
   static resourcePath(categories) {
     return APIRoutes.create(`/resources/filter_resources/${categories}`);
   }
