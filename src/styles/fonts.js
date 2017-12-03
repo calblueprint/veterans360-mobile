@@ -66,6 +66,11 @@ const fontStyles = StyleSheet.create({
     fontFamily: 'source-sans-pro-bold',
     color: colors.white,
   },
+  boldTextRed: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-bold',
+    color: colors.red,
+  },
   bodyText: {
     fontSize: 18,
     fontFamily: 'source-sans-pro-regular',

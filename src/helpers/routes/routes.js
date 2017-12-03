@@ -18,6 +18,9 @@ class APIRoutes {
   static veteransSignUpPath() {
     return APIRoutes.create('/veterans');
   }
+  static veteransSignOutPath() {
+    return APIRoutes.create('/veterans/sign_out');
+  }
 
   // Veterans
   static veteransPath() {

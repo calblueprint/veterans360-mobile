@@ -66,7 +66,10 @@ const MainTabNavigator = TabNavigator({
   animationEnabled: true,
   tabBarOptions: {
     activeTintColor: colors.green,
-  }
+  },
+  navigationOptions: {
+    gesturesEnabled: false,
+  },
 });
 
 export default MainTabNavigator;
