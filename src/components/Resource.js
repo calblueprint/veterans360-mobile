@@ -3,7 +3,7 @@ import { AppRegistry, Text, StyleSheet, TextInput, View, ScrollView, TouchableHi
 import React, { Component } from 'react';
 import { colors } from '../styles/colors';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { APIRoutes } from './routes/routes';
+import { APIRoutes } from '../helpers/routes/routes';
 
 export default class Resource extends React.Component {
   constructor(props) {
@@ -11,19 +11,27 @@ export default class Resource extends React.Component {
     this.state = {
       resources: [],
       stillLoading: true,
+      categories: [],
     };
   }
 
   componentDidMount() {
-    this.retrieveResources().then((response) => {
-      console.log(response);
-      this.setState({ resources: response, stillLoading: false });
+    this.retrieveResources(this.props.endpoint).then((resources) => {
+      this.setState({ resources: resources, stillLoading: false });
     });
   }
 
-  async retrieveResources() {
+  componentWillReceiveProps(nextProps) {
+    if (this.props != nextProps) {
+      this.retrieveResources(nextProps.endpoint).then((resources) => {
+        this.setState({ resources: resources });
+      });
+    }
+  }
+
+  async retrieveResources(endpoint) {
     try {
-      let response_json = await BaseRequester.get(this.props.endpoint);
+      let response_json = await BaseRequester.get(endpoint);
       data = response_json.map(function(item) {
         dateRaw = item.updated_at;
         date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
@@ -34,16 +42,29 @@ export default class Resource extends React.Component {
           link: item.url,
           partner_org: item.owner_id,
           description: item.description,
-          //category: this.getCategory(item.category),
-          category: 1,
+          category: this.getCategory(item.category),
           upvotes: item.num_upvotes,
           veteran_has_upvoted: item.veteran_has_upvoted,
         };
-      });
+      }, this);
       return data;
     } catch (error) {
       return Promise.reject(error);
     }
+  }
+
+  /**
+   * Retrieves the string name of the category given the category ID.
+   * @param {number} categoryId
+   */
+  getCategory(categoryId) {
+    categoryName = "";
+    this.props.categories.forEach((i) => {
+      if (i.id == categoryId) {
+        categoryName = i.name;
+      }
+    });
+    return categoryName;
   }
 
   renderResources() {
@@ -95,6 +116,7 @@ export default class Resource extends React.Component {
    * Returns the resource element based on the resources provided in the state.
    */
   render() {
+
     if (this.state.stillLoading == true) {
       return(<Text>Hi</Text>);
     } else {

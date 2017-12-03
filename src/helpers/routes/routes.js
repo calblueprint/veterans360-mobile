@@ -54,11 +54,16 @@ class APIRoutes {
   static resourceCategories() {
     return APIRoutes.create('/resources/get_resource_categories');
   }
+  static homeResources() {
+    return APIRoutes.create('/resources/get_home_resources');
+  }
 
   // Partnering Orgs
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
   }
+
+
 }
 
 export { APIRoutes };
