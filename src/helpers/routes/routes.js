@@ -18,6 +18,9 @@ class APIRoutes {
   static veteransSignUpPath() {
     return APIRoutes.create('/veterans');
   }
+  static veteransSignOutPath() {
+    return APIRoutes.create('/veterans/sign_out');
+  }
 
   // Veterans
   static veteransPath() {
@@ -41,6 +44,9 @@ class APIRoutes {
   static veteranRejectFriendshipPath(id) {
     return APIRoutes.create(`/veterans/${id}/friendships/reject`);
   }
+  static veteranSubscribePath(veteran_id) {
+    return APIRoutes.create(`/veterans/${veteran_id}/subscriptions`);
+  }
   static resourcePath(categories) {
     return APIRoutes.create(`/resources/filter_resources/${categories}`);
   }
@@ -54,11 +60,16 @@ class APIRoutes {
   static resourceCategories() {
     return APIRoutes.create('/resources/get_resource_categories');
   }
+  static homeResources() {
+    return APIRoutes.create('/resources/get_home_resources');
+  }
 
   // Partnering Orgs
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
   }
+
+
 }
 
 export { APIRoutes };

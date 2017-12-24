@@ -5,8 +5,11 @@
  * called `params`, more detail below. Consider @params
  * to be `this.props.navigation.state.params`:
  *
- * @params.source        - source screen that user has
- *                        navigated from
+ * @params.source           - source screen that user has
+ *                            navigated from
+ * @params.currentVeteran   - currently logged in veteran
+ * @params.onConnect        - callback for connecting
+ * @params.profileType      - either 'veteran' or 'po'
  * @params.first_name
  * @params.last_name
  * @params.email
@@ -19,12 +22,14 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   Image,
-  TouchableOpacity, 
+  TouchableOpacity,
 } from 'react-native';
 
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
+import LoginRequester from '../helpers/requesters/LoginRequester';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
@@ -46,8 +51,10 @@ export default class ProfileScreen extends React.Component {
       sentConnectRequest: false,
     };
 
-    this.connect = this.connect.bind(this);
+    this.connectWithVeteran = this.connectWithVeteran.bind(this);
+    this.connectWithPO = this.connectWithPO.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   getParams() {
@@ -69,14 +76,13 @@ export default class ProfileScreen extends React.Component {
    *
    * TODO (Ken): Need to add compatibility for PO requests
    */
-  connect(event, onSuccess, onFailure) {
+  connectWithVeteran(event, onSuccess, onFailure) {
     event.preventDefault();
     const navParams = this.getParams();
     const id = navParams.currentVeteran.id;
     const route = APIRoutes.veteranFriendshipsPath(id);
     const params = {
       friendship: {
-        veteran_id: id,
         friend_id: navParams.id,
       },
     };
@@ -86,7 +92,27 @@ export default class ProfileScreen extends React.Component {
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
+    });
+  }
+
+  connectWithPO(event, onSuccess, onFailure) {
+    event.preventDefault();
+    const navParams = this.getParams();
+    const id = navParams.currentVeteran.id;
+    const route = APIRoutes.veteranSubscribePath(id);
+    const params = {
+      subscription: {
+        partnering_organization_id: navParams.id,
+      },
+    };
+    BaseRequester.post(route, params).then((response) => {
+      navParams.onConnect();
+      this.setState({ sentConnectRequest: true });
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      console.error(error);
+      onFailure && onFailure(error);
     });
   }
 
@@ -95,6 +121,17 @@ export default class ProfileScreen extends React.Component {
    */
   goBack() {
     return this.props.navigation.goBack();
+  }
+
+  /**
+   * Logs out the user from the app.
+   */
+  logout() {
+    LoginRequester.logout().then((response) => {
+      this.props.navigation.navigate('Login');
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   /**
@@ -172,13 +209,14 @@ export default class ProfileScreen extends React.Component {
    */
   renderConnectButton() {
     const params = this.getParams();
+    const connectMethod = params.profileType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
     if (params.is_friend || !params.source) {
       return;
-    } else if (params.sent_friend_request || this.state.sentConnectRequest) {
+    } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
           style={margins.marginTop.md}
-          onPress={this.connect}
+          onPress={connectMethod}
           text="CONNECT"
           disabled={true}
         />
@@ -187,9 +225,30 @@ export default class ProfileScreen extends React.Component {
       return (
         <Button
           style={margins.marginTop.md}
-          onPress={this.connect}
+          onPress={connectMethod}
           text="CONNECT"
         />
+      );
+    }
+  }
+
+  /**
+   * Renders the logout button IF the params.source
+   * does not exist (user accessed profile through)
+   * the tab navigator.
+   */
+  renderLogoutButton() {
+    const params = this.getParams();
+    if (!params.source) {
+      return (
+        <TouchableOpacity
+          onPress={this.logout}
+          style={styles.logoutButton}
+        >
+          <Text style={fontStyles.boldTextRed}>
+            LOG OUT
+          </Text>
+        </TouchableOpacity>
       );
     }
   }
@@ -210,12 +269,15 @@ export default class ProfileScreen extends React.Component {
           {this.renderBackButton()}
         </View>
 
-        <View style={styles.bodyContainer}>
-          {this.renderDetails()}
-          <View style={styles.bioContainer}>
+        <ScrollView style={styles.scrollContainer}>
+          <View style={styles.bodyContainer}>
+            {this.renderDetails()}
+            <View style={styles.bioContainer}>
+            </View>
+            {this.renderConnectButton()}
+            {this.renderLogoutButton()}
           </View>
-          {this.renderConnectButton()}
-        </View>
+        </ScrollView>
 
       </View>
     );
@@ -233,17 +295,23 @@ const styles = StyleSheet.create({
 
   /* Container for the header bg/photo */
   coverContainer: {
-    flex: 1,
+    height: '30%',
     width: '100%',
     backgroundColor: colors.green,
     zIndex: 100,
   },
 
+  /* Container for the ScrollView */
+  scrollContainer: {
+    flex: 1,
+  },
+
   /* Container for the body content */
   bodyContainer: {
-    flex: 2.5,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20,
   },
 
   /* Container for the details of this veteran/PO */
@@ -318,5 +386,16 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'source-sans-pro-regular',
     color: colors.white,
+  },
+  logoutButton: {
+    marginTop: 30,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 5,
+    borderColor: colors.red,
+    borderWidth: 2,
+    backgroundColor: colors.white,
   },
 });

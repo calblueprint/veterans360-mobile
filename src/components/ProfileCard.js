@@ -51,7 +51,7 @@ export default class ProfileCard extends React.Component {
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
     });
   }
 

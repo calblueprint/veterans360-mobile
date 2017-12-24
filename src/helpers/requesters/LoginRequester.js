@@ -64,6 +64,17 @@ class LoginRequester {
       return Promise.reject(error);
     }
   }
+
+  static async logout() {
+    const endpoint = APIRoutes.veteransSignOutPath();
+
+    try {
+      let response_json = await BaseRequester.destroy(endpoint);
+      return Promise.resolve(response_json);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default LoginRequester;
