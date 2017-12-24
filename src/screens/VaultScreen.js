@@ -118,6 +118,10 @@ export default class VaultScreen extends React.Component {
   onSubmitEdit = () => {
   }
 
+  navigateToResource(params) {
+    this.props.navigation.navigate('ConnectSignUp', params);
+  }
+
   renderResourceContent() {
     return (
       <View style={ styles.backgroundContainer }>
@@ -144,6 +148,7 @@ export default class VaultScreen extends React.Component {
                   endpoint={APIRoutes.resourcePath(encodeURIComponent(JSON.stringify(this.categoriesToDisplay())))}
                   veteranId={this.props.navigation.state.params.id}
                   categories={this.state.categories}
+                  navigation={this.props.navigation}
                 />
               </View>
             </ScrollView>

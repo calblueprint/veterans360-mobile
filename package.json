@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "install-peers": "^1.0.2",
     "jest-expo": "^21.0.2",
     "react-native-scripts": "1.5.0",
     "react-test-renderer": "16.0.0-alpha.12"
@@ -27,8 +28,10 @@
     "react-native": "^0.48.4",
     "react-native-maps": "^0.17.1",
     "react-navigation": "^1.0.0-beta.14",
+    "react-pdf": "^2.4.2",
     "tcomb-form-native": "^0.6.11",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "uuid": "^3.1.0"
   },
   "rnpm": {
     "assets": [

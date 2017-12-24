@@ -27,7 +27,7 @@ export default class HomeScreen extends React.Component {
     this.state = {
       veterans: [],
       categories: [],
-      stillLoading: true
+      stillLoading: true,
     };
 
     this.onConnectRequest = this.onConnectRequest.bind(this);
