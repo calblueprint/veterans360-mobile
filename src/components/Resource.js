@@ -40,7 +40,7 @@ export default class Resource extends React.Component {
           id: item.id,
           title: item.file_name,
           date: date.toLocaleDateString("en-US"),
-          link: item.url,
+          link: item.file.url,
           partner_org: item.owner_id,
           description: item.description,
           category: this.getCategory(item.category),
@@ -88,7 +88,7 @@ export default class Resource extends React.Component {
           <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ item.description }</Text>
           <View style={[resourceStyle.contentInformation, { marginTop: 10,}]}>
             <View style={ resourceStyle.button }>
-              <TouchableHighlight onPress={ () => { this.navigateToFile({resourceLink: item.link}); } }>
+              <TouchableHighlight onPress={ () => { this.navigateToFile({link: item.link}); } }>
                 <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
               </TouchableHighlight>
             </View>

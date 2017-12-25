@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Font } from 'expo';
 import { imageStyles } from '../styles/images';
 import { layoutStyles, margins } from '../styles/layout';
-import { View } from 'react-native';
-//import { Document, Page } from 'react-pdf';
+import { View, Button, Linking } from 'react-native';
+import { Constants, WebBrowser } from 'expo';
 
 export default class ResourceScreen extends React.Component {
   constructor(props) {
@@ -12,19 +12,18 @@ export default class ResourceScreen extends React.Component {
     };
   }
 
+  _handlePressButton = async () => {
+    let result = await WebBrowser.openBrowserAsync(this.props.navigation.state.params.link);
+  };
+
   render() {
-    console.log(this.props.navigation.state.params.resourceLink);
     return (
-      <View />
-      /*
-      <div>
-        <Document
-          file="mathrvew.pdf"
-        >
-          <Page pageNumber={pageNumber} />
-        </Document>
-      </div>
-      */
+      <View>
+        <Button
+          title="Open File"
+          onPress={this._handlePressButton}
+        />
+      </View>
     );
   }
 }
