@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { colors } from '../styles/colors';
 import Icon from '@expo/vector-icons/FontAwesome';
 import { APIRoutes } from '../helpers/routes/routes';
+import update from 'immutability-helper';
 
 export default class Resource extends React.Component {
   constructor(props) {
@@ -16,8 +17,8 @@ export default class Resource extends React.Component {
   }
 
   componentDidMount() {
-    this.retrieveResources(this.props.endpoint).then((resources) => {
-      this.setState({ resources: resources, stillLoading: false });
+    this.retrieveResources(this.props.endpoint).then((response) => {
+      this.setState({ resources: response, stillLoading: false });
     });
   }
 
@@ -39,7 +40,7 @@ export default class Resource extends React.Component {
           id: item.id,
           title: item.file_name,
           date: date.toLocaleDateString("en-US"),
-          link: item.url,
+          link: item.file.url,
           partner_org: item.owner_id,
           description: item.description,
           category: this.getCategory(item.category),
@@ -60,11 +61,15 @@ export default class Resource extends React.Component {
   getCategory(categoryId) {
     categoryName = "";
     this.props.categories.forEach((i) => {
-      if (i.id == categoryId) {
+      if (i.id === categoryId) {
         categoryName = i.name;
       }
     });
     return categoryName;
+  }
+
+  navigateToFile(params) {
+    this.props.navigation.navigate('Resource', params);
   }
 
   renderResources() {
@@ -83,7 +88,9 @@ export default class Resource extends React.Component {
           <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ item.description }</Text>
           <View style={[resourceStyle.contentInformation, { marginTop: 10,}]}>
             <View style={ resourceStyle.button }>
-              <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
+              <TouchableHighlight onPress={ () => { this.navigateToFile({link: item.link}); } }>
+                <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
+              </TouchableHighlight>
             </View>
             <View style={ resourceStyle.upvote }>
               <TouchableHighlight onPress={() => { this.upvote(item.id, item.veteran_has_upvoted); }}>
@@ -116,15 +123,33 @@ export default class Resource extends React.Component {
    * Returns the resource element based on the resources provided in the state.
    */
   render() {
-
-    if (this.state.stillLoading == true) {
-      return(<Text>Hi</Text>);
+    if (this.state.stillLoading) {
+      return(
+        <View />
+      );
     } else {
       return(
         <View>
           {this.renderResources()}
         </View>
       );
+    }
+  }
+
+  isUpdatedResource(id) {
+    this.state.resources.forEach((i) => {
+      if (i.id === id) {
+        i.upvotes = i.upvotes - 1;
+        i.veteran_has_upvoted = false;
+      }
+    })
+  }
+
+  indexToUpdate(resourceId) {
+    for (var i = 0; i < this.state.resources.length; i++) {
+      if (this.state.resources[i].id === resourceId) {
+        return i;
+      }
     }
   }
 
@@ -144,14 +169,14 @@ export default class Resource extends React.Component {
     		};
         let response_json = await BaseRequester.patch(endpoint, params);
 
-        let resourceArr = this.state.resources.slice()
-        resourceArr.forEach((i) => {
-          if (i.id == resourceId) {
-            i.upvotes = i.upvotes - 1;
-            i.veteran_has_upvoted = false;
+        let index = this.indexToUpdate(resourceId);
+        let newResource = update(this.state.resources, {
+          [index]: {
+            "upvotes": {$apply: function(x) {return x - 1;}},
+            "veteran_has_upvoted": {$set: false},
           }
-        })
-        this.setState({ resources:resourceArr });
+        });
+        this.setState({ resources:newResource });
 
         return Promise.resolve(response_json);
       } catch(error) {
@@ -167,14 +192,15 @@ export default class Resource extends React.Component {
           }
         };
         let response_json = await BaseRequester.post(endpoint, params);
-        let resourceArr = this.state.resources.slice()
-        resourceArr.forEach((i) => {
-          if (i.id == resourceId) {
-            i.upvotes = i.upvotes + 1;
-            i.veteran_has_upvoted = true;
+
+        let index = this.indexToUpdate(resourceId);
+        let newResource = update(this.state.resources, {
+          [index]: {
+            "upvotes": {$apply: function(x) {return x + 1;}},
+            "veteran_has_upvoted": {$set: true},
           }
-        })
-        this.setState({ resources:resourceArr });
+        });
+        this.setState({ resources:newResource });
 
         return Promise.resolve(response_json);
       } catch(error) {
