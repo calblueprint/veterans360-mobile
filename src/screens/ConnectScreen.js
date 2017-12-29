@@ -232,8 +232,6 @@ export default class ConnectScreen extends React.Component {
    * so can render instantly that they are now friends.
    */
   onConnectRequest(id) {
-    // this.state.activeConnection.sent_friend_request = true;
-    // this.setState({ activeConnection: this.state.activeConnection });
     /* Set veteran sent friend request state */
     let veteran = this.getVeteran(id);
     veteran.sent_friend_request = true;
