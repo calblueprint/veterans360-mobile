@@ -145,10 +145,8 @@ export default class ConnectScreen extends React.Component {
    */
   closeFriendRequestModal(i) {
     return () => {
-      const newFriendRequests = update(this.state.friendRequests, {
-        $apply: (reqs) => {return reqs.splice(i, 1)},
-      });
-      this.setState({ friendRequests: newFriendRequests });
+      this.state.friendRequests.splice(i, 1);
+      this.setState({ friendRequests: this.state.friendRequests });
     };
   }
 
