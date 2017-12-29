@@ -91,7 +91,7 @@ export default class FriendRequestModal extends React.Component {
    * Accepts this veteran's friend request. Creates the friendship
    * model association between currentVeteran and veteran.
    */
-  acceptFriendRequest(event, onSuccess, onError) {
+  acceptFriendRequest(event, onSuccess, onFailure) {
     const id = this.props.currentVeteran.id;
     const route = APIRoutes.veteranFriendshipsPath(id);
     const params = {
@@ -104,7 +104,7 @@ export default class FriendRequestModal extends React.Component {
       this.closeModal();
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
     });
   }
 
@@ -113,7 +113,7 @@ export default class FriendRequestModal extends React.Component {
    * the inverse friendship between this veteran and the
    * friend who is requesting the friendship.
    */
-  rejectFriendRequest(event, onSuccess, onError) {
+  rejectFriendRequest(event, onSuccess, onFailure) {
     const id = this.props.currentVeteran.id;
     const route = APIRoutes.veteranRejectFriendshipPath(id);
     const params = {
@@ -126,7 +126,7 @@ export default class FriendRequestModal extends React.Component {
       this.closeModal();
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
     });
   }
 

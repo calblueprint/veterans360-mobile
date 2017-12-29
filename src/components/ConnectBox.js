@@ -10,6 +10,7 @@
  *                            - roles
  *                            - image
  *                            - bio
+ * @prop connectionType   - either 'veteran' or 'po'
  * @prop currentVeteran   - veteran that is currently logged in
  * @prop onConnect        - callback to be executed after connect request
  * @prop onClose          - callback to be executed when close button pressed
@@ -27,6 +28,7 @@ import {
   Animated,
   Image,
 } from 'react-native';
+import update from 'immutability-helper';
 
 import { colors } from '../styles/colors';
 import { layoutStyles, margins } from '../styles/layout';
@@ -46,6 +48,7 @@ export default class ConnectBox extends React.Component {
 
     this.onBoxClose = this.onBoxClose.bind(this);
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
+    this.connectWithPO = this.connectWithPO.bind(this);
     this.showProfile = this.showProfile.bind(this);
   }
 
@@ -90,19 +93,41 @@ export default class ConnectBox extends React.Component {
       friendship: {
         veteran_id: id,
         friend_id: this.props.connection.id,
-      }
+      },
     };
     BaseRequester.post(route, params).then((response) => {
       this.props.onConnect(this.props.connection.id);
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
-      onError && onError(error);
+      onFailure && onFailure(error);
+    });
+  }
+
+  connectWithPO(event, onSuccess, onFailure) {
+    event.preventDefault();
+    const id = this.props.currentVeteran.id;
+    const route = APIRoutes.veteranSubscribePath(id);
+    const params = {
+      subscription: {
+        veteran_id: id,
+        partnering_organization_id: this.props.connection.id,
+      },
+    };
+    BaseRequester.post(route, params).then((response) => {
+      this.props.onConnect();
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      console.error(error);
+      onFailure && onFailure(error);
     });
   }
 
   showProfile(event, onSuccess, onFailure) {
-    this.props.showProfile(this.props.connection);
+    const connection = update(this.props.connection, {$merge: {
+      profileType: this.props.connectionType,
+    }});
+    this.props.showProfile(connection);
     onSuccess && onSuccess();
   }
 
@@ -139,6 +164,8 @@ export default class ConnectBox extends React.Component {
   render() {
     const connection = this.props.connection;
     const buttonStyle = connection.is_friend ? styles.friendButton : styles.profileButton;
+    const connectMethod = this.props.connectionType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
+
     return (
       <Animated.View
         style={[styles.baseContainer,
@@ -158,8 +185,8 @@ export default class ConnectBox extends React.Component {
               style={[buttonStyle, margins.marginTop.md]}
               textStyle={styles.profileButtonText}
               text={connection.is_friend ? 'FRIEND' : 'CONNECT'}
-              disabled={connection.is_friend || connection.sent_friend_request}
-              onPress={this.connectWithVeteran}
+              disabled={connection.is_friend || connection.sent_friend_request || connection.is_subscribed_to}
+              onPress={connectMethod}
             />
           </View>
         </View>
@@ -180,6 +207,7 @@ export default class ConnectBox extends React.Component {
 
 ConnectBox.propTypes = {
   connection: PropTypes.object.isRequired,
+  connectionType: PropTypes.oneOf(['veteran', 'po']).isRequired,
   currentVeteran: PropTypes.object.isRequired,
   onConnect: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,

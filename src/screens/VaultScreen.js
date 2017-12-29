@@ -7,6 +7,8 @@ import { layoutStyles } from '../styles/layout';
 import { colors } from '../styles/colors';
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
+import Resource from '../components/Resource';
+import CategoryRequester from '../helpers/requesters/CategoryRequester';
 
 export default class VaultScreen extends React.Component {
   static navigationOptions = {
@@ -24,69 +26,20 @@ export default class VaultScreen extends React.Component {
       categories: [
         {name: 'CLEAR', selected:false, id: 0}
       ],
-
       resources: [],
       stillLoading: true,
     };
     this.falseState = this.falseState.bind(this);
     this.setOpposite = this.setOpposite.bind(this);
     this.renderResourceContent = this.renderResourceContent.bind(this);
-    this.getCategory = this.getCategory.bind(this);
   }
 
   componentDidMount() {
-    this.retrieveCategories().then((response) => {
-      let categories = this.categoriesToDisplay();
-      this.retrieveResources(categories);
-    });
-  }
-
-  async retrieveCategories() {
-    try {
-      const endpoint = APIRoutes.resourceCategories();
-      let response_json = await BaseRequester.get(endpoint);
-      let categories = this.state.categories.slice();
-      for (var key in response_json) {
-        if (response_json.hasOwnProperty(key)) {
-          let category = {
-            name: this.formatDict(key),
-            selected: true,
-            id: parseInt(response_json[key])
-          };
-          categories.push(category);
-        }
-      }
-      this.setState({ categories: categories });
-      return Promise.resolve(response_json);
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
-  async retrieveResources(categories) {
-    try {
-      const endpoint = APIRoutes.resourcePath(encodeURIComponent(JSON.stringify(categories)));
-      let response_json = await BaseRequester.get(endpoint);
-      data = response_json.map(function(item) {
-        dateRaw = item.updated_at;
-        date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
-        return {
-          id: item.id,
-          title: item.file_name,
-          date: date.toLocaleDateString("en-US"),
-          link: item.url,
-          partner_org: item.owner_id,
-          description: item.description,
-          category: this.getCategory(item.category),
-          upvotes: item.num_upvotes,
-          veteran_has_upvoted: item.veteran_has_upvoted,
-        };
-      }, this);
-      this.setState({ resources: data, stillLoading: false });
-      return Promise.resolve(response_json);
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    CategoryRequester.retrieveCategories().then((response) => {
+      categories = this.state.categories.slice();
+      categories = categories.concat(response);
+      this.setState({ categories: categories, stillLoading: false });
+    })
   }
 
   categoriesToDisplay() {
@@ -97,36 +50,6 @@ export default class VaultScreen extends React.Component {
       }
     }
     return arr;
-  }
-
-  /**
-   * Retrieves the string name of the category given the category ID.
-   * @param {number} categoryId
-   */
-  getCategory(categoryId) {
-    categoryName = "";
-    this.state.categories.forEach((i) => {
-      if (i.id == categoryId) {
-        categoryName = i.name;
-      }
-    });
-    return categoryName;
-  }
-
-  /**
-   * TODO: serialize categories on backend in resource model
-   * @param {string} str
-   */
-  formatDict(str) {
-    newStr = "";
-    for (var i = 0; i < str.length; i++) {
-      if (str[i] == '_') {
-        newStr += " ";
-      } else {
-        newStr += str[i];
-      }
-    }
-    return newStr.toUpperCase();
   }
 
   /**
@@ -154,8 +77,6 @@ export default class VaultScreen extends React.Component {
         this.updateFilter(itemId, !i.selected);
       }
     })
-    let categories = this.categoriesToDisplay();
-    this.retrieveResources(categories);
   }
 
   /**
@@ -168,8 +89,6 @@ export default class VaultScreen extends React.Component {
       for(var i = 1; i < this.state.categories.length; i++) {
         this.updateFilter(this.state.categories[i].id, false)
       }
-      let categories = this.categoriesToDisplay();
-      this.retrieveResources(categories);
     } else {
       this.setOpposite(itemId);
     }
@@ -193,111 +112,6 @@ export default class VaultScreen extends React.Component {
           </TouchableHighlight>
         );
       }
-    })
-  }
-
-  /**
-   * Upon call, returns the filter category elements based on the category array in the state.
-   */
-  async upvote(resourceId, hasUpvoted) {
-    const veteranId = this.props.navigation.state.params.id;
-    if (hasUpvoted) {
-      try {
-        const endpoint = APIRoutes.deleteUpvote();
-    		const params = {
-    			upvote: {
-    				resource_id: resourceId,
-    				veteran_id: veteranId
-    			}
-    		};
-        let response_json = await BaseRequester.patch(endpoint, params);
-
-        let resourceArr = this.state.resources.slice()
-        resourceArr.forEach((i) => {
-          if (i.id == resourceId) {
-            i.upvotes = i.upvotes - 1;
-            i.veteran_has_upvoted = false;
-          }
-        })
-        this.setState({ resources:resourceArr });
-
-        return Promise.resolve(response_json);
-      } catch(error) {
-        return Promise.reject(error);
-      }
-    } else {
-      try {
-        const endpoint = APIRoutes.newUpvote();
-        const params = {
-          upvote: {
-            veteran_id: veteranId,
-            resource_id: resourceId
-          }
-        };
-        let response_json = await BaseRequester.post(endpoint, params);
-
-        let resourceArr = this.state.resources.slice()
-        resourceArr.forEach((i) => {
-          if (i.id == resourceId) {
-            i.upvotes = i.upvotes + 1;
-            i.veteran_has_upvoted = true;
-          }
-        })
-        this.setState({ resources:resourceArr });
-
-        return Promise.resolve(response_json);
-      } catch(error) {
-        console.log(error);
-        return Promise.reject(error);
-      }
-    }
-  }
-
-  /**
-   * Returns the resource element based on the resources provided in the state.
-   */
-  displayResources() {
-    return this.state.resources.map((item) => {
-      return (
-        <View key = { item.id } style={ styles.contentPanel }>
-          <Text style={ styles.contentTitle }>{ item.title }</Text>
-          <View style={ styles.contentInformation }>
-            <View style={{ justifyContent:'center' }}>
-              <Text style={ styles.partnerOrg }>{ item.partner_org }</Text>
-            </View>
-            <View style={{justifyContent:'center', marginLeft: 5,}}>
-              <Text style={ styles.dateText }>{ item.date }</Text>
-            </View>
-          </View>
-          <Text style={[styles.bodyText, {marginTop: 10,}]}>{ item.description }</Text>
-          <View style={[styles.contentInformation, { marginTop: 10,}]}>
-            <View style={ styles.button }>
-              <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
-            </View>
-            <View style={ styles.upvote }>
-              <TouchableHighlight onPress={() => { this.upvote(item.id, item.veteran_has_upvoted); }}>
-                <View style={{ flexDirection: 'row',}}>
-                  <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 5,}}>
-                    {item.veteran_has_upvoted ? (
-                      <Icon name="thumbs-up" size={15} color={ colors.green } />
-                    ) : (
-                      <Icon name="thumbs-up" size={15} color={ colors.gray } />
-                    )}
-                  </View>
-                  {item.veteran_has_upvoted ? (
-                    <Text style={[styles.upvoteText, { color:colors.green }]}>{ item.upvotes }</Text>
-                  ) : (
-                    <Text style={[styles.upvoteText, { color:colors.gray }]}>{ item.upvotes }</Text>
-                  )}
-                </View>
-              </TouchableHighlight>
-            </View>
-            <View style={ styles.resourceCategory }>
-              <Text style={ styles.categoryText }>{ item.category }</Text>
-            </View>
-          </View>
-        </View>
-      );
     })
   }
 
@@ -326,7 +140,11 @@ export default class VaultScreen extends React.Component {
                 {this.filterScroller()}
               </ScrollView>
               <View style={styles.contentContainer}>
-                {this.displayResources()}
+                <Resource
+                  endpoint={APIRoutes.resourcePath(encodeURIComponent(JSON.stringify(this.categoriesToDisplay())))}
+                  veteranId={this.props.navigation.state.params.id}
+                  categories={this.state.categories}
+                />
               </View>
             </ScrollView>
           </View>
@@ -336,11 +154,17 @@ export default class VaultScreen extends React.Component {
   }
 
   render() {
-    return (
-      <View style={{flex: 1,}}>
-        {this.renderResourceContent()}
-      </View>
-    );
+    if (this.state.stillLoading) {
+      return (
+        <View />
+      );
+    } else {
+      return (
+        <View style={{flex: 1,}}>
+          {this.renderResourceContent()}
+        </View>
+      );
+    }
   }
 }
 

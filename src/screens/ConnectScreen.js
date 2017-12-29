@@ -42,6 +42,7 @@ export default class ConnectScreen extends React.Component {
       veterans: [],
       parterOrgs: [],
       activeConnection: null,  // Indicates if a veteran/org has been focused
+      activeConnectionType: null, // Either 'veteran' or 'po'
       stillLoading: true,
       onConnect: false,
       friendRequests: [],
@@ -171,9 +172,10 @@ export default class ConnectScreen extends React.Component {
     };
   }
 
-  openConnectBox(connection) {
+  openConnectBox(connection, connectionType) {
     this.setState({
       activeConnection: connection,
+      activeConnectionType: connectionType,
     });
   }
 
@@ -203,8 +205,9 @@ export default class ConnectScreen extends React.Component {
    *                 with required fields as described in `ConnectBox`
    * @return {() => null}: a function that animates the mapview and also
    *                       opens the ConnectBox for this veteran/org
+   * @param {string} connectionType: either 'veteran' or 'po'
    */
-  onMarkerPress(connection) {
+  onMarkerPress(connection, connectionType) {
     const coordinate = {
       latitude: connection.lat,
       longitude: connection.lng,
@@ -217,7 +220,7 @@ export default class ConnectScreen extends React.Component {
       this.mapView && this.mapView.animateToCoordinate(coordinate, mapAnimateDuration);
 
       // Next also need to show Connect Box for this connection
-      this.openConnectBox(connection);
+      this.openConnectBox(connection, connectionType);
     };
   }
 
@@ -328,7 +331,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={this.onMarkerPress(veteran)}
+          onPress={this.onMarkerPress(veteran, 'veteran')}
           key={`veteran-${veteran.id}`}
         >
           <ConnectPin pinType="veteran" />
@@ -351,7 +354,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={this.onMarkerPress(org)}
+          onPress={this.onMarkerPress(org, 'po')}
           key={`parterOrg-${org.id}`}
         >
           <ConnectPin pinType="parterOrg" />
@@ -364,6 +367,7 @@ export default class ConnectScreen extends React.Component {
     return this.state.activeConnection ? (
       <ConnectBox
         connection={this.state.activeConnection}
+        connectionType={this.state.activeConnectionType}
         onClose={this.closeConnectBox}
         onConnect={this.onConnectRequest}
         currentVeteran={this.props.navigation.state.params}
