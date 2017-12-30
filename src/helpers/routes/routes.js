@@ -47,7 +47,7 @@ class APIRoutes {
   static veteranSubscribePath(veteran_id) {
     return APIRoutes.create(`/veterans/${veteran_id}/subscriptions`);
   }
-  static resourcePath(categories) {
+  static resourcePath() {
     return APIRoutes.create('/resources');
   }
   static newUpvote() {

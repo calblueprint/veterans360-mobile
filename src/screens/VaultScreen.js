@@ -135,7 +135,6 @@ export default class VaultScreen extends React.Component {
               </ScrollView>
               <View style={styles.contentContainer}>
                 <Resource
-                  endpoint={APIRoutes.resourcePath()}
                   veteranId={this.props.navigation.state.params.id}
                   categories={this.state.categories}
                   categoriesToDisplay={this.categoriesToDisplay()}
