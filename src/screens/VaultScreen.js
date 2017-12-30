@@ -11,12 +11,6 @@ import Resource from '../components/Resource';
 import CategoryRequester from '../helpers/requesters/CategoryRequester';
 
 export default class VaultScreen extends React.Component {
-  static navigationOptions = {
-    tabBarLabel: 'Vault',
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="briefcase" size={22} color={ tintColor } />
-    ),
-  };
 
   constructor(props) {
     super(props);
@@ -24,7 +18,7 @@ export default class VaultScreen extends React.Component {
       searchText: '',
       filter: [],
       categories: [
-        {name: 'CLEAR', selected:false, id: 0}
+        {name: 'CLEAR', selected: false, id: 0}
       ],
       resources: [],
       stillLoading: true,
@@ -64,7 +58,7 @@ export default class VaultScreen extends React.Component {
         i.selected = newState;
       }
     })
-    this.setState({ categories:categoriesArr });
+    this.setState({ categories: categoriesArr });
   }
 
   /**
@@ -85,8 +79,8 @@ export default class VaultScreen extends React.Component {
    * @param {Number} itemId
    */
   falseState(name, itemId) {
-    if(name==='CLEAR') {
-      for(var i = 1; i < this.state.categories.length; i++) {
+    if (name === 'CLEAR') {
+      for (var i = 1; i < this.state.categories.length; i++) {
         this.updateFilter(this.state.categories[i].id, false)
       }
     } else {
@@ -99,7 +93,7 @@ export default class VaultScreen extends React.Component {
    */
   filterScroller() {
     return this.state.categories.map((item) => {
-      if (item.selected==false) {
+      if (item.selected === false) {
         return (
           <TouchableHighlight key = { item.id } style={ styles.item } onPress={ () => { this.falseState(item.name, item.id); } }>
             <Text style={ { color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold', } }>{item.name}</Text>
@@ -141,9 +135,10 @@ export default class VaultScreen extends React.Component {
               </ScrollView>
               <View style={styles.contentContainer}>
                 <Resource
-                  endpoint={APIRoutes.resourcePath(encodeURIComponent(JSON.stringify(this.categoriesToDisplay())))}
+                  endpoint={APIRoutes.resourcePath()}
                   veteranId={this.props.navigation.state.params.id}
                   categories={this.state.categories}
+                  categoriesToDisplay={this.categoriesToDisplay()}
                 />
               </View>
             </ScrollView>

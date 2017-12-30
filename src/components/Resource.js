@@ -31,8 +31,11 @@ export default class Resource extends React.Component {
 
   async retrieveResources(endpoint) {
     try {
-      let response_json = await BaseRequester.get(endpoint);
-      data = response_json.map(function(item) {
+      const urlParams = {
+        by_category: JSON.stringify(this.props.categoriesToDisplay),
+      };
+      let response_json = await BaseRequester.get(endpoint, urlParams);
+      data = response_json.map((item) => {
         dateRaw = item.updated_at;
         date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
         return {
@@ -178,7 +181,7 @@ export default class Resource extends React.Component {
 
         return Promise.resolve(response_json);
       } catch(error) {
-        console.log(error);
+        console.error(error);
         return Promise.reject(error);
       }
     }

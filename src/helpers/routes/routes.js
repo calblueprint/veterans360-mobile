@@ -48,7 +48,7 @@ class APIRoutes {
     return APIRoutes.create(`/veterans/${veteran_id}/subscriptions`);
   }
   static resourcePath(categories) {
-    return APIRoutes.create(`/resources/filter_resources/${categories}`);
+    return APIRoutes.create('/resources');
   }
   static newUpvote() {
     return APIRoutes.create('/upvotes');

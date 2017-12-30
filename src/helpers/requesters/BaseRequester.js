@@ -61,7 +61,7 @@ class BaseRequester {
       payload.body = JSON.stringify(params);
     }
 
-    endpoint = _encodeUrlParams(endpoint, urlParams);
+    endpoint = this._encodeUrlParams(endpoint, urlParams);
 
     return fetch(endpoint, payload).then((response) => {
       if (!response.ok) { throw response; }
