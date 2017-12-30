@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { AppRegistry, Text, StyleSheet, TextInput, View, ScrollView, TouchableHighlight } from 'react-native';
-import { Font } from 'expo';
-import Icon from '@expo/vector-icons/FontAwesome';
+import {
+  Text,
+  StyleSheet,
+  TextInput,
+  View,
+  ScrollView,
+  TouchableHighlight ,
+} from 'react-native';
+
 import { imageStyles } from '../styles/images';
 import { layoutStyles } from '../styles/layout';
 import { colors } from '../styles/colors';
@@ -30,7 +36,7 @@ export default class VaultScreen extends React.Component {
 
   componentDidMount() {
     CategoryRequester.retrieveCategories().then((response) => {
-      categories = this.state.categories.slice();
+      let categories = this.state.categories.slice();
       categories = categories.concat(response);
       this.setState({ categories: categories, stillLoading: false });
     })
@@ -39,7 +45,7 @@ export default class VaultScreen extends React.Component {
   categoriesToDisplay() {
     let arr = []
     for (var i = 1; i < this.state.categories.length; i++) {
-      if (this.state.categories[i].selected == true) {
+      if (this.state.categories[i].selected === true) {
         arr.push(this.state.categories[i].id);
       }
     }
@@ -52,9 +58,9 @@ export default class VaultScreen extends React.Component {
    * @param {Boolean} newState
    */
   updateFilter(itemId, newState) {
-    var categoriesArr = this.state.categories.slice()
+    let categoriesArr = this.state.categories.slice()
     categoriesArr.forEach((i) => {
-      if (i.id == itemId) {
+      if (i.id === itemId) {
         i.selected = newState;
       }
     })
@@ -80,7 +86,7 @@ export default class VaultScreen extends React.Component {
    */
   falseState(name, itemId) {
     if (name === 'CLEAR') {
-      for (var i = 1; i < this.state.categories.length; i++) {
+      for (let i = 1; i < this.state.categories.length; i++) {
         this.updateFilter(this.state.categories[i].id, false)
       }
     } else {
