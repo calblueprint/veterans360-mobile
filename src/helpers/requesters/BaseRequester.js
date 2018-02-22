@@ -12,36 +12,36 @@ class BaseRequester {
   /**
    * GET request on endpoint.
    */
-  static get(endpoint) {
+  static get(endpoint, urlParams) {
     return this._request(
-      'GET', endpoint, {}
+      'GET', endpoint, {}, urlParams
     );
   }
 
   /**
    * POST request on endpoint.
    */
-  static async post(endpoint, params) {
+  static async post(endpoint, params, urlParams) {
     return this._request(
-      'POST', endpoint, params
+      'POST', endpoint, params, urlParams
     );
   }
 
   /**
    * PATCH request on endpoint.
    */
-  static patch(endpoint, params) {
+  static patch(endpoint, params, urlParams) {
     return this._request(
-      'PATCH', endpoint, params
+      'PATCH', endpoint, params, urlParams
     );
   }
 
   /**
    * DELETE request on endpoint.
    */
-  static destroy(endpoint) {
+  static destroy(endpoint, urlParams) {
     return this._request(
-      'DELETE', endpoint, {}
+      'DELETE', endpoint, {}, urlParams
     );
   }
 
@@ -49,7 +49,7 @@ class BaseRequester {
    * Internal method to process all requests, wraps
    * fetch.
    */
-  static async _request(method, endpoint, params) {
+  static async _request(method, endpoint, params, urlParams) {
     const headers = this._getHeaders();
 
     let payload = {
@@ -60,6 +60,8 @@ class BaseRequester {
     if (method != 'GET') {
       payload.body = JSON.stringify(params);
     }
+
+    endpoint = this._encodeUrlParams(endpoint, urlParams);
 
     return fetch(endpoint, payload).then((response) => {
       if (!response.ok) { throw response; }
@@ -85,6 +87,19 @@ class BaseRequester {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
+  }
+
+  /**
+   * Encode any URL params for request and return the new
+   * query URL.
+   */
+  static _encodeUrlParams(endpoint, urlParams) {
+    if (!urlParams) return endpoint;
+    let esc = encodeURIComponent;
+    let query = Object.keys(urlParams)
+      .map(k => esc(k) + '=' + esc(urlParams[k]))
+      .join('&');
+    return endpoint + '?' + query;
   }
 
 }
