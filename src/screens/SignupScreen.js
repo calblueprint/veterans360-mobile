@@ -40,6 +40,8 @@ export default class SignupScreen extends React.Component {
       firstName: 'Ken',
       lastName: 'Chen',
       email: 'lbkchen@gmail.com',
+      phoneNumber: '000',
+      address: '000',
       password: 'password',
       confirmPassword: 'password'
     };
@@ -50,6 +52,8 @@ export default class SignupScreen extends React.Component {
       firstName: t.String,
       lastName: t.String,
       email: t.String,
+      phoneNumber: t.String,
+      address: t.String,
       password: t.String,
       confirmPassword: t.String,
       activeDuty: t.Boolean,
@@ -88,6 +92,15 @@ export default class SignupScreen extends React.Component {
           secureTextEntry: true,
           hasError: !!this.state.errors.password_confirmation,
           error: this.state.errors.password_confirmation,
+        },
+        phoneNumber: {
+          help: 'Disclaimer: Addresses will not be shared without permission from users',
+          hasError: !!this.state.errors.first_name,
+          error: this.state.errors.first_name,
+        },
+        address: {
+          hasError: !!this.state.errors.first_name,
+          error: this.state.errors.first_name,
         },
       },
     };
