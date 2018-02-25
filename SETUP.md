@@ -10,7 +10,7 @@ Mobile Installation Process:
 2. Pull BOTH web and mobile repositories
 3. Run `yarn install` (in the mobile repo)
 4. Run `yarn start` to run the mobile repo
-5. Copy the ip address given and create the file `src/helpers/secret.js` like this:
+5. Copy the ip address given and create the file `src/helpers/secrets.js` like this:
 ```
 const HOST_ADDR = 'http://10.142.48.28:3000';
 export { HOST_ADDR };
