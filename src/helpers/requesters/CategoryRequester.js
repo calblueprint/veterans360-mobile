@@ -22,6 +22,7 @@ class CategoryRequester {
       return Promise.reject(error);
     }
   }
+  
   /**
    * TODO: serialize categories on backend in resource model
    * @param {string} str

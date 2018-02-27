@@ -1,8 +1,14 @@
-import BaseRequester from '../helpers/requesters/BaseRequester';
-import { AppRegistry, Text, StyleSheet, TextInput, View, ScrollView, TouchableHighlight } from 'react-native';
 import React, { Component } from 'react';
-import { colors } from '../styles/colors';
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableHighlight,
+} from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
+
+import BaseRequester from '../helpers/requesters/BaseRequester';
+import { colors } from '../styles/colors';
 import { APIRoutes } from '../helpers/routes/routes';
 
 export default class Resource extends React.Component {
@@ -16,14 +22,16 @@ export default class Resource extends React.Component {
   }
 
   componentDidMount() {
-    this.retrieveResources(this.props.endpoint).then((resources) => {
+    const resourcesRoute = APIRoutes.resourcePath();
+    this.retrieveResources(resourcesRoute).then((resources) => {
       this.setState({ resources: resources, stillLoading: false });
     });
   }
 
   componentWillReceiveProps(nextProps) {
+    const resourcesRoute = APIRoutes.resourcePath();
     if (this.props != nextProps) {
-      this.retrieveResources(nextProps.endpoint).then((resources) => {
+      this.retrieveResources(resourcesRoute).then((resources) => {
         this.setState({ resources: resources });
       });
     }
@@ -31,10 +39,13 @@ export default class Resource extends React.Component {
 
   async retrieveResources(endpoint) {
     try {
-      let response_json = await BaseRequester.get(endpoint);
-      data = response_json.map(function(item) {
-        dateRaw = item.updated_at;
-        date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
+      const urlParams = {
+        by_category: JSON.stringify(this.props.categoriesToDisplay),
+      };
+      let response_json = await BaseRequester.get(endpoint, urlParams);
+      let data = response_json.map((item) => {
+        let dateRaw = item.updated_at;
+        let date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
         return {
           id: item.id,
           title: item.file_name,
@@ -58,9 +69,9 @@ export default class Resource extends React.Component {
    * @param {number} categoryId
    */
   getCategory(categoryId) {
-    categoryName = "";
+    let categoryName = "";
     this.props.categories.forEach((i) => {
-      if (i.id == categoryId) {
+      if (i.id === categoryId) {
         categoryName = i.name;
       }
     });
@@ -116,7 +127,6 @@ export default class Resource extends React.Component {
    * Returns the resource element based on the resources provided in the state.
    */
   render() {
-
     if (this.state.stillLoading == true) {
       return(<Text>Hi</Text>);
     } else {
@@ -178,7 +188,7 @@ export default class Resource extends React.Component {
 
         return Promise.resolve(response_json);
       } catch(error) {
-        console.log(error);
+        console.error(error);
         return Promise.reject(error);
       }
     }
