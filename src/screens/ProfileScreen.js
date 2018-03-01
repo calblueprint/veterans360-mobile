@@ -87,7 +87,7 @@ export default class ProfileScreen extends React.Component {
       },
     };
     BaseRequester.post(route, params).then((response) => {
-      navParams.onConnect();
+      navParams.onConnect(navParams.id);
       this.setState({ sentConnectRequest: true });
       onSuccess && onSuccess(response);
     }).catch((error) => {

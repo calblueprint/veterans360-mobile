@@ -48,6 +48,8 @@ export default class ConnectScreen extends React.Component {
       friendRequests: [],
     }
 
+    this.veteransMapping = {};
+
     this.onRegionChange = this.onRegionChange.bind(this);
     this.onConnectRequest = this.onConnectRequest.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
@@ -98,6 +100,7 @@ export default class ConnectScreen extends React.Component {
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
       this.setState({ veterans: response });
+      this.veteransMapping = this.buildVeteransMapping();
     }).catch((error) => {
       console.error(error);
     });
@@ -129,6 +132,24 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+  /**
+   * Builds a map between veteran IDs and veteran objects for fast state updates
+   */
+  buildVeteransMapping() {
+    let mapping = {};
+    this.state.veterans.forEach((veteran) => {
+      mapping[veteran.id] = veteran;
+    });
+    return mapping;
+  }
+
+  /**
+   * Get's veteran object with corresponding veteran ID
+   */
+  getVeteran(id) {
+    return this.veteransMapping[id];
+  }
+
   openHelpModal() {
     this.setState({ isHelpModalOpen: true });
   }
@@ -146,10 +167,8 @@ export default class ConnectScreen extends React.Component {
    */
   closeFriendRequestModal(i) {
     return () => {
-      const newFriendRequests = update(this.state.friendRequests, {
-        $apply: (reqs) => {return reqs.splice(i, 1)},
-      });
-      this.setState({ friendRequests: newFriendRequests });
+      this.state.friendRequests.splice(i, 1);
+      this.setState({ friendRequests: this.state.friendRequests });
     };
   }
 
@@ -209,16 +228,26 @@ export default class ConnectScreen extends React.Component {
    * Called when the ConnectBox "CONNECT" button is pressed by
    * this user, indicating a friend request sent to the other
    * user.
-   * FIXME (Ken): FIX THIS as bugged in certain situations
-   * See how solved in HomeScreen->ProfileCard
+   * FIXME (Ken): Maybe also include whether user has recv FR from this user
+   * so can render instantly that they are now friends.
    */
-  onConnectRequest() {
-    if (this.state.activeConnectionType === 'veteran') {
-      this.state.activeConnection.sent_friend_request = true;
-    } else if (this.state.activeConnectionType === 'po') {
-      this.state.activeConnection.is_subscribed_to = true;
+  onConnectRequest(id) {
+    /* Set veteran sent friend request state */
+    let veteran = this.getVeteran(id);
+    veteran.sent_friend_request = true;
+    this.setState({ veterans: this.state.veterans });
+
+    /* Remove any existing friend requests from that user */
+    let removeIndex = null;
+    this.state.friendRequests.forEach((req, i) => {
+      if (req.id === id) {
+        removeIndex = i;
+      }
+    });
+    if (removeIndex != null) {
+      this.state.friendRequests.splice(removeIndex, 1);
+      this.setState({ friendRequests: this.state.friendRequests });
     }
-    this.setState({ activeConnection: this.state.activeConnection });
   }
 
   /**

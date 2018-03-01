@@ -96,7 +96,7 @@ export default class ConnectBox extends React.Component {
       },
     };
     BaseRequester.post(route, params).then((response) => {
-      this.props.onConnect();
+      this.props.onConnect(this.props.connection.id);
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);

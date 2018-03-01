@@ -48,6 +48,27 @@ export default class FriendRequestModal extends React.Component {
     Animations.fade(this.state.helpAnimationValue, toValue = 1).start();
   }
 
+  /**
+   * See description in `resetAnimatedValue`.
+   */
+  componentWillReceiveProps(nextProps) {
+    if (this.props != nextProps) {
+      this.resetAnimatedValue();
+    }
+  }
+
+  /**
+   * Need to call this whenever the props are changed because it means that
+   * a friend request has been removed from the state container in ConnectScreen
+   * and by the nature of React, it tries to reuse this modal component and
+   * supply it with new props. Thus, when the old component is faded out (opacity
+   * is faded to 0), the new props are passed in but the entire modal becomes
+   * invisible. Must call this in componentWillReceiveProps to prevent this.
+   */
+  resetAnimatedValue() {
+    this.setState({ helpAnimationValue: new Animated.Value(1) });
+  }
+
   closeModal() {
     Animations.fade(this.state.helpAnimationValue).start(() => {
       this.props.onClose();
@@ -101,8 +122,8 @@ export default class FriendRequestModal extends React.Component {
       },
     };
     BaseRequester.patch(route, params).then((response) => {
-      this.closeModal();
       onSuccess && onSuccess();
+      this.closeModal();
     }).catch((error) => {
       console.error(error);
       onFailure && onFailure(error);
