@@ -28,13 +28,11 @@ export default class Resource extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate() {
     const resourcesRoute = APIRoutes.resourcePath();
-    if (this.props != nextProps) {
-      this.retrieveResources(resourcesRoute).then((resources) => {
+    this.retrieveResources(resourcesRoute).then((resources) => {
         this.setState({ resources: resources });
-      });
-    }
+    });
   }
 
   async retrieveResources(endpoint) {
