@@ -18,6 +18,7 @@
 // import { Actions } from 'react_native_route_flux';
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
+import Resource from '../components/Resource';
 import {
   StyleSheet,
   Text,
@@ -241,7 +242,7 @@ export default class ProfileScreen extends React.Component {
     } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
-          style={[margins.marginTop.md, {backgroundColor: colors.gray}]}
+          style={styles.connectButton}
           onPress={connectMethod}
           text={params.is_subscribed_to ? "FOLLOWING" : "REQUESTED"}
           disabled={true}
@@ -294,13 +295,30 @@ export default class ProfileScreen extends React.Component {
   }
 
 
+  renderResources() {
+    if (params.profileType === 'po') {
+      return (
+        <Resource
+          veteranId={this.props.navigation.state.params.id}
+          categories={this.state.categories}
+          urlParams={{
+            by_partnering_org: JSON.stringify(params.profileType),
+          }}
+        />
+      )
+    }
+  }
+
+
   render() {
+    console.log(this.props.navigation.state.params.id);
     const params = this.getParams();
     this._fetchVeteran(params.id);
 
     return (
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>
+          {this.renderConnectButton()}
           <Image
             source={require('../../assets/images/photogenic.jpg')}
             style={styles.profilePicture}
@@ -314,9 +332,9 @@ export default class ProfileScreen extends React.Component {
         <ScrollView style={styles.scrollContainer}>
           <View style={styles.bodyContainer}>
             {this.renderDetails()}
+            {this.renderResources()}
             <View style={styles.bioContainer}>
             </View>
-            {this.renderConnectButton()}
             {this.renderLogoutButton()}
             {this.navigateEditScreen()}
           </View>
@@ -464,4 +482,10 @@ const styles = StyleSheet.create({
   //   borderWidth: 2,
   //   backgroundColor: colors.white,
   // }
+  connectButton: {
+    top: 20,
+    position: 'absolute',
+    right: 20,
+  }
+
 });
