@@ -47,12 +47,12 @@ export default class ConnectPin extends React.Component {
       />
     ) : this.props.branch == 'Coast_Guard' ? (
       <Image
-        source={require('../../assets/images/pin.png')}
+        source={require('../../assets/images/pin-cyan.png')}
         style={styles.pin}
       /> 
     ) :  (
       <Image
-        source={require('../../assets/images/pin-cyan.png')}
+        source={require('../../assets/images/pin-white.png')}
         style={styles.pin}
       />
     );
