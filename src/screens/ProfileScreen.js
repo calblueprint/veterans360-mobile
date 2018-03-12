@@ -31,6 +31,7 @@ import {
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import LoginRequester from '../helpers/requesters/LoginRequester';
+import CategoryRequester from '../helpers/requesters/CategoryRequester';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
@@ -53,6 +54,7 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       sentConnectRequest: false,
       veteran : { },
+      categories: [],
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -74,10 +76,13 @@ export default class ProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    const params = this.getParams();
-    this._fetchVeteran(params.id);
+    CategoryRequester.retrieveCategories().then((response) => {
+      let categories = this.state.categories.slice();
+      categories = categories.concat(response);
+      this.setState({ categories: categories });
+      console.log(this.state);
+    })
   }
-
 
   getParams() {
     return this.props.navigation.state.params;
@@ -296,22 +301,27 @@ export default class ProfileScreen extends React.Component {
 
 
   renderResources() {
+    const params = this.getParams();
     if (params.profileType === 'po') {
       return (
-        <Resource
-          veteranId={this.props.navigation.state.params.id}
-          categories={this.state.categories}
-          urlParams={{
-            by_partnering_org: JSON.stringify(params.profileType),
-          }}
-        />
+        <View style={styles.resourcesContainer}>
+          <Text style={fontStyles.resourcesTitleText}>
+            RESOURCES
+          </Text>
+          <Resource
+            veteranId={this.props.navigation.state.params.id}
+            categories={this.state.categories}
+            urlParams={{
+              "by_partnering_org" : params.id,
+            }}
+          />
+        </View>
       )
     }
   }
 
 
   render() {
-    console.log(this.props.navigation.state.params.id);
     const params = this.getParams();
     this._fetchVeteran(params.id);
 
@@ -332,12 +342,12 @@ export default class ProfileScreen extends React.Component {
         <ScrollView style={styles.scrollContainer}>
           <View style={styles.bodyContainer}>
             {this.renderDetails()}
-            {this.renderResources()}
             <View style={styles.bioContainer}>
             </View>
             {this.renderLogoutButton()}
             {this.navigateEditScreen()}
           </View>
+          {this.renderResources()}
         </ScrollView>
       </View>
     );
@@ -370,39 +380,43 @@ const styles = StyleSheet.create({
   /* Container for the body content */
   bodyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginLeft: 25,
     marginTop: 20,
   },
 
   /* Container for the details of this veteran/PO */
   detailsContainer: {
-    margin: 20,
+    marginTop: 50,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+
+  resourcesContainer: {
+    margin: 5,
     padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: colors.light_gray,
   },
 
   /* Container for one row of details LABEL -> value */
   detailRowContainer: {
-    margin: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
 
   /* Container for label in a row */
   detailLabelContainer: {
-    flex: 1,
-    marginRight: 30,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
 
   /* Container for value field in a row */
   detailValueContainer: {
-    flex: 2,
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
 
