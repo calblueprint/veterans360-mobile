@@ -303,7 +303,7 @@ export default class ConnectScreen extends React.Component {
           onPress={this.onMarkerPress(veteran, 'veteran')}
           key={`veteran-${veteran.id}`}
         >
-          <ConnectPin pinType="veteran" />
+          <ConnectPin pinType="veteran" branch={veteran.military_branch} />
         </MapView.Marker>
       );
     });
@@ -326,7 +326,7 @@ export default class ConnectScreen extends React.Component {
           onPress={this.onMarkerPress(org, 'po')}
           key={`parterOrg-${org.id}`}
         >
-          <ConnectPin pinType="parterOrg" />
+          <ConnectPin pinType="parterOrg" branch='po'/>
         </MapView.Marker>
       );
     })

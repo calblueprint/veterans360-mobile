@@ -3,6 +3,7 @@
  * image of the user to be used as MapView.Marker custom view.
  *
  * @prop pinType        - either "veteran" or "parterOrg"
+ * @prop branch           - role of the veteran(po if parterOrg)
  */
 
 import React from 'react';
@@ -24,9 +25,34 @@ export default class ConnectPin extends React.Component {
         source={require('../../assets/images/pin-green.png')}
         style={styles.pin}
       />
-    ) : (
+    ) : this.props.branch == 'Army' ? (
+      <Image
+        source={require('../../assets/images/pin-darkgreen.png')}
+        style={styles.pin}
+      />
+    ) : this.props.branch == 'Navy' ? (
+      <Image
+        source={require('../../assets/images/pin-blue.png')}
+        style={styles.pin}
+      />
+    ) : this.props.branch == 'Marines' ? (
+      <Image
+        source={require('../../assets/images/pin-purple.png')}
+        style={styles.pin}
+      />
+    ) : this.props.branch == 'Air_Force' ? (
+      <Image
+        source={require('../../assets/images/pin-red.png')}
+        style={styles.pin}
+      />
+    ) : this.props.branch == 'Coast_Guard' ? (
       <Image
         source={require('../../assets/images/pin.png')}
+        style={styles.pin}
+      /> 
+    ) :  (
+      <Image
+        source={require('../../assets/images/pin-cyan.png')}
         style={styles.pin}
       />
     );
@@ -49,6 +75,7 @@ export default class ConnectPin extends React.Component {
 
 ConnectPin.propTypes = {
   pinType: PropTypes.oneOf(['veteran', 'parterOrg']).isRequired,
+  branch: PropTypes.string.isRequired
 };
 
 /* Change these as you see fit */
