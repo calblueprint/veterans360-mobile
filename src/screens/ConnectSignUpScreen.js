@@ -75,7 +75,7 @@ export default class ConnectSignUp extends React.Component {
       militaryBranch: t.enums(this.state.militaryBranches),
       unit: t.String,
       notes: t.String,
-      phoneNumber: t.String,
+      phoneNumber: t.Number,
       address: t.String,
       acceptMessages: t.Boolean,
       shareProfile: t.Boolean,
@@ -127,13 +127,13 @@ export default class ConnectSignUp extends React.Component {
       fields: {
         phoneNumber: {
           help: 'Disclaimer: Addresses will not be shared without permission from users',
-          hasError: !!this.state.errors.first_name,
-          error: this.state.errors.first_name,
+          hasError: !!this.state.errors.phone_number,
+          error: this.state.errors.phone_number,
         },
         address: {
           help: 'Disclaimer: Addresses will not be shared without permission from users',
-          hasError: !!this.state.errors.first_name,
-          error: this.state.errors.first_name,
+          hasError: !!this.state.errors.address,
+          error: this.state.errors.address,
         },
       }
     }

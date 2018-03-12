@@ -1,4 +1,4 @@
-/**
+ /**
  * Helper methods to retrieve all the routes to connect with the API.
  */
 
@@ -35,12 +35,6 @@ class APIRoutes {
   static veteransMilitaryBranch() {
     return APIRoutes.create('/veterans/get_military_branch');
   }
-  static veteransPhoneNumber() {
-    return APIRoutes.create('/veterans/get_phone_number');
-  }
-  static veteransAddress() {
-    return APIRoutes.create('/veterans/get_address');
-  }
   static veteranFriendRequestsPath(id) {
     return APIRoutes.create(`/veterans/${id}/requests`);
   }
@@ -74,8 +68,6 @@ class APIRoutes {
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
   }
-
-
 }
 
 export { APIRoutes };
