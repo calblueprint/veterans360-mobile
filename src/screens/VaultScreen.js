@@ -5,7 +5,8 @@ import {
   TextInput,
   View,
   ScrollView,
-  TouchableHighlight ,
+  TouchableHighlight,
+  Picker,
 } from 'react-native';
 
 import { imageStyles } from '../styles/images';
@@ -22,16 +23,14 @@ export default class VaultScreen extends React.Component {
     super(props);
     this.state = {
       searchText: '',
-      filter: [],
-      categories: [
-        {name: 'CLEAR', selected: false, id: 0}
-      ],
+      categories: [],
+      selected_category: 1, // Default category is Financial
       resources: [],
       stillLoading: true,
     };
-    this.falseState = this.falseState.bind(this);
-    this.setOpposite = this.setOpposite.bind(this);
     this.renderResourceContent = this.renderResourceContent.bind(this);
+    this.getPickerOptions = this.getPickerOptions.bind(this);
+
   }
 
   componentDidMount() {
@@ -42,80 +41,21 @@ export default class VaultScreen extends React.Component {
     })
   }
 
-  categoriesToDisplay() {
-    let arr = []
-    for (var i = 1; i < this.state.categories.length; i++) {
-      if (this.state.categories[i].selected === true) {
-        arr.push(this.state.categories[i].id);
-      }
-    }
-    return arr;
-  }
-
-  /**
-   * Updates the category filter and set state to updated categories
-   * @param {Number} itemId
-   * @param {Boolean} newState
-   */
-  updateFilter(itemId, newState) {
-    let categoriesArr = this.state.categories.slice()
-    categoriesArr.forEach((i) => {
-      if (i.id === itemId) {
-        i.selected = newState;
-      }
-    })
-    this.setState({ categories: categoriesArr });
-  }
-
-  /**
-   * Sets the category with the provided ID to have the opposite filter selection
-   * @param {Number} itemId
-   */
-  setOpposite(itemId) {
-    this.state.categories.forEach((i) => {
-      if (i.id == itemId) {
-        this.updateFilter(itemId, !i.selected);
-      }
-    })
-  }
-
-  /**
-   * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
-   * @param {String} name
-   * @param {Number} itemId
-   */
-  falseState(name, itemId) {
-    if (name === 'CLEAR') {
-      for (let i = 1; i < this.state.categories.length; i++) {
-        this.updateFilter(this.state.categories[i].id, false)
-      }
-    } else {
-      this.setOpposite(itemId);
-    }
-  }
-
   /**
    * Upon call, returns the category elements based on the categories in the state
    */
-  filterScroller() {
-    return this.state.categories.map((item) => {
-      if (item.selected === false) {
+  getPickerOptions() {
+    return this.state.categories.map((category, i) => {
         return (
-          <TouchableHighlight key = { item.id } style={ styles.item } onPress={ () => { this.falseState(item.name, item.id); } }>
-            <Text style={ { color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold', } }>{item.name}</Text>
-          </TouchableHighlight>
+          <Picker.Item key={i} label={category.name} value={category.id} />
         );
-      } else {
-        return (
-          <TouchableHighlight key = { item.id } style = {[styles.item, { backgroundColor:'white', }]} onPress={() => {this.setOpposite(item.id);}}>
-            <Text style={{ color:'black', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>{item.name}</Text>
-          </TouchableHighlight>
-        );
-      }
     })
   }
 
-  onSubmitEdit = () => {
+  updateSelected = (itemValue, itemIndex) => {
+    console.log("updating selected")
+    this.setState({selected_category: itemIndex+1});
+    console.log("updated selected");
   }
 
   renderResourceContent() {
@@ -136,14 +76,17 @@ export default class VaultScreen extends React.Component {
                   <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
                 </View>
               </View>
-              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>
-                {this.filterScroller()}
-              </ScrollView>
+              <Picker
+                selectedValue={this.state.selected_category}
+                onValueChange={this.updateSelected}
+                mode='dropdown'>
+                {this.getPickerOptions()}
+              </Picker>
               <View style={styles.contentContainer}>
                 <Resource
                   veteranId={this.props.navigation.state.params.id}
                   categories={this.state.categories}
-                  categoriesToDisplay={this.categoriesToDisplay()}
+                  categoriesToDisplay={[this.state.selected_category]}
                 />
               </View>
             </ScrollView>
