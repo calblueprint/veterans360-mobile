@@ -4,8 +4,8 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
-  Linking,
   Button,
+  Linking
 } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
 
@@ -59,7 +59,7 @@ export default class Resource extends React.Component {
           title: item.file_name,
           file_link: item.file.url,
           date: date.toLocaleDateString("en-US"),
-          link: item.url,
+          link: item.file.url,
           partner_org: item.owner_id,
           partner_org_name: item.owner.name,
           partner_org_description: item.owner.description,
@@ -132,7 +132,9 @@ export default class Resource extends React.Component {
    */
   render() {
     if (this.state.stillLoading == true) {
-      return(<View />);
+      return (
+        <View />
+      );
     } else {
       return(
         <View>
