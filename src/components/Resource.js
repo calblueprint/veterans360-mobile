@@ -4,6 +4,8 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
+  Button
+  Linking
 } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
 
@@ -50,7 +52,7 @@ export default class Resource extends React.Component {
           id: item.id,
           title: item.file_name,
           date: date.toLocaleDateString("en-US"),
-          link: item.url,
+          link: item.file.url,
           partner_org: item.owner_id,
           description: item.description,
           category: this.getCategory(item.category),
@@ -93,9 +95,10 @@ export default class Resource extends React.Component {
           </View>
           <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ item.description }</Text>
           <View style={[resourceStyle.contentInformation, { marginTop: 10,}]}>
-            <View style={ resourceStyle.button }>
-              <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
-            </View>
+            <View style={resourceStyle.button}>
+              <Button color="white" title="Open Resource"
+              onPress={ ()=>{ Linking.openURL(item.link)}} />
+              </View>
             <View style={ resourceStyle.upvote }>
               <TouchableHighlight onPress={() => { this.upvote(item.id, item.veteran_has_upvoted); }}>
                 <View style={{ flexDirection: 'row',}}>
@@ -128,7 +131,9 @@ export default class Resource extends React.Component {
    */
   render() {
     if (this.state.stillLoading == true) {
-      return(<Text>Hi</Text>);
+      return (
+        <View />
+      );
     } else {
       return(
         <View>
