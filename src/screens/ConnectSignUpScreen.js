@@ -75,6 +75,8 @@ export default class ConnectSignUp extends React.Component {
       militaryBranch: t.enums(this.state.militaryBranches),
       unit: t.String,
       notes: t.String,
+      phoneNumber: t.Number,
+      address: t.String,
       acceptMessages: t.Boolean,
       shareProfile: t.Boolean,
       acceptNotices: t.Boolean,
@@ -120,6 +122,23 @@ export default class ConnectSignUp extends React.Component {
     }
   }
 
+  getFormOptions() {
+    return {
+      fields: {
+        phoneNumber: {
+          help: 'Disclaimer: Addresses will not be shared without permission from users',
+          hasError: !!this.state.errors.phone_number,
+          error: this.state.errors.phone_number,
+        },
+        address: {
+          help: 'Disclaimer: Addresses will not be shared without permission from users',
+          hasError: !!this.state.errors.address,
+          error: this.state.errors.address,
+        },
+      }
+    }
+  }
+
   render() {
     if(this.state.stillLoading) {
       return (
@@ -140,6 +159,7 @@ export default class ConnectSignUp extends React.Component {
                       refCallback={(ref) => this.form = ref}
                       type={this.getFormType()}
                       value={this.state.formValues}
+                      options={this.getFormOptions()}
                       onChange={this.onFormChange}
                     />
                      <Button

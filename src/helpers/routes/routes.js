@@ -1,4 +1,4 @@
-/**
+ /**
  * Helper methods to retrieve all the routes to connect with the API.
  */
 
@@ -68,8 +68,6 @@ class APIRoutes {
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
   }
-
-
 }
 
 export { APIRoutes };
