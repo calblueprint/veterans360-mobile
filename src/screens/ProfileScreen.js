@@ -216,9 +216,9 @@ export default class ProfileScreen extends React.Component {
     } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
-          style={margins.marginTop.md}
+          style={[margins.marginTop.md, {backgroundColor: colors.gray}]}
           onPress={connectMethod}
-          text="CONNECT"
+          text={params.is_subscribed_to ? "FOLLOWING" : "REQUESTED"}
           disabled={true}
         />
       );

@@ -41,6 +41,8 @@ export default class ConnectScreen extends React.Component {
       isHelpModalOpen: true,
       veterans: [],
       parterOrgs: [],
+      currentPos: [],
+      currentVets: [],
       activeConnection: null,  // Indicates if a veteran/org has been focused
       activeConnectionType: null, // Either 'veteran' or 'po'
       stillLoading: true,
@@ -51,6 +53,7 @@ export default class ConnectScreen extends React.Component {
     this.veteransMapping = {};
 
     this.onRegionChange = this.onRegionChange.bind(this);
+    this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
     this.onConnectRequest = this.onConnectRequest.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
     this.closeConnectBox = this.closeConnectBox.bind(this);
@@ -192,8 +195,19 @@ export default class ConnectScreen extends React.Component {
     };
   }
 
+
+  onRegionChangeComplete(region) {
+    const vets = this.state.veterans.filter(vet => {
+      return parseFloat(vet.lat) <= (region.latitude + region.latitudeDelta/2) && 
+      parseFloat(vet.lat) >= (region.latitude - region.latitudeDelta/2) && 
+      parseFloat(vet.lng) <= (region.longitude + region.longitudeDelta/2) &&
+      parseFloat(vet.lng) >= (region.longitude - region.longitudeDelta/2)});
+    const pos = this.state.parterOrgs.filter(vet => {return parseFloat(vet.lat) <= region.latitude + region.latitudeDelta/2 && parseFloat(vet.lat) >= region.latitude - region.latitudeDelta/2 && parseFloat(vet.lng) <= region.longitude + region.longitudeDelta/2 && parseFloat(vet.lng) >= region.longitude - region.longitudeDelta/2});
+    this.setState({ region: region, currentPos: pos, currentVets:vets });
+  }
+
   onRegionChange(region) {
-    this.setState({ region: region });
+    //this.setState({ region: region});
   }
 
   /**
@@ -321,11 +335,20 @@ export default class ConnectScreen extends React.Component {
    * rocket function to bind the onPress method
    */
   renderVeteranMarkers() {
-    return this.state.veterans.map((veteran) => {
+    const locations = new Set();
+    let currentVets = this.state.currentVets;
+    if (this.state.currentVets.length + this.state.currentPos.length > 10) {
+      currentVets = this.state.currentVets.slice(0, 10 - this.state.currentPos.length)
+    }
+    return currentVets.map((veteran) => {
       const coordinate = {
         latitude: parseFloat(veteran.lat),
         longitude: parseFloat(veteran.lng),
       };
+      if (locations.has(coordinate)) {
+        coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
+      } 
+      locations.add(coordinate);
       return (
         <MapView.Marker
           coordinate={coordinate}
@@ -338,17 +361,47 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+
+  comparePO(a,b) {
+    let maxA = 0;
+    let maxB = 0;
+    a.resources.forEach((req, i) => {
+      if (req.num_upvotes > maxA) {
+        maxA = req.num_upvotes;
+      }
+    });
+    b.resources.forEach((req, i) => {
+      if (req.num_upvotes > maxB) {
+        maxB = req.num_upvotes;
+      }
+    });
+    return maxB - maxA;
+  }
+
   /**
    * Return a list of MapView Markers that represent partering orgs.
    * TODO (Ken): See if you can use underscore.js partials instead of
    * rocket function to bind the onPress method
    */
   renderParterOrgMarkers() {
-    return this.state.parterOrgs.map((org) => {
+    const locations = new Set();
+    let currentPos = this.state.currentPos;
+    if (this.state.currentPos.length > 10) {
+      currentPos.sort(comparePO);
+      currentPos = currentPos.slice(0, 10);
+
+    }
+    return currentPos.map((org) => {
       const coordinate = {
         latitude: parseFloat(org.lat),
         longitude: parseFloat(org.lng),
       };
+      //Move pins that have same location
+      if (locations.has(coordinate)) {
+        coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
+      }
+      locations.add(coordinate);
+    
       return (
         <MapView.Marker
           coordinate={coordinate}
@@ -459,6 +512,7 @@ export default class ConnectScreen extends React.Component {
           ref={(ref) => this.mapView = ref}
           style={styles.baseMapContainer}
           initialRegion={this.getInitialRegion()}
+          onRegionChangeComplete={this.onRegionChangeComplete}
         >
           {this.renderVeteranMarkers()}
           {this.renderParterOrgMarkers()}
