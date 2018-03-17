@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   friendButton: {
     height: 25,
     width: 100,
-    borderRadius: 4,
+    borderRadius: 15,
     paddingLeft: 15,
     paddingRight: 15,
     backgroundColor: colors.blue,

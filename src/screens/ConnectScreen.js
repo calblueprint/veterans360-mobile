@@ -195,15 +195,18 @@ export default class ConnectScreen extends React.Component {
     };
   }
 
-
   onRegionChangeComplete(region) {
     const vets = this.state.veterans.filter(vet => {
       return parseFloat(vet.lat) <= (region.latitude + region.latitudeDelta/2) && 
-      parseFloat(vet.lat) >= (region.latitude - region.latitudeDelta/2) && 
-      parseFloat(vet.lng) <= (region.longitude + region.longitudeDelta/2) &&
-      parseFloat(vet.lng) >= (region.longitude - region.longitudeDelta/2)});
-    const pos = this.state.parterOrgs.filter(vet => {return parseFloat(vet.lat) <= region.latitude + region.latitudeDelta/2 && parseFloat(vet.lat) >= region.latitude - region.latitudeDelta/2 && parseFloat(vet.lng) <= region.longitude + region.longitudeDelta/2 && parseFloat(vet.lng) >= region.longitude - region.longitudeDelta/2});
-    this.setState({ region: region, currentPos: pos, currentVets:vets });
+             parseFloat(vet.lat) >= (region.latitude - region.latitudeDelta/2) && 
+             parseFloat(vet.lng) <= (region.longitude + region.longitudeDelta/2) &&
+             parseFloat(vet.lng) >= (region.longitude - region.longitudeDelta/2)});
+    const pos = this.state.parterOrgs.filter(vet => {
+      return parseFloat(vet.lat) <= region.latitude + region.latitudeDelta/2 && 
+             parseFloat(vet.lat) >= region.latitude - region.latitudeDelta/2 &&
+             parseFloat(vet.lng) <= region.longitude + region.longitudeDelta/2 &&
+             parseFloat(vet.lng) >= region.longitude - region.longitudeDelta/2});
+    this.setState({ region: region, currentPos: pos, currentVets: vets });
   }
 
   onRegionChange(region) {
@@ -345,6 +348,7 @@ export default class ConnectScreen extends React.Component {
         latitude: parseFloat(veteran.lat),
         longitude: parseFloat(veteran.lng),
       };
+      //Change coordinate if two pins are in the same location
       if (locations.has(coordinate)) {
         coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
       } 
@@ -362,7 +366,7 @@ export default class ConnectScreen extends React.Component {
   }
 
 
-  comparePO(a,b) {
+  comparePO(a, b) {
     let maxA = 0;
     let maxB = 0;
     a.resources.forEach((req, i) => {
@@ -389,7 +393,6 @@ export default class ConnectScreen extends React.Component {
     if (this.state.currentPos.length > 10) {
       currentPos.sort(comparePO);
       currentPos = currentPos.slice(0, 10);
-
     }
     return currentPos.map((org) => {
       const coordinate = {
