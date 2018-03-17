@@ -69,6 +69,10 @@ class APIRoutes {
     return APIRoutes.create('/partnering_organizations');
   }
 
+  static getProfile() {
+    return APIRoutes.create(`/veterans/${veteran_id}`);
+  }
+
 
 }
 
