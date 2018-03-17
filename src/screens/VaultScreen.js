@@ -6,7 +6,8 @@ import {
   View,
   ScrollView,
   TouchableHighlight,
-  Picker,
+  FlatList,
+  ItemSeparatorComponent,
 } from 'react-native';
 
 import { imageStyles } from '../styles/images';
@@ -16,6 +17,7 @@ import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import Resource from '../components/Resource';
 import CategoryRequester from '../helpers/requesters/CategoryRequester';
+import { List, ListItem } from 'react-native-elements';
 
 export default class VaultScreen extends React.Component {
 
@@ -29,8 +31,6 @@ export default class VaultScreen extends React.Component {
       stillLoading: true,
     };
     this.renderResourceContent = this.renderResourceContent.bind(this);
-    this.getPickerOptions = this.getPickerOptions.bind(this);
-
   }
 
   componentDidMount() {
@@ -41,55 +41,58 @@ export default class VaultScreen extends React.Component {
     })
   }
 
-  /**
-   * Upon call, returns the category elements based on the categories in the state
-   */
-  getPickerOptions() {
+  getData = () => {
     return this.state.categories.map((category, i) => {
-        return (
-          <Picker.Item key={i} label={category.name} value={category.id} />
-        );
-    })
-  }
+        return {key: category.name, id: i+1};
+    });
+  };
 
-  updateSelected = (itemValue, itemIndex) => {
-    console.log("updating selected")
-    this.setState({selected_category: itemIndex+1});
-    console.log("updated selected");
-  }
+  updateSelected = (item) => {
+    let params = { 
+      // TODO: fix
+      // veteranId: this.props.navigation.state.params.id,
+      veteranId: 1,
+      categories: this.state.categories,
+      categoryToDisplay: item.id,
+    };
+    this.props.navigation.navigate('Resource', params);
+  };
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "100%",
+          backgroundColor: "#CED0CE",
+        }}
+      />
+    );
+  };
+
+  renderHeader = () => {
+    return <Text style={ styles.titleText }>Vault</Text>;
+  };
 
   renderResourceContent() {
     return (
       <View style={ styles.backgroundContainer }>
         <View style={{flex: 1,}}>
-          <View style={ styles.backgroundDisplay }>
-          </View>
-          <View style={{position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,}}>
-            <ScrollView>
-              <View style={[styles.contentContainer, {top:0,}]}>
-                <Text style={[styles.baseText, {marginBottom: 5,}]}>
-                  <Text style={[styles.titleText, {color:'rgb(255, 255, 255)'}]}>
-                    Resources
-                  </Text>
-                </Text>
-                <View style={[styles.search, {marginTop: 5,}]}>
-                  <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
-                </View>
-              </View>
-              <Picker
-                selectedValue={this.state.selected_category}
-                onValueChange={this.updateSelected}
-                mode='dropdown'>
-                {this.getPickerOptions()}
-              </Picker>
-              <View style={styles.contentContainer}>
-                <Resource
-                  veteranId={this.props.navigation.state.params.id}
-                  categories={this.state.categories}
-                  categoriesToDisplay={[this.state.selected_category]}
+          <View style={ styles.contentContainer }>
+            <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+              <FlatList
+                ItemSeparatorComponent={this.renderSeparator}
+                ListHeaderComponent={this.renderHeader}
+                data={this.getData()}
+                renderItem={({ item }) => (
+                <ListItem
+                  title={`${item.key}`}
+                  containerStyle={{ borderBottomWidth: 0 }}
+                  onPress={this.updateSelected.bind(this, item)}
                 />
-              </View>
-            </ScrollView>
+              )}
+              />
+            </List>
           </View>
         </View>
       </View>
@@ -119,6 +122,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     fontFamily: 'source-sans-pro-semibold',
+    paddingLeft: 10,
+    paddingTop: 10,
   },
   bodyText: {
     fontSize: 12,
@@ -126,10 +131,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection:'column',
-    marginTop: 50,
-    marginLeft:15,
-    marginRight:15,
-    backgroundColor:'rgba(255, 255, 255, 0)',
   },
   backgroundContainer: {
     flex: 1,

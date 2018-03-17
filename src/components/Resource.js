@@ -26,19 +26,26 @@ export default class Resource extends React.Component {
     this.retrieveResources(resourcesRoute).then((resources) => {
       this.setState({ resources: resources, stillLoading: false });
     });
+    this._mounted = true;
   }
 
   componentDidUpdate() {
-    const resourcesRoute = APIRoutes.resourcePath();
-    this.retrieveResources(resourcesRoute).then((resources) => {
-        this.setState({ resources: resources });
-    });
+      const resourcesRoute = APIRoutes.resourcePath();
+      this.retrieveResources(resourcesRoute).then((resources) => {
+        if (this._mounted) {
+          this.setState({ resources: resources });
+        }
+      });
+    }
+
+  componentWillUnmount() {
+    this._mounted = false;
   }
 
   async retrieveResources(endpoint) {
     try {
       const urlParams = {
-        by_category: JSON.stringify(this.props.categoriesToDisplay),
+        by_category: JSON.stringify([this.props.navigation.state.params.categoryToDisplay]),
       };
       let response_json = await BaseRequester.get(endpoint, urlParams);
       let data = response_json.map((item) => {
@@ -68,7 +75,7 @@ export default class Resource extends React.Component {
    */
   getCategory(categoryId) {
     let categoryName = "";
-    this.props.categories.forEach((i) => {
+    this.props.navigation.state.params.categories.forEach((i) => {
       if (i.id === categoryId) {
         categoryName = i.name;
       }
@@ -140,7 +147,7 @@ export default class Resource extends React.Component {
    * Upon call, returns the filter category elements based on the category array in the state.
    */
   async upvote(resourceId, hasUpvoted) {
-    const veteranId = this.props.veteranId;
+    const veteranId = this.props.navigation.state.params.veteranId;
     if (hasUpvoted) {
       try {
         const endpoint = APIRoutes.deleteUpvote();
