@@ -71,6 +71,10 @@ class APIRoutes {
     return APIRoutes.create('/categories');
   }
 
+  static getProfile() {
+    return APIRoutes.create(`/veterans/${veteran_id}`);
+  }
+
   static getCategoryResources(id) {
     return APIRoutes.create(`/categories/${id}/get_resources`);
   }

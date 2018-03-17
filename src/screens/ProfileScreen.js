@@ -15,7 +15,7 @@
  * @params.email
  * @params.roles
  */
-
+// import { Actions } from 'react_native_route_flux';
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import {
@@ -34,6 +34,7 @@ import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
 import Button from '../components/Button';
+import EditProfileScreen from './EditProfileScreen';
 
 
 export default class ProfileScreen extends React.Component {
@@ -55,6 +56,7 @@ export default class ProfileScreen extends React.Component {
     this.connectWithPO = this.connectWithPO.bind(this);
     this.goBack = this.goBack.bind(this);
     this.logout = this.logout.bind(this);
+
   }
 
   getParams() {
@@ -123,6 +125,8 @@ export default class ProfileScreen extends React.Component {
     return this.props.navigation.goBack();
   }
 
+
+
   /**
    * Logs out the user from the app.
    */
@@ -133,6 +137,7 @@ export default class ProfileScreen extends React.Component {
       console.error(error);
     });
   }
+
 
   /**
    * Renders the back button and label unless comes from the main
@@ -254,11 +259,17 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
+  navigateEditScreen() {
+    const params = this.getParams();
+    this.props.navigation.navigate('EditProfileScreen', {
+      user: params,
+    });
+  }
+
   render() {
     const params = this.getParams();
     return (
       <View style={styles.baseContainer}>
-
         <View style={styles.coverContainer}>
           <Image
             source={require('../../assets/images/photogenic.jpg')}
@@ -277,13 +288,14 @@ export default class ProfileScreen extends React.Component {
             </View>
             {this.renderConnectButton()}
             {this.renderLogoutButton()}
+            {this.navigateEditScreen()}
           </View>
         </ScrollView>
-
       </View>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   /* Container for the whole screen */
@@ -399,4 +411,27 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: colors.white,
   },
+
+  editButton: {
+    marginTop: 30,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 5,
+    borderColor: colors.green,
+    borderWidth: 2,
+    backgroundColor: colors.white,
+  }
+  // editButton: {
+  //   marginTop: 30,
+  //   paddingTop: 10,
+  //   paddingBottom: 10,
+  //   paddingLeft: 20,
+  //   paddingRight: 20,
+  //   borderRadius: 5,
+  //   borderColor: colors.red,
+  //   borderWidth: 2,
+  //   backgroundColor: colors.white,
+  // }
 });
