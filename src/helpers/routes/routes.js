@@ -1,4 +1,4 @@
-/**
+ /**
  * Helper methods to retrieve all the routes to connect with the API.
  */
 
@@ -74,8 +74,5 @@ class APIRoutes {
   static getCategoryResources(id) {
     return APIRoutes.create(`/categories/${id}/get_resources`);
   }
-
-
-}
 
 export { APIRoutes };

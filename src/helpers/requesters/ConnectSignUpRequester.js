@@ -12,6 +12,8 @@ class ConnectSignUpRequester {
         military_branch: values.militaryBranch,
         unit: values.unit,
         notes: values.notes,
+        phone_number: values.phoneNumber,
+        address: values.address,
         accept_messages: values.acceptMessages,
         share_profile: values.shareProfile,
         accept_notices: values.acceptNotices,

@@ -46,8 +46,8 @@ export default class VaultScreen extends React.Component {
   updateSelected = (item) => {
     let params = { 
       // TODO: fix
-      // veteranId: this.props.navigation.state.params.id,
-      veteranId: 1,
+      veteranId: this.props.navigation.state.params.id,
+      // veteranId: 1,
       categories: this.state.categories,
       categoryToDisplay: item.id,
       title: item.key,
