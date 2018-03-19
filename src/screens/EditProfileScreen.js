@@ -22,18 +22,19 @@ class EditProfileScreen extends React.Component {
         last_name: this.props.user.last_name,
         email: this.props.user.email,
         isUpdating: false,
+        mounted: false,
       };
     }
 
-    componentWillMount() {
-      this.props.navigation.setParams({
-        updateProfile: this.updatingProfile,
-        isUpdating: false,
-      });
+    componentDidMount() {
+      // this.props.navigation.setParams({
+      //   updateProfile: this.updatingProfile,
+      //   isUpdating: false,
+      // });
     }
 
     saveOption() {
-      params = this.props.user;
+      let params = this.props.user;
       return (
         <Button>
         title='Save'
@@ -61,16 +62,13 @@ class EditProfileScreen extends React.Component {
     //   isUpdating: true,
     // });
 
-      updatedUser = this.state;
+      let updatedUser = this.state;
       ProfileRequester.updateUser(updatedUser).then(success).catch(failure);
     }
 
 
     _updateState = (user) => {
        this.setState({
-          user: user,
-        });
-        this.props.navigation.setParams({
           user: user,
         });
       }
