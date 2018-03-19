@@ -26,24 +26,20 @@ export default class VaultScreen extends React.Component {
     this.state = {
       searchText: '',
       categories: [],
-      selected_category: 1, // Default category is Financial
       resources: [],
       stillLoading: true,
     };
-    this.renderResourceContent = this.renderResourceContent.bind(this);
   }
 
   componentDidMount() {
     CategoryRequester.retrieveCategories().then((response) => {
-      let categories = this.state.categories.slice();
-      categories = categories.concat(response);
-      this.setState({ categories: categories, stillLoading: false });
+      this.setState({ categories: response, stillLoading: false });
     })
   }
 
   getData = () => {
     return this.state.categories.map((category, i) => {
-        return {key: category.name, id: i+1};
+        return {key: category.name, id: category.id};
     });
   };
 
@@ -54,6 +50,7 @@ export default class VaultScreen extends React.Component {
       veteranId: 1,
       categories: this.state.categories,
       categoryToDisplay: item.id,
+      title: item.key,
     };
     this.props.navigation.navigate('Resource', params);
   };
@@ -70,11 +67,7 @@ export default class VaultScreen extends React.Component {
     );
   };
 
-  renderHeader = () => {
-    return <Text style={ styles.titleText }>Vault</Text>;
-  };
-
-  renderResourceContent() {
+  renderResourceContent = () => {
     return (
       <View style={ styles.backgroundContainer }>
         <View style={{flex: 1,}}>
@@ -82,10 +75,10 @@ export default class VaultScreen extends React.Component {
             <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
               <FlatList
                 ItemSeparatorComponent={this.renderSeparator}
-                ListHeaderComponent={this.renderHeader}
                 data={this.getData()}
                 renderItem={({ item }) => (
-                <ListItem
+                <ListItem 
+                  titleStyle={ styles.listItemTitle }
                   title={`${item.key}`}
                   containerStyle={{ borderBottomWidth: 0 }}
                   onPress={this.updateSelected.bind(this, item)}
@@ -97,7 +90,7 @@ export default class VaultScreen extends React.Component {
         </View>
       </View>
     );
-  }
+  };
 
   render() {
     if (this.state.stillLoading) {
@@ -244,5 +237,9 @@ const styles = StyleSheet.create({
     fontFamily: 'source-sans-pro-light-italic',
     fontSize: 12,
     color: "rgb(0,0,0)",
+  },
+  listItemTitle: {
+    fontFamily: 'source-sans-pro-regular',
+    fontSize: 22,
   },
 });

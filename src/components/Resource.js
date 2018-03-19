@@ -4,6 +4,8 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
+  Linking,
+  Button,
 } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
 
@@ -22,7 +24,8 @@ export default class Resource extends React.Component {
   }
 
   componentDidMount() {
-    const resourcesRoute = APIRoutes.resourcePath();
+    let categoryId = this.props.navigation.state.params.categoryToDisplay;
+    const resourcesRoute = APIRoutes.getCategoryResources(categoryId);
     this.retrieveResources(resourcesRoute).then((resources) => {
       this.setState({ resources: resources, stillLoading: false });
     });
@@ -45,18 +48,22 @@ export default class Resource extends React.Component {
   async retrieveResources(endpoint) {
     try {
       const urlParams = {
-        by_category: JSON.stringify([this.props.navigation.state.params.categoryToDisplay]),
+        by_category: JSON.stringify(this.props.navigation.state.params.categoryToDisplay),
       };
       let response_json = await BaseRequester.get(endpoint, urlParams);
       let data = response_json.map((item) => {
         let dateRaw = item.updated_at;
         let date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
+        console.log(item)
         return {
           id: item.id,
           title: item.file_name,
+          file_link: item.file.url,
           date: date.toLocaleDateString("en-US"),
           link: item.url,
           partner_org: item.owner_id,
+          partner_org_name: item.owner.name,
+          partner_org_description: item.owner.description,
           description: item.description,
           category: this.getCategory(item.category),
           upvotes: item.num_upvotes,
@@ -87,28 +94,21 @@ export default class Resource extends React.Component {
     return this.state.resources.map((item) => {
       return (
         <View key = { item.id } style={ resourceStyle.contentPanel }>
-          <Text style={ resourceStyle.contentTitle }>{ item.title }</Text>
-          <View style={ resourceStyle.contentInformation }>
-            <View style={{ justifyContent:'center' }}>
-              <Text style={ resourceStyle.partnerOrg }>{ item.partner_org }</Text>
-            </View>
-            <View style={{justifyContent:'center', marginLeft: 5,}}>
-              <Text style={ resourceStyle.dateText }>{ item.date }</Text>
-            </View>
-          </View>
-          <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ item.description }</Text>
+          <Text style={ resourceStyle.contentTitle }>{ item.partner_org_name }</Text>
+          <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ item.partner_org_description }</Text>
           <View style={[resourceStyle.contentInformation, { marginTop: 10,}]}>
             <View style={ resourceStyle.button }>
-              <Text style={{color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>OPEN RESOURCE</Text>
+              <Button color="white" title="OPEN RESOURCE"
+              onPress={ ()=>{ Linking.openURL(item.file_link)}} />
             </View>
             <View style={ resourceStyle.upvote }>
               <TouchableHighlight onPress={() => { this.upvote(item.id, item.veteran_has_upvoted); }}>
                 <View style={{ flexDirection: 'row',}}>
                   <View style={{ alignItems: 'center', justifyContent: 'center', marginRight: 5,}}>
                     {item.veteran_has_upvoted ? (
-                      <Icon name="thumbs-up" size={15} color={ colors.green } />
+                      <Icon name="thumbs-up" size={18} color={ colors.green } />
                     ) : (
-                      <Icon name="thumbs-up" size={15} color={ colors.gray } />
+                      <Icon name="thumbs-up" size={18} color={ colors.gray } />
                     )}
                   </View>
                   {item.veteran_has_upvoted ? (
@@ -133,7 +133,7 @@ export default class Resource extends React.Component {
    */
   render() {
     if (this.state.stillLoading == true) {
-      return(<Text>Hi</Text>);
+      return(<View />);
     } else {
       return(
         <View>
@@ -220,15 +220,15 @@ const resourceStyle = StyleSheet.create({
   },
   contentTitle: {
     fontFamily: 'source-sans-pro-bold',
-    fontSize: 16,
+    fontSize: 18,
   },
   partnerOrg: {
     fontFamily: 'source-sans-pro-light-italic',
-    fontSize: 12,
+    fontSize: 14,
   },
   dateText: {
     fontFamily: 'source-sans-pro-bold',
-    fontSize: 12,
+    fontSize: 14,
     color: colors.gray,
   },
   button: {
@@ -246,7 +246,7 @@ const resourceStyle = StyleSheet.create({
   },
   upvoteText: {
     fontFamily: 'source-sans-pro-bold',
-    fontSize: 12,
+    fontSize: 16,
   },
   upvote: {
     justifyContent:'center',
@@ -258,11 +258,11 @@ const resourceStyle = StyleSheet.create({
   },
   categoryText: {
     fontFamily: 'source-sans-pro-light-italic',
-    fontSize: 12,
+    fontSize: 14,
     color: colors.gray,
   },
   bodyText: {
-    fontSize: 12,
+    fontSize: 16,
     fontFamily: 'source-sans-pro-regular',
   },
 });
