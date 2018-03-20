@@ -1,7 +1,8 @@
 import React from 'react';
 import { Form, t } from '../components/Form';
-
-
+import Button from '../components/Button';
+import ProfileRequester from '../helpers/requesters/ProfileRequester'
+import BaseRequester from '../helpers/requesters/BaseRequester';
 
 class EditProfileForm {
   constructor(props) {
@@ -16,13 +17,14 @@ class EditProfileForm {
     this.state = {
       formValues: this.getInitialFormValues(),
       updating: true,
+      errors: [],
     };
   }
 
   getInitialFormValues() {
     return (
       first_name: this.props.first_name,
-      last_name: this.props..last_name,
+      last_name: this.props.last_name,
       email: this.props.email,
     );
   }
@@ -41,13 +43,15 @@ class EditProfileForm {
         firstName: {
           hasError: !!this.state.errors.first_name,
           error: this.state.errors.first_name,
+          label: 'First Name',
         },
         lastName: {
           hasError: !!this.state.errors.last_name,
           error: this.state.errors.last_name,
+          label: 'Last Name',
         },
         email: {
-          type: 'email',
+          label: 'Email',
           hasError: !!this.state.errors.email,
           error: this.state.errors.email,
         },
