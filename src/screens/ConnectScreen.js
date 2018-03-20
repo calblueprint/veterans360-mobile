@@ -41,6 +41,8 @@ export default class ConnectScreen extends React.Component {
       isHelpModalOpen: true,
       veterans: [],
       parterOrgs: [],
+      currentPos: [],
+      currentVets: [],
       activeConnection: null,  // Indicates if a veteran/org has been focused
       activeConnectionType: null, // Either 'veteran' or 'po'
       stillLoading: true,
@@ -48,7 +50,10 @@ export default class ConnectScreen extends React.Component {
       friendRequests: [],
     }
 
+    this.veteransMapping = {};
+
     this.onRegionChange = this.onRegionChange.bind(this);
+    this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
     this.onConnectRequest = this.onConnectRequest.bind(this);
     this.closeHelpModal = this.closeHelpModal.bind(this);
     this.closeConnectBox = this.closeConnectBox.bind(this);
@@ -98,6 +103,7 @@ export default class ConnectScreen extends React.Component {
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
       this.setState({ veterans: response });
+      this.veteransMapping = this.buildVeteransMapping();
     }).catch((error) => {
       console.error(error);
     });
@@ -129,6 +135,24 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+  /**
+   * Builds a map between veteran IDs and veteran objects for fast state updates
+   */
+  buildVeteransMapping() {
+    let mapping = {};
+    this.state.veterans.forEach((veteran) => {
+      mapping[veteran.id] = veteran;
+    });
+    return mapping;
+  }
+
+  /**
+   * Get's veteran object with corresponding veteran ID
+   */
+  getVeteran(id) {
+    return this.veteransMapping[id];
+  }
+
   openHelpModal() {
     this.setState({ isHelpModalOpen: true });
   }
@@ -146,10 +170,8 @@ export default class ConnectScreen extends React.Component {
    */
   closeFriendRequestModal(i) {
     return () => {
-      const newFriendRequests = update(this.state.friendRequests, {
-        $apply: (reqs) => {return reqs.splice(i, 1)},
-      });
-      this.setState({ friendRequests: newFriendRequests });
+      this.state.friendRequests.splice(i, 1);
+      this.setState({ friendRequests: this.state.friendRequests });
     };
   }
 
@@ -173,8 +195,29 @@ export default class ConnectScreen extends React.Component {
     };
   }
 
+  onRegionChangeComplete(region) {
+    const buffer = .3
+    const vets = this.state.veterans.filter(vet => {
+      const lat = parseFloat(vet.lat)
+      const lng = parseFloat(vet.lng)
+      return lat <= region.latitude + region.latitudeDelta/(2 - buffer) &&
+             lat >= region.latitude - region.latitudeDelta/(2 - buffer) &&
+             lng <= region.longitude + region.longitudeDelta/(2 - buffer) &&
+             lng >= region.longitude - region.longitudeDelta/(2 - buffer)
+    });
+    const pos = this.state.parterOrgs.filter(po => {
+      const lat = parseFloat(po.lat)
+      const lng = parseFloat(po.lng)
+      return lat <= region.latitude + region.latitudeDelta/(2 - buffer) &&
+             lat >= region.latitude - region.latitudeDelta/(2 - buffer) &&
+             lng <= region.longitude + region.longitudeDelta/(2 - buffer) &&
+             lng >= region.longitude - region.longitudeDelta/(2 - buffer)
+    });
+    this.setState({ region: region, currentPos: pos, currentVets: vets });
+  }
+
   onRegionChange(region) {
-    this.setState({ region: region });
+    //this.setState({ region: region});
   }
 
   /**
@@ -209,16 +252,26 @@ export default class ConnectScreen extends React.Component {
    * Called when the ConnectBox "CONNECT" button is pressed by
    * this user, indicating a friend request sent to the other
    * user.
-   * FIXME (Ken): FIX THIS as bugged in certain situations
-   * See how solved in HomeScreen->ProfileCard
+   * FIXME (Ken): Maybe also include whether user has recv FR from this user
+   * so can render instantly that they are now friends.
    */
-  onConnectRequest() {
-    if (this.state.activeConnectionType === 'veteran') {
-      this.state.activeConnection.sent_friend_request = true;
-    } else if (this.state.activeConnectionType === 'po') {
-      this.state.activeConnection.is_subscribed_to = true;
+  onConnectRequest(id) {
+    /* Set veteran sent friend request state */
+    let veteran = this.getVeteran(id);
+    veteran.sent_friend_request = true;
+    this.setState({ veterans: this.state.veterans });
+
+    /* Remove any existing friend requests from that user */
+    let removeIndex = null;
+    this.state.friendRequests.forEach((req, i) => {
+      if (req.id === id) {
+        removeIndex = i;
+      }
+    });
+    if (removeIndex != null) {
+      this.state.friendRequests.splice(removeIndex, 1);
+      this.setState({ friendRequests: this.state.friendRequests });
     }
-    this.setState({ activeConnection: this.state.activeConnection });
   }
 
   /**
@@ -292,11 +345,21 @@ export default class ConnectScreen extends React.Component {
    * rocket function to bind the onPress method
    */
   renderVeteranMarkers() {
-    return this.state.veterans.map((veteran) => {
+    const locations = new Set();
+    let currentVets = this.state.currentVets;
+    if (this.state.currentVets.length + this.state.currentPos.length > 10) {
+      currentVets = this.state.currentVets.slice(0, 10 - this.state.currentPos.length)
+    }
+    return currentVets.map((veteran) => {
       const coordinate = {
         latitude: parseFloat(veteran.lat),
         longitude: parseFloat(veteran.lng),
       };
+      //Change coordinate if two pins are in the same location
+      if (locations.has(coordinate)) {
+        coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
+      }
+      locations.add(coordinate);
       return (
         <MapView.Marker
           coordinate={coordinate}
@@ -309,17 +372,46 @@ export default class ConnectScreen extends React.Component {
     });
   }
 
+
+  comparePO(a, b) {
+    let maxA = 0;
+    let maxB = 0;
+    a.resources.forEach((req, i) => {
+      if (req.num_upvotes > maxA) {
+        maxA = req.num_upvotes;
+      }
+    });
+    b.resources.forEach((req, i) => {
+      if (req.num_upvotes > maxB) {
+        maxB = req.num_upvotes;
+      }
+    });
+    return maxB - maxA;
+  }
+
   /**
    * Return a list of MapView Markers that represent partering orgs.
    * TODO (Ken): See if you can use underscore.js partials instead of
    * rocket function to bind the onPress method
    */
   renderParterOrgMarkers() {
-    return this.state.parterOrgs.map((org) => {
+    const locations = new Set();
+    let currentPos = this.state.currentPos;
+    if (this.state.currentPos.length > 10) {
+      currentPos.sort(comparePO);
+      currentPos = currentPos.slice(0, 10);
+    }
+    return currentPos.map((org) => {
       const coordinate = {
         latitude: parseFloat(org.lat),
         longitude: parseFloat(org.lng),
       };
+      //Move pins that have same location
+      if (locations.has(coordinate)) {
+        coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
+      }
+      locations.add(coordinate);
+
       return (
         <MapView.Marker
           coordinate={coordinate}
@@ -430,6 +522,7 @@ export default class ConnectScreen extends React.Component {
           ref={(ref) => this.mapView = ref}
           style={styles.baseMapContainer}
           initialRegion={this.getInitialRegion()}
+          onRegionChangeComplete={this.onRegionChangeComplete}
         >
           {this.renderVeteranMarkers()}
           {this.renderParterOrgMarkers()}

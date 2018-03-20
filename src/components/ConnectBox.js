@@ -96,7 +96,7 @@ export default class ConnectBox extends React.Component {
       },
     };
     BaseRequester.post(route, params).then((response) => {
-      this.props.onConnect();
+      this.props.onConnect(this.props.connection.id);
       onSuccess && onSuccess(response);
     }).catch((error) => {
       console.error(error);
@@ -163,7 +163,7 @@ export default class ConnectBox extends React.Component {
 
   render() {
     const connection = this.props.connection;
-    const buttonStyle = connection.is_friend ? styles.friendButton : styles.profileButton;
+    const buttonStyle = connection.is_friend ? styles.friendButton : connection.sent_friend_request ?  styles.disabledProfileButton  : styles.profileButton;
     const connectMethod = this.props.connectionType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
 
     return (
@@ -184,7 +184,7 @@ export default class ConnectBox extends React.Component {
             <Button
               style={[buttonStyle, margins.marginTop.md]}
               textStyle={styles.profileButtonText}
-              text={connection.is_friend ? 'FRIEND' : 'CONNECT'}
+              text={connection.is_friend ? 'FRIEND' : connection.is_subscribed_to ? 'FOLLOWING' : connection.sent_friend_request ? 'PENDING' : 'CONNECT'}
               disabled={connection.is_friend || connection.sent_friend_request || connection.is_subscribed_to}
               onPress={connectMethod}
             />
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
 
   /* Container of two buttons below profile picture */
   buttonContainer: {
-    flex: 1,
+    flex: 1.6,
     marginTop: 20,
   },
 
@@ -271,15 +271,26 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
   },
-  profileButton: {
+  disabledProfileButton: {
     height: 30,
+    width: 100,
     borderRadius: 15,
     paddingLeft: 12,
     paddingRight: 12,
+    backgroundColor: colors.gray
+  },
+  profileButton: {
+    height: 30,
+    width: 100,
+    borderRadius: 15,
+    paddingLeft: 12,
+    paddingRight: 12,
+
   },
   friendButton: {
     height: 25,
-    borderRadius: 4,
+    width: 100,
+    borderRadius: 15,
     paddingLeft: 15,
     paddingRight: 15,
     backgroundColor: colors.blue,
@@ -287,7 +298,7 @@ const styles = StyleSheet.create({
   profileButtonText: {
     fontSize: 12,
     fontWeight: 'bold',
-  },
+  }, 
   name: {
     fontSize: 22,
     fontFamily: 'source-sans-pro-bold',

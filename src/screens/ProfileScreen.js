@@ -87,7 +87,7 @@ export default class ProfileScreen extends React.Component {
       },
     };
     BaseRequester.post(route, params).then((response) => {
-      navParams.onConnect();
+      navParams.onConnect(navParams.id);
       this.setState({ sentConnectRequest: true });
       onSuccess && onSuccess(response);
     }).catch((error) => {
@@ -192,9 +192,8 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.detailsContainer}>
         {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
         {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles.join(", ")) : null}
-
         {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
-        {!!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
+        {params.is_friend && !!veteran.address ? this.renderDetailRow("ADDRESS", params.address) : null}
         {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
         {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", params.military_branch) : null}
         {params.is_friend && !!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
@@ -218,9 +217,9 @@ export default class ProfileScreen extends React.Component {
     } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
-          style={margins.marginTop.md}
+          style={[margins.marginTop.md, {backgroundColor: colors.gray}]}
           onPress={connectMethod}
-          text="CONNECT"
+          text={params.is_subscribed_to ? "FOLLOWING" : "REQUESTED"}
           disabled={true}
         />
       );
