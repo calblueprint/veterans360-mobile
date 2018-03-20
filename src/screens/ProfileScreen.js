@@ -34,8 +34,6 @@ import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
 import Button from '../components/Button';
-import { APIRoutes } from '../helpers/routes/routes';
-import BaseRequester from '../helpers/requesters/BaseRequester';
 
 
 export default class ProfileScreen extends React.Component {
@@ -190,7 +188,6 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
-    params.profileType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
     return (
       <View style={styles.detailsContainer}>
         {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
