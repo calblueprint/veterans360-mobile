@@ -63,15 +63,15 @@ const MainTabNavigator = TabNavigator({
       ),
     },
   },
-  EditProfile: {
-    screen: EditProfileScreen,
-    navigationOptions: {
-      tabBarLabel: 'Edit Profile',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="user" size={22} color={tintColor} />
-      ),
-    },
-  },
+  // EditProfile: {
+  //   screen: EditProfileScreen,
+  //   navigationOptions: {
+  //     tabBarLabel: 'Edit Profile',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="user" size={22} color={tintColor} />
+  //     ),
+  //   },
+  // },
 
 }, {
   tabBarPosition: 'bottom',

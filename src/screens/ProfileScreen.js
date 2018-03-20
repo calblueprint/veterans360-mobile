@@ -50,6 +50,7 @@ export default class ProfileScreen extends React.Component {
      */
     this.state = {
       sentConnectRequest: false,
+      formValues: this.getInitialFormValues(),
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);

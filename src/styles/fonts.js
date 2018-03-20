@@ -44,7 +44,7 @@ const fontStyles = StyleSheet.create({
     fontSize: 32,
     fontFamily: 'source-sans-pro-light',
     color: colors.white,
-  }, 
+  },
   labelText: {
     fontSize: 16,
     fontFamily: 'source-sans-pro-bold',
@@ -70,6 +70,11 @@ const fontStyles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'source-sans-pro-bold',
     color: colors.red,
+  },
+  boldTextGreen: {
+    fontSize: 18,
+    fontFamily: 'source-sans-pro-bold',
+    color: colors.green,
   },
   bodyText: {
     fontSize: 18,
