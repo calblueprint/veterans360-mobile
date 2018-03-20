@@ -1,10 +1,12 @@
-
+//passing in props==params-> this.props.navigation.state.params
+import EditProfileForm from '../components/EditProfileForm';
 import React from 'react';
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import {
   TextInput,
   Button,
+  View,
   ScrollView,
 } from 'react-native';
 
@@ -13,7 +15,7 @@ class EditProfileScreen extends React.Component {
     super(props);
 
   this.state = {
-    updatedUser: this.props.current_veteran,
+    updatedUser: this.props.params,
   };
 }
 
@@ -22,7 +24,7 @@ class EditProfileScreen extends React.Component {
     const successFunc = (responseData) => {
       this.props.navigation.navigate('ProfileScreen');
     }
-    updatedUser = this.state;
+    updatedUser = this.state.updatedUser;
     ProfileRequester.updateUser(updatedUser).then(success).catch(failure);
   }
 
@@ -30,10 +32,10 @@ class EditProfileScreen extends React.Component {
     // const updated = this.state.updatedUser;
     <View>
       <EditProfileForm
-        first_name={this.state.updatedUser.first_name}
-        last_name={this.state.updatedUser.last_name}
-        email={this.state.updatedUser.email}
-        updateSave={this._handleUpdate().bind(this)}  />
+        first_name={this.props.first_name}
+        last_name={this.props.last_name}
+        email={this.props.email}
+        updateSave={this._handleUpdate.bind(this)}  />
     </View>
 
   }
