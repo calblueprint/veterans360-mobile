@@ -196,16 +196,23 @@ export default class ConnectScreen extends React.Component {
   }
 
   onRegionChangeComplete(region) {
+    const buffer = .3
     const vets = this.state.veterans.filter(vet => {
-      return parseFloat(vet.lat) <= (region.latitude + region.latitudeDelta/2) && 
-             parseFloat(vet.lat) >= (region.latitude - region.latitudeDelta/2) && 
-             parseFloat(vet.lng) <= (region.longitude + region.longitudeDelta/2) &&
-             parseFloat(vet.lng) >= (region.longitude - region.longitudeDelta/2)});
-    const pos = this.state.parterOrgs.filter(vet => {
-      return parseFloat(vet.lat) <= region.latitude + region.latitudeDelta/2 && 
-             parseFloat(vet.lat) >= region.latitude - region.latitudeDelta/2 &&
-             parseFloat(vet.lng) <= region.longitude + region.longitudeDelta/2 &&
-             parseFloat(vet.lng) >= region.longitude - region.longitudeDelta/2});
+      const lat = parseFloat(vet.lat)
+      const lng = parseFloat(vet.lng)
+      return lat <= region.latitude + region.latitudeDelta/(2 - buffer) &&
+             lat >= region.latitude - region.latitudeDelta/(2 - buffer) &&
+             lng <= region.longitude + region.longitudeDelta/(2 - buffer) &&
+             lng >= region.longitude - region.longitudeDelta/(2 - buffer)
+    });
+    const pos = this.state.parterOrgs.filter(po => {
+      const lat = parseFloat(po.lat)
+      const lng = parseFloat(po.lng)
+      return lat <= region.latitude + region.latitudeDelta/(2 - buffer) &&
+             lat >= region.latitude - region.latitudeDelta/(2 - buffer) &&
+             lng <= region.longitude + region.longitudeDelta/(2 - buffer) &&
+             lng >= region.longitude - region.longitudeDelta/(2 - buffer)
+    });
     this.setState({ region: region, currentPos: pos, currentVets: vets });
   }
 
@@ -351,7 +358,7 @@ export default class ConnectScreen extends React.Component {
       //Change coordinate if two pins are in the same location
       if (locations.has(coordinate)) {
         coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
-      } 
+      }
       locations.add(coordinate);
       return (
         <MapView.Marker
@@ -404,7 +411,7 @@ export default class ConnectScreen extends React.Component {
         coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
       }
       locations.add(coordinate);
-    
+
       return (
         <MapView.Marker
           coordinate={coordinate}
