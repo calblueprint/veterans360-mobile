@@ -1,10 +1,11 @@
 import React from 'react';
-import { Form, t } from '../components/Form';
+import { Form } from '../components/Form';
 import Button from '../components/Button';
 import ProfileRequester from '../helpers/requesters/ProfileRequester'
 import BaseRequester from '../helpers/requesters/BaseRequester';
+import { View, ScrollView} from 'react-native';
 
-class EditProfileForm {
+class EditProfileForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -13,6 +14,7 @@ class EditProfileForm {
     this._getFormOptions = this._getFormOptions.bind(this);
     // this._clearFormErrors = this._clearFormErrors.bind(this);
     this._onFormChange = this._onFormChange.bind(this);
+    this._handleSave = this._handleSave.bind(this);
 
     this.state = {
       formValues: this.getInitialFormValues(),
@@ -21,12 +23,13 @@ class EditProfileForm {
     };
   }
 
-  getInitialFormValues() {
-    return (
+  _getInitialFormValues() {
+    let values = {
       first_name: this.props.first_name,
       last_name: this.props.last_name,
       email: this.props.email,
-    );
+    }
+    return values
   }
 
   getFormType() {
@@ -37,7 +40,7 @@ class EditProfileForm {
     });
   }
 
-  getFormOptions() {
+  _getFormOptions() {
     return {
       fields: {
         firstName: {
@@ -70,8 +73,8 @@ class EditProfileForm {
   _renderSaveButton() {
     return (
       <Button
-        onPress = {this._handleSave()}
-        text='Save',
+        onPress = {this._handleSave}
+        title='Save'
         />
     );
   }

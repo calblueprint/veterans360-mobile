@@ -264,7 +264,7 @@ export default class ProfileScreen extends React.Component {
     return(
     <TouchableOpacity
           onPress={() => this.props.navigation.navigate('EditProfileScreen', {
-            current_veteran: params})}
+            params: params})}
             style={styles.editButton}>
 
           <Text style={fontStyles.boldTextGreen}>
