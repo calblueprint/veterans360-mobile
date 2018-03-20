@@ -1,6 +1,6 @@
 /**
  * Module that contains a function that loads all app fonts (called in
- * application.js) and fontStyles that includes basic styles for
+ * application.js) and F that includes basic styles for
  * the typography in the application.
  */
 

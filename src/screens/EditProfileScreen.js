@@ -12,12 +12,9 @@ class EditProfileScreen extends React.Component {
   constructor(props) {
     super(props);
 
-
   this.state = {
-    updatedUser: this.props.navigation.state.params,
+    updatedUser: this.props.current_veteran,
   };
-  
-
 }
 
 
@@ -30,12 +27,12 @@ class EditProfileScreen extends React.Component {
   }
 
   render() {
-    const updated = this.state.updatedUser;
+    // const updated = this.state.updatedUser;
     <View>
       <EditProfileForm
-        first_name:{updated.first_name}
-        last_name:{updated.last_name}
-        email:{updated.email}
+        first_name={this.state.updatedUser.first_name}
+        last_name={this.state.updatedUser.last_name}
+        email={this.state.updatedUser.email}
         updateSave={this._handleUpdate().bind(this)}  />
     </View>
 

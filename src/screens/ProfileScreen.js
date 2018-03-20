@@ -50,7 +50,6 @@ export default class ProfileScreen extends React.Component {
      */
     this.state = {
       sentConnectRequest: false,
-      formValues: this.getInitialFormValues(),
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -261,10 +260,19 @@ export default class ProfileScreen extends React.Component {
 
   navigateEditScreen() {
     const params = this.getParams();
-    this.props.navigation.navigate('EditProfileScreen', {
-      user: params,
-    });
-  }
+    return(
+    <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('EditProfileScreen', {
+            current_veteran: params})}
+            style={styles.editButton}>
+
+          <Text style={fontStyles.boldTextGreen}>
+          Edit
+          </Text>
+      </TouchableOpacity>
+    );
+    }
+
 
   render() {
     const params = this.getParams();
