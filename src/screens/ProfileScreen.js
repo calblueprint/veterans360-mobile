@@ -34,6 +34,8 @@ import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
 import Button from '../components/Button';
+import { APIRoutes } from '../helpers/routes/routes';
+import BaseRequester from '../helpers/requesters/BaseRequester';
 
 
 export default class ProfileScreen extends React.Component {
@@ -188,15 +190,16 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
+    params.profileType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
     return (
       <View style={styles.detailsContainer}>
         {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
         {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles.join(", ")) : null}
         {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
-        {!!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
+        {params.is_friend && !!veteran.address ? this.renderDetailRow("ADDRESS", params.address) : null}
         {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
         {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", params.military_branch) : null}
-        {!!params.phone_number ? this.renderDetailRow("phone_number", params.phone_number) : null}
+        {params.is_friend && !!veteran.phone_number ? this.renderDetailRow("PHONE_NUMBER", params.phone_number) : null}
       </View>
     );
   }
