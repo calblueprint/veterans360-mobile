@@ -4,7 +4,7 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
-  Button
+  Button,
   Linking
 } from 'react-native';
 import Icon from '@expo/vector-icons/FontAwesome';
