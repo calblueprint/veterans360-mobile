@@ -54,7 +54,6 @@ export default class Resource extends React.Component {
       let data = response_json.map((item) => {
         let dateRaw = item.updated_at;
         let date = new Date(Date.UTC(dateRaw.substring(0, 4), dateRaw.substring(5, 7), dateRaw.substring(8, 10)));
-        console.log(item)
         return {
           id: item.id,
           title: item.file_name,
