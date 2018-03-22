@@ -1,32 +1,40 @@
+import BaseRequester from './BaseRequester';
+import { APIRoutes } from '../routes/routes';
+
 class ProfileRequester {
   static async getCurrentUser(id) {
     try {
-      currentUser = await BaseRequester.get(APIRoutes.getProfile(id))
-      return Promise.resolve(currentUser)
+      let currentUser = {};
+      currentUser = await BaseRequester.get(APIRoutes.getProfile(id));
+      return Promise.resolve(currentUser);
     } catch(error) {
-      return Promise.reject(currentUser)
+      return Promise.reject(currentUser);
     }
   }
 
-
-
-    static async updateUser(veteran) {
-      let params = {
-        veteran: {
-          first_name: veteran.first_name,
-          last_name: veteran.last_name,
-          email: veteran.email,
-          phone: veteran.phone
-        }
-      }
+    static async updateUser(params) {
+      // let params = {
+      //   veteran: {
+      //     first_name: veteran.first_name,
+      //     last_name: veteran.last_name,
+      //     email: veteran.email,
+      //     phone: veteran.phone,
+      //   }
+      // }
+      console.log('In Requester');
+      console.log(params);
+      console.log(params.veteran.id);
+      const endpoint = APIRoutes.getProfile(params.veteran.id);
+      console.log(endpoint);
       try {
-        currentUser = await BaseRequester.patch(APIRoutes.getProfile(id), params);
+        let currentUser = {};
+        currentUser = await BaseRequester.patch(endpoint, params);
         return Promise.resolve(currentUser);
       } catch(error) {
         return Promise.reject(currentUser);
       }
 
-    return BaseRequester.patch(APIRoutes.getProfile(id), params);
+    return BaseRequester.patch(APIRoutes.getProfile(params.veteran.id), params);
     }
   }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from '../components/Form';
+import { Form, t } from '../components/Form';
 import Button from '../components/Button';
 import ProfileRequester from '../helpers/requesters/ProfileRequester'
 import BaseRequester from '../helpers/requesters/BaseRequester';
@@ -16,8 +16,9 @@ class EditProfileForm extends React.Component {
     this._onFormChange = this._onFormChange.bind(this);
     this._handleSave = this._handleSave.bind(this);
 
+
     this.state = {
-      formValues: this.getInitialFormValues(),
+      formValues: this._getInitialFormValues(),
       updating: true,
       errors: [],
     };
@@ -28,14 +29,16 @@ class EditProfileForm extends React.Component {
       first_name: this.props.first_name,
       last_name: this.props.last_name,
       email: this.props.email,
+      id: this.props.id,
     }
+    console.log(values)
     return values
   }
 
-  getFormType() {
+  _getFormType() {
     return t.struct({
-      firstName: t.String,
-      lastName: t.String,
+      first_name: t.String,
+      last_name: t.String,
       email: t.String,
     });
   }
@@ -67,19 +70,27 @@ class EditProfileForm extends React.Component {
   }
 
   _handleSave() {
-    this.props.updateSave({current_veteran: this.state.formValues})
+    console.log('handleSave');
+    console.log(this.state.formValues);
+    this.props.updateSave({veteran: this.state.formValues})
   }
 
   _renderSaveButton() {
     return (
       <Button
         onPress = {this._handleSave}
-        title='Save'
+        text="Save"
         />
     );
   }
 
   render() {
+    console.log('render');
+    console.log(this.props);
+    console.log('state');
+    console.log(this.state);
+    console.log('hi');
+    console.log(this.props.id);
     return(
       <View>
         <ScrollView>

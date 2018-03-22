@@ -35,6 +35,7 @@ import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
 import Button from '../components/Button';
 import EditProfileScreen from './EditProfileScreen';
+import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
 
 
 export default class ProfileScreen extends React.Component {
@@ -68,6 +69,8 @@ export default class ProfileScreen extends React.Component {
    */
   getName() {
     const params = this.getParams();
+    console.log('inprof');
+    console.log(params);
     return params.name || `${params.first_name} ${params.last_name}`;
   }
 
@@ -260,9 +263,11 @@ export default class ProfileScreen extends React.Component {
 
   navigateEditScreen() {
     const params = this.getParams();
+    console.log('NavigateEditScreen');
+    console.log(params);
     return(
     <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('EditProfileScreen', {
+          onPress={() => this.props.navigation.navigate('EditProfile', {
             params: params})}
             style={styles.editButton}>
 
@@ -276,6 +281,8 @@ export default class ProfileScreen extends React.Component {
 
   render() {
     const params = this.getParams();
+    console.log('diditchange');
+    console.log(params);
     return (
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>

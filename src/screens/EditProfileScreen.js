@@ -2,11 +2,14 @@
 import EditProfileForm from '../components/EditProfileForm';
 import React from 'react';
 import { APIRoutes } from '../helpers/routes/routes';
+import ProfileRequester from '../helpers/requesters/ProfileRequester'
 import BaseRequester from '../helpers/requesters/BaseRequester';
+import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
 import {
   TextInput,
   Button,
   View,
+  Text,
   ScrollView,
 } from 'react-native';
 
@@ -15,29 +18,50 @@ class EditProfileScreen extends React.Component {
     super(props);
 
   this.state = {
-    updatedUser: this.props.params,
+    updatedUser: this.props,
   };
+  // console.log(this.state.updatedUser); //undefined state not getting params
 }
 
+/**
 
-  _handleUpdate(params) {
+ *
+ * @param {function} onSuccess: callback on response when successful
+ * @param {function} onFailure: callback on error object when errored
+ */
+
+  _handleUpdate(params, onSuccess, onFailure) {
     const successFunc = (responseData) => {
       this.props.navigation.navigate('ProfileScreen');
     }
-    updatedUser = this.state.updatedUser;
-    ProfileRequester.updateUser(updatedUser).then(success).catch(failure);
-  }
+    console.log('handleupdate');
+    console.log(params);
+    ProfileRequester.updateUser(params).then((response) => {
+      this.props.navigation.navigate('Profile')
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      onFailure && onFailure(error.error);
+      this.setState({ errors: error.error });
+      console.error(error);;
+  });
+}
 
   render() {
-    // const updated = this.state.updatedUser;
-    <View>
-      <EditProfileForm
-        first_name={this.props.first_name}
-        last_name={this.props.last_name}
-        email={this.props.email}
-        updateSave={this._handleUpdate.bind(this)}  />
-    </View>
+    console.log('vetid');
+    const veteran_id= this.props.navigation.state.params.id;
+    console.log(veteran_id);
 
+    // const updated = this.state.updatedUser;
+    return(
+      <View>
+        <EditProfileForm
+          first_name={this.props.first_name}
+          last_name={this.props.last_name}
+          email={this.props.email}
+          id={veteran_id}
+          updateSave={this._handleUpdate.bind(this)}  />
+      </View>
+    )
   }
 }
 
