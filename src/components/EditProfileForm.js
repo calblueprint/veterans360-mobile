@@ -3,7 +3,9 @@ import { Form, t } from '../components/Form';
 import Button from '../components/Button';
 import ProfileRequester from '../helpers/requesters/ProfileRequester'
 import BaseRequester from '../helpers/requesters/BaseRequester';
-import { View, ScrollView} from 'react-native';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Icon, Text} from 'react-native';
+import { margins } from '../styles/layout';
+import { fontStyles } from '../styles/fonts';
 
 class EditProfileForm extends React.Component {
   constructor(props) {
@@ -17,13 +19,13 @@ class EditProfileForm extends React.Component {
     this._handleSave = this._handleSave.bind(this);
 
 
+
     this.state = {
       formValues: this._getInitialFormValues(),
       updating: true,
       errors: [],
     };
   }
-
   _getInitialFormValues() {
     let values = {
       first_name: this.props.first_name,
@@ -109,5 +111,16 @@ class EditProfileForm extends React.Component {
     );
   }
 }
+const styles = StyleSheet.create({
+  raisedContainer: {
+    position: 'absolute',
+    left: '10%',
+    width: '80%',
+    height: '60%',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});
 
 export default EditProfileForm;

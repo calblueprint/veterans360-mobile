@@ -60,6 +60,11 @@ export default class ProfileScreen extends React.Component {
 
   }
 
+  _fetchVeteran(id) {
+
+  }
+
+
   getParams() {
     return this.props.navigation.state.params;
   }
@@ -70,7 +75,7 @@ export default class ProfileScreen extends React.Component {
   getName() {
     const params = this.getParams();
     console.log('inprof');
-    console.log(params);
+    console.log(params.first_name);
     return params.name || `${params.first_name} ${params.last_name}`;
   }
 
