@@ -54,7 +54,7 @@ export default class LoginScreen extends React.Component {
       error: this.state.errors,
       fields: {
         email: {
-          value: 'kenchen@berkeley.edu',
+          value: 'gretahuang@berkeley.edu',
         },
         password: {
           secureTextEntry: true,
