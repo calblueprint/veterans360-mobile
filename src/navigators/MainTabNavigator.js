@@ -14,7 +14,6 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { colors } from '../styles/colors';
 import HomeStackNavigator from '../navigators/HomeStackNavigator';
 import ConnectSignUpStackNavigator from '../navigators/ConnectSignUpStackNavigator';
-import VaultStackNavigator from '../navigators/VaultStackNavigator';
 
 const MainTabNavigator = TabNavigator({
   Home: {
@@ -36,7 +35,7 @@ const MainTabNavigator = TabNavigator({
     },
   },
   Vault: {
-    screen: VaultStackNavigator,
+    screen: VaultScreen,
     navigationOptions: {
       tabBarLabel: 'Vault',
       tabBarIcon: ({ tintColor }) => (
