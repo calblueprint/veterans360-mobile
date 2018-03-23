@@ -19,15 +19,13 @@ class EditProfileForm extends React.Component {
     // this._clearFormErrors = this._clearFormErrors.bind(this);
     this._onFormChange = this._onFormChange.bind(this);
     this._handleSave = this._handleSave.bind(this);
-
-
-
     this.state = {
       formValues: this._getInitialFormValues(),
       updating: true,
       errors: [],
     };
   }
+
   _getInitialFormValues() {
     let values = {
       first_name: this.props.first_name,
@@ -35,7 +33,6 @@ class EditProfileForm extends React.Component {
       email: this.props.email,
       id: this.props.id,
     }
-    console.log(values)
     return values
   }
 
@@ -80,8 +77,6 @@ class EditProfileForm extends React.Component {
   }
 
   _handleSave() {
-    console.log('handleSave');
-    console.log(this.state.formValues);
     this.props.updateSave({veteran: this.state.formValues})
   }
 
@@ -95,12 +90,6 @@ class EditProfileForm extends React.Component {
   }
 
   render() {
-    console.log('render');
-    console.log(this.props);
-    console.log('state');
-    console.log(this.state);
-    console.log('hi');
-    console.log(this.props.id);
     return(
       <View>
         <ScrollView>
