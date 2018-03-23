@@ -5,7 +5,9 @@ import {
   TextInput,
   View,
   ScrollView,
-  TouchableHighlight ,
+  TouchableHighlight,
+  FlatList,
+  ItemSeparatorComponent,
 } from 'react-native';
 
 import { imageStyles } from '../styles/images';
@@ -15,6 +17,7 @@ import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import Resource from '../components/Resource';
 import CategoryRequester from '../helpers/requesters/CategoryRequester';
+import { List, ListItem } from 'react-native-elements';
 
 export default class VaultScreen extends React.Component {
 
@@ -22,136 +25,72 @@ export default class VaultScreen extends React.Component {
     super(props);
     this.state = {
       searchText: '',
-      filter: [],
-      categories: [
-        {name: 'CLEAR', selected: false, id: 0}
-      ],
+      categories: [],
       resources: [],
       stillLoading: true,
     };
-    this.falseState = this.falseState.bind(this);
-    this.setOpposite = this.setOpposite.bind(this);
-    this.renderResourceContent = this.renderResourceContent.bind(this);
   }
 
   componentDidMount() {
     CategoryRequester.retrieveCategories().then((response) => {
-      let categories = this.state.categories.slice();
-      categories = categories.concat(response);
-      this.setState({ categories: categories, stillLoading: false });
+      this.setState({ categories: response, stillLoading: false });
     })
   }
 
-  categoriesToDisplay() {
-    let arr = []
-    for (var i = 1; i < this.state.categories.length; i++) {
-      if (this.state.categories[i].selected === true) {
-        arr.push(this.state.categories[i].id);
-      }
-    }
-    return arr;
-  }
+  getData = () => {
+    return this.state.categories.map((category, i) => {
+        return {key: category.name, id: category.id};
+    });
+  };
 
-  /**
-   * Updates the category filter and set state to updated categories
-   * @param {Number} itemId
-   * @param {Boolean} newState
-   */
-  updateFilter(itemId, newState) {
-    let categoriesArr = this.state.categories.slice()
-    categoriesArr.forEach((i) => {
-      if (i.id === itemId) {
-        i.selected = newState;
-      }
-    })
-    this.setState({ categories: categoriesArr });
-  }
+  updateSelected = (item) => {
+    let params = { 
+      // TODO: fix
+      veteranId: this.props.navigation.state.params.id,
+      // veteranId: 1,
+      categories: this.state.categories,
+      categoryToDisplay: item.id,
+      title: item.key,
+    };
+    this.props.navigation.navigate('Resource', params);
+  };
 
-  /**
-   * Sets the category with the provided ID to have the opposite filter selection
-   * @param {Number} itemId
-   */
-  setOpposite(itemId) {
-    this.state.categories.forEach((i) => {
-      if (i.id == itemId) {
-        this.updateFilter(itemId, !i.selected);
-      }
-    })
-  }
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 1,
+          width: "100%",
+          backgroundColor: "#CED0CE",
+        }}
+      />
+    );
+  };
 
-  /**
-   * Sets the state of the selected filter to be the opposite. If the 'clear' button was selected, all categories are set to false.
-   * @param {String} name
-   * @param {Number} itemId
-   */
-  falseState(name, itemId) {
-    if (name === 'CLEAR') {
-      for (let i = 1; i < this.state.categories.length; i++) {
-        this.updateFilter(this.state.categories[i].id, false)
-      }
-    } else {
-      this.setOpposite(itemId);
-    }
-  }
-
-  /**
-   * Upon call, returns the category elements based on the categories in the state
-   */
-  filterScroller() {
-    return this.state.categories.map((item) => {
-      if (item.selected === false) {
-        return (
-          <TouchableHighlight key = { item.id } style={ styles.item } onPress={ () => { this.falseState(item.name, item.id); } }>
-            <Text style={ { color:'white', fontSize:12, fontFamily: 'source-sans-pro-semibold', } }>{item.name}</Text>
-          </TouchableHighlight>
-        );
-      } else {
-        return (
-          <TouchableHighlight key = { item.id } style = {[styles.item, { backgroundColor:'white', }]} onPress={() => {this.setOpposite(item.id);}}>
-            <Text style={{ color:'black', fontSize:12, fontFamily: 'source-sans-pro-semibold',}}>{item.name}</Text>
-          </TouchableHighlight>
-        );
-      }
-    })
-  }
-
-  onSubmitEdit = () => {
-  }
-
-  renderResourceContent() {
+  renderResourceContent = () => {
     return (
       <View style={ styles.backgroundContainer }>
         <View style={{flex: 1,}}>
-          <View style={ styles.backgroundDisplay }>
-          </View>
-          <View style={{position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,}}>
-            <ScrollView>
-              <View style={[styles.contentContainer, {top:0,}]}>
-                <Text style={[styles.baseText, {marginBottom: 5,}]}>
-                  <Text style={[styles.titleText, {color:'rgb(255, 255, 255)'}]}>
-                    Resources
-                  </Text>
-                </Text>
-                <View style={[styles.search, {marginTop: 5,}]}>
-                  <TextInput style={styles.searchBar} placeholderTextColor="rgba(255, 255, 255, 0.5)" placeholder="Search resources" onChangeText={(searchText) => this.setState({searchText})}/>
-                </View>
-              </View>
-              <ScrollView horizontal={ true } showsHorizontalScrollIndicator={ false } style={styles.filter}>
-                {this.filterScroller()}
-              </ScrollView>
-              <View style={styles.contentContainer}>
-                <Resource
-                  veteranId={this.props.navigation.state.params.id}
-                  categories={this.state.categories}
-                  categoriesToDisplay={this.categoriesToDisplay()}
+          <View style={ styles.contentContainer }>
+            <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+              <FlatList
+                ItemSeparatorComponent={this.renderSeparator}
+                data={this.getData()}
+                renderItem={({ item }) => (
+                <ListItem 
+                  titleStyle={ styles.listItemTitle }
+                  title={`${item.key}`}
+                  containerStyle={{ borderBottomWidth: 0 }}
+                  onPress={this.updateSelected.bind(this, item)}
                 />
-              </View>
-            </ScrollView>
+              )}
+              />
+            </List>
           </View>
         </View>
       </View>
     );
-  }
+  };
 
   render() {
     if (this.state.stillLoading) {
@@ -176,6 +115,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     fontFamily: 'source-sans-pro-semibold',
+    paddingLeft: 10,
+    paddingTop: 10,
   },
   bodyText: {
     fontSize: 12,
@@ -183,10 +124,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection:'column',
-    marginTop: 50,
-    marginLeft:15,
-    marginRight:15,
-    backgroundColor:'rgba(255, 255, 255, 0)',
   },
   backgroundContainer: {
     flex: 1,
@@ -300,5 +237,9 @@ const styles = StyleSheet.create({
     fontFamily: 'source-sans-pro-light-italic',
     fontSize: 12,
     color: "rgb(0,0,0)",
+  },
+  listItemTitle: {
+    fontFamily: 'source-sans-pro-regular',
+    fontSize: 22,
   },
 });
