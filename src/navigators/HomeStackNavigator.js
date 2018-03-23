@@ -22,7 +22,7 @@ const HomeStackNavigator = StackNavigator({
   headerMode: 'none',
   navigationOptions: {
     gesturesEnabled: false,
-  }, 
+  },
 });
 
 export default HomeStackNavigator;

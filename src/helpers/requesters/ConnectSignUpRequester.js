@@ -34,7 +34,6 @@ class ConnectSignUpRequester {
     const endpoint = APIRoutes.veteransConnectStatus(id);
     try {
       let response_json = await BaseRequester.get(endpoint);
-      console.log(response_json);
       return Promise.resolve(response_json);
     } catch (error) {
       return Promise.reject(error);

@@ -13,5 +13,5 @@ export default class ResponseScreen extends React.Component {
       </View>
     );
   }
-  
+
 }

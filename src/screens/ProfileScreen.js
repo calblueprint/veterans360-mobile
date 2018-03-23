@@ -15,7 +15,7 @@
  * @params.email
  * @params.roles
  */
-
+// import { Actions } from 'react_native_route_flux';
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
 import {
@@ -34,13 +34,15 @@ import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
 import Button from '../components/Button';
+import EditProfileScreen from './EditProfileScreen';
+import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
+import ProfileRequester from '../helpers/requesters/ProfileRequester';
 
 
 export default class ProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
-
     /**
      * TODO (Ken): Currently this is a hard coded state change on the profile
      * screen when a user has presesed the connect button, but it would
@@ -49,13 +51,32 @@ export default class ProfileScreen extends React.Component {
      */
     this.state = {
       sentConnectRequest: false,
+      veteran : { },
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
     this.connectWithPO = this.connectWithPO.bind(this);
     this.goBack = this.goBack.bind(this);
     this.logout = this.logout.bind(this);
+
   }
+
+  _fetchVeteran(id, onSuccess, onFailure) {
+    ProfileRequester.getCurrentUser(id).then((response) => {
+      this.setState({veteran: response});
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      onFailure && onFailure(error.error);
+      this.setState({ errors: error.error });
+      console.error(error);;
+    });
+  }
+
+  componentDidMount() {
+    const params = this.getParams();
+    this._fetchVeteran(params.id);
+  }
+
 
   getParams() {
     return this.props.navigation.state.params;
@@ -66,7 +87,7 @@ export default class ProfileScreen extends React.Component {
    */
   getName() {
     const params = this.getParams();
-    return params.name || `${params.first_name} ${params.last_name}`;
+    return params.name || `${this.state.veteran.first_name} ${this.state.veteran.last_name}`;
   }
 
   /**
@@ -123,6 +144,8 @@ export default class ProfileScreen extends React.Component {
     return this.props.navigation.goBack();
   }
 
+
+
   /**
    * Logs out the user from the app.
    */
@@ -133,6 +156,7 @@ export default class ProfileScreen extends React.Component {
       console.error(error);
     });
   }
+
 
   /**
    * Renders the back button and label unless comes from the main
@@ -188,15 +212,16 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
+    // (JASON) look into whether this needs fixing (params.is_friend should add another || with or params.is_friend == null)
     return (
       <View style={styles.detailsContainer}>
-        {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
-        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles.join(", ")) : null}
-        {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
-        {params.is_friend && !!veteran.address ? this.renderDetailRow("ADDRESS", params.address) : null}
-        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
-        {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", params.military_branch) : null}
-        {params.is_friend && !!veteran.phone_number ? this.renderDetailRow("PHONE_NUMBER", params.phone_number) : null}
+        {!!params.email ? this.renderDetailRow("EMAIL", this.state.veteran.email) : null}
+        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", this.state.veteran.roles) : null}
+        {!!params.website ? this.renderDetailRow("WEBSITE", this.state.veteran.website) : null}
+        {!!params.address ? this.renderDetailRow("ADDRESS", this.state.veteran.address) : null}
+        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", this.state.veteran.demographic) : null}
+        {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", this.state.military_branch) : null}
+        {params.is_friend && !!veteran.phone_number ? this.renderDetailRow("PHONE_NUMBER", this.state.phone_number) : null}
       </View>
     );
   }
@@ -254,11 +279,27 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
-  render() {
+  navigateEditScreen() {
     const params = this.getParams();
     return (
-      <View style={styles.baseContainer}>
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('EditProfile', {params: params})}
+        style={styles.editButton}
+      >
+        <Text style={fontStyles.boldTextGreen}>
+          Edit
+        </Text>
+      </TouchableOpacity>
+    );
+  }
 
+
+  render() {
+    const params = this.getParams();
+    this._fetchVeteran(params.id);
+
+    return (
+      <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>
           <Image
             source={require('../../assets/images/photogenic.jpg')}
@@ -277,13 +318,14 @@ export default class ProfileScreen extends React.Component {
             </View>
             {this.renderConnectButton()}
             {this.renderLogoutButton()}
+            {this.navigateEditScreen()}
           </View>
         </ScrollView>
-
       </View>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   /* Container for the whole screen */
@@ -399,4 +441,27 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     backgroundColor: colors.white,
   },
+
+  editButton: {
+    marginTop: 30,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 5,
+    borderColor: colors.green,
+    borderWidth: 2,
+    backgroundColor: colors.white,
+  }
+  // editButton: {
+  //   marginTop: 30,
+  //   paddingTop: 10,
+  //   paddingBottom: 10,
+  //   paddingLeft: 20,
+  //   paddingRight: 20,
+  //   borderRadius: 5,
+  //   borderColor: colors.red,
+  //   borderWidth: 2,
+  //   backgroundColor: colors.white,
+  // }
 });

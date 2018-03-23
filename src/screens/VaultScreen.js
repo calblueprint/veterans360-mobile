@@ -44,7 +44,7 @@ export default class VaultScreen extends React.Component {
   };
 
   updateSelected = (item) => {
-    let params = { 
+    let params = {
       // TODO: fix
       veteranId: this.props.navigation.state.params.id,
       // veteranId: 1,
@@ -77,7 +77,7 @@ export default class VaultScreen extends React.Component {
                 ItemSeparatorComponent={this.renderSeparator}
                 data={this.getData()}
                 renderItem={({ item }) => (
-                <ListItem 
+                <ListItem
                   titleStyle={ styles.listItemTitle }
                   title={`${item.key}`}
                   containerStyle={{ borderBottomWidth: 0 }}
