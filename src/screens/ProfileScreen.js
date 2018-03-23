@@ -36,6 +36,7 @@ import { fontStyles } from '../styles/fonts';
 import Button from '../components/Button';
 import EditProfileScreen from './EditProfileScreen';
 import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
+import ProfileRequester from '../helpers/requesters/ProfileRequester';
 
 
 export default class ProfileScreen extends React.Component {
@@ -51,6 +52,7 @@ export default class ProfileScreen extends React.Component {
      */
     this.state = {
       sentConnectRequest: false,
+      veteran : { },
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -60,8 +62,25 @@ export default class ProfileScreen extends React.Component {
 
   }
 
-  _fetchVeteran(id) {
 
+  _fetchVeteran(id, onSuccess, onFailure) {
+    ProfileRequester.getCurrentUser(id).then((response) => {
+      this.setState({veteran: response});
+    onSuccess && onSuccess(response);
+  }).catch((error) => {
+    onFailure && onFailure(error.error);
+    this.setState({ errors: error.error });
+    console.error(error);;
+  });
+  console.log('aftermounted');
+  console.log(this.state.veteran);
+}
+
+  componentDidMount() {
+    console.log('did mount');
+    console.log(this.state.veteran);
+    const params = this.getParams();
+    this._fetchVeteran(params.id);
   }
 
 
@@ -75,8 +94,7 @@ export default class ProfileScreen extends React.Component {
   getName() {
     const params = this.getParams();
     console.log('inprof');
-    console.log(params.first_name);
-    return params.name || `${params.first_name} ${params.last_name}`;
+    return params.name || `${this.state.veteran.first_name} ${this.state.veteran.last_name}`;
   }
 
   /**
@@ -203,12 +221,12 @@ export default class ProfileScreen extends React.Component {
     const params = this.getParams();
     return (
       <View style={styles.detailsContainer}>
-        {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
-        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles.join(", ")) : null}
+        {!!params.email ? this.renderDetailRow("EMAIL", this.state.veteran.email) : null}
+        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", this.state.veteran.roles) : null}
 
-        {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
-        {!!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
-        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
+        {!!params.website ? this.renderDetailRow("WEBSITE", this.state.veteran.website) : null}
+        {!!params.address ? this.renderDetailRow("ADDRESS", this.state.veteran.address) : null}
+        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", this.state.veteran.demographic) : null}
       </View>
     );
   }
@@ -285,9 +303,10 @@ export default class ProfileScreen extends React.Component {
 
 
   render() {
+    console.log('')
     const params = this.getParams();
-    console.log('diditchange');
-    console.log(params);
+    this._fetchVeteran(params.id);
+
     return (
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>

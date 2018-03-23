@@ -6,6 +6,8 @@ import BaseRequester from '../helpers/requesters/BaseRequester';
 import { View, ScrollView, StyleSheet, TouchableOpacity, Icon, Text} from 'react-native';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
+import RaisedContainer from '../components/RaisedContainer';
+
 
 class EditProfileForm extends React.Component {
   constructor(props) {
@@ -42,6 +44,12 @@ class EditProfileForm extends React.Component {
       first_name: t.String,
       last_name: t.String,
       email: t.String,
+      activeDuty: t.Boolean,
+      veteran: t.Boolean,
+      post_911: t.Boolean,
+      familyMember: t.Boolean,
+      caregiver: t.Boolean,
+      other: t.Boolean,
     });
   }
 
