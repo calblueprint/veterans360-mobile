@@ -59,6 +59,7 @@ class EditProfileScreen extends React.Component {
           last_name={this.props.last_name}
           email={this.props.email}
           id={veteran_id}
+          role= {this.props.roles}
           updateSave={this._handleUpdate.bind(this)}  />
       </View>
     )
