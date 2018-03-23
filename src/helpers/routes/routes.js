@@ -75,4 +75,4 @@ class APIRoutes {
     return APIRoutes.create(`/categories/${id}/get_resources`);
   }
 
-export { APIRoutes };
+} export { APIRoutes };
