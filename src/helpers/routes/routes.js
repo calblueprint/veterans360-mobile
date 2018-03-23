@@ -57,6 +57,9 @@ class APIRoutes {
     return APIRoutes.create('/upvotes/delete_upvote');
   }
 
+  static resourceCategories() {
+    return APIRoutes.create('/resources/get_resource_categories');
+  }
   static homeResources() {
     return APIRoutes.create('/resources/get_home_resources');
   }
@@ -65,14 +68,6 @@ class APIRoutes {
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
   }
+}
 
-  // Categories
-  static allCategories() {
-    return APIRoutes.create('/categories');
-  }
-
-  static getCategoryResources(id) {
-    return APIRoutes.create(`/categories/${id}/get_resources`);
-  }
-
-} export { APIRoutes };
+export { APIRoutes };
