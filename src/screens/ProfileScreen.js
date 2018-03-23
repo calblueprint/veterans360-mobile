@@ -43,7 +43,6 @@ export default class ProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
-
     /**
      * TODO (Ken): Currently this is a hard coded state change on the profile
      * screen when a user has presesed the connect button, but it would
@@ -62,17 +61,16 @@ export default class ProfileScreen extends React.Component {
 
   }
 
-
   _fetchVeteran(id, onSuccess, onFailure) {
     ProfileRequester.getCurrentUser(id).then((response) => {
       this.setState({veteran: response});
-    onSuccess && onSuccess(response);
-  }).catch((error) => {
-    onFailure && onFailure(error.error);
-    this.setState({ errors: error.error });
-    console.error(error);;
-  });
-}
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      onFailure && onFailure(error.error);
+      this.setState({ errors: error.error });
+      console.error(error);;
+    });
+  }
 
   componentDidMount() {
     const params = this.getParams();
@@ -283,15 +281,15 @@ export default class ProfileScreen extends React.Component {
 
   navigateEditScreen() {
     const params = this.getParams();
-    return(
-    <TouchableOpacity
-      onPress={() => this.props.navigation.navigate('EditProfile', {params: params})}
-      style={styles.editButton}
-    >
-      <Text style={fontStyles.boldTextGreen}>
-        Edit
-      </Text>
-    </TouchableOpacity>
+    return (
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('EditProfile', {params: params})}
+        style={styles.editButton}
+      >
+        <Text style={fontStyles.boldTextGreen}>
+          Edit
+        </Text>
+      </TouchableOpacity>
     );
   }
 

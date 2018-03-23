@@ -9,27 +9,20 @@ class EditProfileForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this._getInitialFormValues = this._getInitialFormValues.bind(this);
-    this._getFormType = this._getFormType.bind(this);
     this._getFormOptions = this._getFormOptions.bind(this);
     // this._clearFormErrors = this._clearFormErrors.bind(this);
     this._onFormChange = this._onFormChange.bind(this);
     this._handleSave = this._handleSave.bind(this);
     this.state = {
-      formValues: this._getInitialFormValues(),
+      formValues: {
+        first_name: this.props.first_name,
+        last_name: this.props.last_name,
+        email: this.props.email,
+        id: this.props.id,
+      },
       updating: true,
       errors: [],
     };
-  }
-
-  _getInitialFormValues() {
-    let values = {
-      first_name: this.props.first_name,
-      last_name: this.props.last_name,
-      email: this.props.email,
-      id: this.props.id,
-    }
-    return values
   }
 
   _getFormType() {

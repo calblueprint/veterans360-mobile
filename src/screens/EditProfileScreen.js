@@ -16,15 +16,12 @@ import {
 class EditProfileScreen extends React.Component {
   constructor(props) {
     super(props);
-
-  this.state = {
-    updatedUser: this.props,
-  };
-  // console.log(this.state.updatedUser); //undefined state not getting params
-}
+    this.state = {
+      updatedUser: this.props,
+    };
+  }
 
 /**
-
  *
  * @param {function} onSuccess: callback on response when successful
  * @param {function} onFailure: callback on error object when errored
@@ -46,8 +43,6 @@ class EditProfileScreen extends React.Component {
 
   render() {
     const veteran_id= this.props.navigation.state.params.id;
-
-    // const updated = this.state.updatedUser;
     return(
       <View>
         <EditProfileForm
@@ -56,7 +51,8 @@ class EditProfileScreen extends React.Component {
           email={this.props.email}
           id={veteran_id}
           role= {this.props.roles}
-          updateSave={this._handleUpdate.bind(this)}  />
+          updateSave={this._handleUpdate.bind(this)}
+        />
       </View>
     )
   }
