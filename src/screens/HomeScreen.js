@@ -23,7 +23,7 @@ export default class HomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
-
+    console.log(this.props)
     this.state = {
       veterans: [],
       categories: [],
