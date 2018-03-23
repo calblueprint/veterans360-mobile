@@ -109,7 +109,7 @@ export default class HomeScreen extends React.Component {
         <ScrollView>
           <View style={styles.welcomeContainer}>
             <Text style={fontStyles.welcomeHeader}>
-              {`Welcome back`}
+              {`Welcome back, ${currentVeteran.first_name}!`}
             </Text>
           </View>
           <ProfileGallery
