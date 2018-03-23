@@ -1,11 +1,7 @@
 import React from 'react';
 import { Form, t } from '../components/Form';
 import Button from '../components/Button';
-import ProfileRequester from '../helpers/requesters/ProfileRequester'
-import BaseRequester from '../helpers/requesters/BaseRequester';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Icon, Text} from 'react-native';
-import { margins } from '../styles/layout';
-import { fontStyles } from '../styles/fonts';
+import { View, ScrollView, StyleSheet} from 'react-native';
 import RaisedContainer from '../components/RaisedContainer';
 
 
@@ -83,7 +79,7 @@ class EditProfileForm extends React.Component {
   _renderSaveButton() {
     return (
       <Button
-        onPress = {this._handleSave}
+        onPress={this._handleSave}
         text="Save"
         />
     );
@@ -93,7 +89,7 @@ class EditProfileForm extends React.Component {
     return(
       <View>
         <ScrollView>
-          <View>
+          <View style={ styles.container }>
             <Form
               refCallback={(ref) => this.form = ref}
               type={this._getFormType()}
@@ -109,14 +105,11 @@ class EditProfileForm extends React.Component {
   }
 }
 const styles = StyleSheet.create({
-  raisedContainer: {
-    position: 'absolute',
-    left: '10%',
-    width: '80%',
-    height: '60%',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  container: {
+    paddingLeft: 12,
+    paddingRight: 12,
+    paddingTop: 50,
+    paddingBottom: 5,
   }
 });
 

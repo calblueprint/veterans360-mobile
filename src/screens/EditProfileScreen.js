@@ -34,8 +34,6 @@ class EditProfileScreen extends React.Component {
     const successFunc = (responseData) => {
       this.props.navigation.navigate('ProfileScreen');
     }
-    console.log('handleupdate');
-    console.log(params);
     ProfileRequester.updateUser(params).then((response) => {
       this.props.navigation.navigate('Profile')
       onSuccess && onSuccess(response);
@@ -47,9 +45,7 @@ class EditProfileScreen extends React.Component {
 }
 
   render() {
-    console.log('vetid');
     const veteran_id= this.props.navigation.state.params.id;
-    console.log(veteran_id);
 
     // const updated = this.state.updatedUser;
     return(
