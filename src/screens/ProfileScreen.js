@@ -71,7 +71,6 @@ export default class ProfileScreen extends React.Component {
     }).catch((error) => {
       onFailure && onFailure(error.error);
       this.setState({ errors: error.error });
-      console.error(error);;
     });
   }
 
@@ -80,7 +79,6 @@ export default class ProfileScreen extends React.Component {
       let categories = this.state.categories.slice();
       categories = categories.concat(response);
       this.setState({ categories: categories });
-      console.log(this.state);
     })
   }
 
