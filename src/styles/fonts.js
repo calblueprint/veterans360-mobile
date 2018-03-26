@@ -51,6 +51,13 @@ const fontStyles = StyleSheet.create({
     letterSpacing: 1,
     color: colors.light_charcoal,
   },
+  resourcesTitleText: {
+    fontSize: 16,
+    fontFamily: 'source-sans-pro-bold',
+    letterSpacing: 1,
+    color: colors.light_charcoal,
+    padding: 10,
+  },
   emphasisText: {
     fontSize: 18,
     fontFamily: 'source-sans-pro-semibold-italic',

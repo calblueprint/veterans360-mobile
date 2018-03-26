@@ -18,6 +18,7 @@
 // import { Actions } from 'react_native_route_flux';
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
+import Resource from '../components/Resource';
 import {
   StyleSheet,
   Text,
@@ -30,6 +31,7 @@ import {
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import LoginRequester from '../helpers/requesters/LoginRequester';
+import CategoryRequester from '../helpers/requesters/CategoryRequester';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
@@ -52,6 +54,7 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       sentConnectRequest: false,
       veteran : { },
+      categories: [],
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -68,15 +71,16 @@ export default class ProfileScreen extends React.Component {
     }).catch((error) => {
       onFailure && onFailure(error.error);
       this.setState({ errors: error.error });
-      console.error(error);;
     });
   }
 
   componentDidMount() {
-    const params = this.getParams();
-    this._fetchVeteran(params.id);
+    CategoryRequester.retrieveCategories().then((response) => {
+      let categories = this.state.categories.slice();
+      categories = categories.concat(response);
+      this.setState({ categories: categories });
+    })
   }
-
 
   getParams() {
     return this.props.navigation.state.params;
@@ -241,7 +245,7 @@ export default class ProfileScreen extends React.Component {
     } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
-          style={[margins.marginTop.md, {backgroundColor: colors.gray}]}
+          style={styles.connectButton}
           onPress={connectMethod}
           text={params.is_subscribed_to ? "FOLLOWING" : "REQUESTED"}
           disabled={true}
@@ -294,6 +298,27 @@ export default class ProfileScreen extends React.Component {
   }
 
 
+  renderResources() {
+    const params = this.getParams();
+    if (params.profileType === 'po') {
+      return (
+        <View style={styles.resourcesContainer}>
+          <Text style={fontStyles.resourcesTitleText}>
+            RESOURCES
+          </Text>
+          <Resource
+            veteranId={this.props.navigation.state.params.id}
+            categories={this.state.categories}
+            urlParams={{
+              "by_partnering_org" : params.id,
+            }}
+          />
+        </View>
+      )
+    }
+  }
+
+
   render() {
     const params = this.getParams();
     this._fetchVeteran(params.id);
@@ -301,6 +326,7 @@ export default class ProfileScreen extends React.Component {
     return (
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>
+          {this.renderConnectButton()}
           <Image
             source={require('../../assets/images/photogenic.jpg')}
             style={styles.profilePicture}
@@ -316,10 +342,10 @@ export default class ProfileScreen extends React.Component {
             {this.renderDetails()}
             <View style={styles.bioContainer}>
             </View>
-            {this.renderConnectButton()}
             {this.renderLogoutButton()}
             {this.navigateEditScreen()}
           </View>
+          {this.renderResources()}
         </ScrollView>
       </View>
     );
@@ -352,39 +378,43 @@ const styles = StyleSheet.create({
   /* Container for the body content */
   bodyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginLeft: 25,
     marginTop: 20,
   },
 
   /* Container for the details of this veteran/PO */
   detailsContainer: {
-    margin: 20,
+    marginTop: 50,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+
+  resourcesContainer: {
+    margin: 5,
     padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: colors.light_gray,
   },
 
   /* Container for one row of details LABEL -> value */
   detailRowContainer: {
-    margin: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
 
   /* Container for label in a row */
   detailLabelContainer: {
-    flex: 1,
-    marginRight: 30,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
 
   /* Container for value field in a row */
   detailValueContainer: {
-    flex: 2,
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
 
@@ -464,4 +494,10 @@ const styles = StyleSheet.create({
   //   borderWidth: 2,
   //   backgroundColor: colors.white,
   // }
+  connectButton: {
+    top: 20,
+    position: 'absolute',
+    right: 20,
+  }
+
 });
