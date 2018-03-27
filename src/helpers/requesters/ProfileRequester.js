@@ -21,11 +21,7 @@ class ProfileRequester {
       //     phone: veteran.phone,
       //   }
       // }
-      console.log('In Requester');
-      console.log(params);
-      console.log(params.veteran.id);
       const endpoint = APIRoutes.getProfile(params.veteran.id);
-      console.log(endpoint);
       try {
         let currentUser = {};
         currentUser = await BaseRequester.patch(endpoint, params);

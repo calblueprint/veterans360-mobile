@@ -72,13 +72,9 @@ export default class ProfileScreen extends React.Component {
     this.setState({ errors: error.error });
     console.error(error);;
   });
-  console.log('aftermounted');
-  console.log(this.state.veteran);
 }
 
   componentDidMount() {
-    console.log('did mount');
-    console.log(this.state.veteran);
     const params = this.getParams();
     this._fetchVeteran(params.id);
   }
@@ -93,7 +89,6 @@ export default class ProfileScreen extends React.Component {
    */
   getName() {
     const params = this.getParams();
-    console.log('inprof');
     return params.name || `${this.state.veteran.first_name} ${this.state.veteran.last_name}`;
   }
 
@@ -286,8 +281,6 @@ export default class ProfileScreen extends React.Component {
 
   navigateEditScreen() {
     const params = this.getParams();
-    console.log('NavigateEditScreen');
-    console.log(params);
     return(
     <TouchableOpacity
           onPress={() => this.props.navigation.navigate('EditProfile', {
@@ -303,7 +296,6 @@ export default class ProfileScreen extends React.Component {
 
 
   render() {
-    console.log('')
     const params = this.getParams();
     this._fetchVeteran(params.id);
 

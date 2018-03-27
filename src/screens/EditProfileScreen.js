@@ -18,9 +18,20 @@ class EditProfileScreen extends React.Component {
     super(props);
 
   this.state = {
-    updatedUser: this.props,
+    defaultValues : { },
+
   };
-  // console.log(this.state.updatedUser); //undefined state not getting params
+}
+
+_fetchVeteran(id, onSuccess, onFailure) {
+  ProfileRequester.getCurrentUser(id).then((response) => {
+    this.setState({defaultValues: response});
+  onSuccess && onSuccess(response);
+}).catch((error) => {
+  onFailure && onFailure(error.error);
+  this.setState({ errors: error.error });
+  console.error(error);;
+});
 }
 
 /**
@@ -34,8 +45,6 @@ class EditProfileScreen extends React.Component {
     const successFunc = (responseData) => {
       this.props.navigation.navigate('ProfileScreen');
     }
-    console.log('handleupdate');
-    console.log(params);
     ProfileRequester.updateUser(params).then((response) => {
       this.props.navigation.navigate('Profile')
       onSuccess && onSuccess(response);
@@ -47,19 +56,18 @@ class EditProfileScreen extends React.Component {
 }
 
   render() {
-    console.log('vetid');
     const veteran_id= this.props.navigation.state.params.id;
-    console.log(veteran_id);
-
-    // const updated = this.state.updatedUser;
+    this._fetchVeteran(veteran_id);
+    console.log('fetch');
+    console.log(this.props.navigation.state.params.first_name);
     return(
       <View>
         <EditProfileForm
-          first_name={this.props.first_name}
-          last_name={this.props.last_name}
-          email={this.props.email}
+          first_name={this.props.navigation.state.params.first_name.first_name}
+          last_name={this.props.navigation.state.params.last_name}
+          email={this.props.navigation.state.params.email}
           id={veteran_id}
-          role= {this.props.roles}
+          role= {this.props.navigation.state.params.role}
           updateSave={this._handleUpdate.bind(this)}  />
       </View>
     )
