@@ -4,20 +4,9 @@ import { APIRoutes } from '../routes/routes';
 class CategoryRequester {
   static async retrieveCategories() {
     try {
-      const endpoint = APIRoutes.resourceCategories();
+      const endpoint = APIRoutes.allCategories();
       let response_json = await BaseRequester.get(endpoint);
-      let categories = [];
-      for (var key in response_json) {
-        if (response_json.hasOwnProperty(key)) {
-          let category = {
-            name: this.formatDict(key),
-            selected: true,
-            id: parseInt(response_json[key])
-          };
-          categories.push(category);
-        }
-      }
-      return categories;
+      return response_json;
     } catch (error) {
       return Promise.reject(error);
     }

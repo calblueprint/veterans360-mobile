@@ -43,7 +43,6 @@ export default class ProfileScreen extends React.Component {
 
   constructor(props) {
     super(props);
-
     /**
      * TODO (Ken): Currently this is a hard coded state change on the profile
      * screen when a user has presesed the connect button, but it would
@@ -110,7 +109,7 @@ export default class ProfileScreen extends React.Component {
       },
     };
     BaseRequester.post(route, params).then((response) => {
-      navParams.onConnect();
+      navParams.onConnect(navParams.id);
       this.setState({ sentConnectRequest: true });
       onSuccess && onSuccess(response);
     }).catch((error) => {
@@ -214,14 +213,16 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
+    // (JASON) look into whether this needs fixing (params.is_friend should add another || with or params.is_friend == null)
     return (
       <View style={styles.detailsContainer}>
         {!!params.email ? this.renderDetailRow("EMAIL", this.state.veteran.email) : null}
         {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", this.state.veteran.roles) : null}
-
         {!!params.website ? this.renderDetailRow("WEBSITE", this.state.veteran.website) : null}
         {!!params.address ? this.renderDetailRow("ADDRESS", this.state.veteran.address) : null}
         {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", this.state.veteran.demographic) : null}
+        {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", this.state.military_branch) : null}
+        {params.is_friend && !!veteran.phone_number ? this.renderDetailRow("PHONE_NUMBER", this.state.phone_number) : null}
       </View>
     );
   }
@@ -241,9 +242,9 @@ export default class ProfileScreen extends React.Component {
     } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
-          style={margins.marginTop.md}
+          style={[margins.marginTop.md, {backgroundColor: colors.gray}]}
           onPress={connectMethod}
-          text="CONNECT"
+          text={params.is_subscribed_to ? "FOLLOWING" : "REQUESTED"}
           disabled={true}
         />
       );
@@ -303,7 +304,7 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>
           <Image
-            source={require('../../assets/images/photogenic.jpg')}
+            source={require('../../assets/images/photogenic.jpg')} //replace w image uploader
             style={styles.profilePicture}
           />
           <Text style={styles.profileName}>

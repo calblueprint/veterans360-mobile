@@ -84,9 +84,9 @@ export default class ProfileCard extends React.Component {
 
           <View style={styles.buttonContainer}>
             <Button
-              style={styles.connectButton}
+              style={veteran.is_friend ? styles.friendButton : veteran.sent_friend_request ? styles.disabledConnectButton : styles.connectButton}
               textStyle={styles.connectButtonText}
-              text={veteran.is_friend ? 'FRIEND' : 'CONNECT'}
+              text={veteran.is_friend ? 'FRIEND' : veteran.sent_friend_request ? 'PENDING' : 'CONNECT'}
               disabled={veteran.is_friend || veteran.sent_friend_request}
               onPress={this.connectWithVeteran}
             />
@@ -156,10 +156,21 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     zIndex: 100,
   },
+  friendButton: {
+    width: '100%',
+    borderRadius: 18,
+    backgroundColor: colors.blue,
+  },
   connectButton: {
     width: '100%',
     height: 36,
     borderRadius: 18,
+  },
+  disabledConnectButton: {
+    width: '100%',
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.gray
   },
   connectButtonText: {
     fontSize: 16,

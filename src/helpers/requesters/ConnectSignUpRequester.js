@@ -12,6 +12,8 @@ class ConnectSignUpRequester {
         military_branch: values.militaryBranch,
         unit: values.unit,
         notes: values.notes,
+        phone_number: values.phoneNumber,
+        address: values.address,
         accept_messages: values.acceptMessages,
         share_profile: values.shareProfile,
         accept_notices: values.acceptNotices,
@@ -32,7 +34,6 @@ class ConnectSignUpRequester {
     const endpoint = APIRoutes.veteransConnectStatus(id);
     try {
       let response_json = await BaseRequester.get(endpoint);
-      console.log(response_json);
       return Promise.resolve(response_json);
     } catch (error) {
       return Promise.reject(error);

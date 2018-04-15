@@ -46,7 +46,7 @@ _fetchVeteran(id, onSuccess, onFailure) {
       this.props.navigation.navigate('ProfileScreen');
     }
     ProfileRequester.updateUser(params).then((response) => {
-      this.props.navigation.navigate('Profile')
+      this.props.navigation.navigate('ProfileScreen')
       onSuccess && onSuccess(response);
     }).catch((error) => {
       onFailure && onFailure(error.error);
@@ -55,7 +55,14 @@ _fetchVeteran(id, onSuccess, onFailure) {
   });
 }
 
+_getParams() {
+  return this.props.navigation.state.params;
+}
+
+
+
   render() {
+    const params = this._getParams(); //replace with params
     const veteran_id= this.props.navigation.state.params.id;
     this._fetchVeteran(veteran_id);
     console.log('fetch');

@@ -13,8 +13,6 @@ class EditProfileForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this._getInitialFormValues = this._getInitialFormValues.bind(this);
-    this._getFormType = this._getFormType.bind(this);
     this._getFormOptions = this._getFormOptions.bind(this);
     // this._clearFormErrors = this._clearFormErrors.bind(this);
     this._onFormChange = this._onFormChange.bind(this);
@@ -59,7 +57,6 @@ class EditProfileForm extends React.Component {
           hasError: !!this.state.errors.first_name,
           error: this.state.errors.first_name,
           label: 'First Name',
-          placeholder: this.props.first_name,
         },
         lastName: {
           hasError: !!this.state.errors.last_name,
@@ -86,7 +83,7 @@ class EditProfileForm extends React.Component {
   _renderSaveButton() {
     return (
       <Button
-        onPress = {this._handleSave}
+        onPress={this._handleSave}
         text="Save"
         />
     );
@@ -96,7 +93,7 @@ class EditProfileForm extends React.Component {
     return(
       <View>
         <ScrollView>
-          <View>
+          <View style={ styles.container }>
             <Form
               refCallback={(ref) => this.form = ref}
               type={this._getFormType()}

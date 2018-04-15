@@ -1,4 +1,4 @@
-/**
+ /**
  * Helper methods to retrieve all the routes to connect with the API.
  */
 
@@ -57,9 +57,6 @@ class APIRoutes {
     return APIRoutes.create('/upvotes/delete_upvote');
   }
 
-  static resourceCategories() {
-    return APIRoutes.create('/resources/get_resource_categories');
-  }
   static homeResources() {
     return APIRoutes.create('/resources/get_home_resources');
   }
@@ -73,7 +70,8 @@ class APIRoutes {
     return APIRoutes.create(`/veterans/${veteran_id}`);
   }
 
+  static getCategoryResources(id) {
+    return APIRoutes.create(`/categories/${id}/get_resources`);
+  }
 
-}
-
-export { APIRoutes };
+} export { APIRoutes };
