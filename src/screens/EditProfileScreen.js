@@ -5,6 +5,7 @@ import { APIRoutes } from '../helpers/routes/routes';
 import ProfileRequester from '../helpers/requesters/ProfileRequester'
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
+
 import {
   TextInput,
   Button,
@@ -43,10 +44,10 @@ _fetchVeteran(id, onSuccess, onFailure) {
 
   _handleUpdate(params, onSuccess, onFailure) {
     const successFunc = (responseData) => {
-      this.props.navigation.navigate('ProfileScreen');
+      this.props.navigation.navigate('Profile');
     }
     ProfileRequester.updateUser(params).then((response) => {
-      this.props.navigation.navigate('ProfileScreen')
+      this.props.navigation.navigate('Profile')
       onSuccess && onSuccess(response);
     }).catch((error) => {
       onFailure && onFailure(error.error);

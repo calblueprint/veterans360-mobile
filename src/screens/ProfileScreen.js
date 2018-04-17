@@ -63,6 +63,8 @@ export default class ProfileScreen extends React.Component {
 
 
   _fetchVeteran(id, onSuccess, onFailure) {
+    console.log('vet');
+    console.log(id);
     ProfileRequester.getCurrentUser(id).then((response) => {
       this.setState({veteran: response});
     onSuccess && onSuccess(response);
@@ -81,6 +83,8 @@ export default class ProfileScreen extends React.Component {
 
   getParams() {
     return this.props.navigation.state.params;
+    console.log('hi');
+    console.log(this.props.navigation.state.params);
   }
 
   /**
@@ -298,6 +302,7 @@ export default class ProfileScreen extends React.Component {
 
   render() {
     const params = this.getParams();
+    console.log(params);
     this._fetchVeteran(params.id);
 
     return (

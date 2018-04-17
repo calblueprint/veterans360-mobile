@@ -10,7 +10,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ConnectScreen from '../screens/ConnectScreen';
 import VaultScreen from '../screens/VaultScreen';
 import ResponseScreen from '../screens/ResponseScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
 import EditProfileScreen from '../screens/EditProfileScreen';
 
 import { colors } from '../styles/colors';
@@ -55,8 +55,8 @@ const MainTabNavigator = TabNavigator({
       ),
     },
   },
-  Profile: {
-    screen: ProfileScreen,
+  ProfileScreen: {
+    screen: ProfileScreenNavigator,
     navigationOptions: {
       tabBarLabel: 'Profile',
       tabBarIcon: ({ tintColor }) => (
@@ -64,15 +64,15 @@ const MainTabNavigator = TabNavigator({
       ),
     },
   },
-  EditProfile: {
-    screen: EditProfileScreen,
-    navigationOptions: {
-      tabBarLabel: 'Settings',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="user" size={22} color={tintColor} />
-      ),
-    },
-  },
+  // EditProfile: {
+  //   screen: EditProfileScreen,
+  //   navigationOptions: {
+  //     tabBarLabel: 'Settings',
+  //     tabBarIcon: ({ tintColor }) => (
+  //       <Icon name="user" size={22} color={tintColor} />
+  //     ),
+  //   },
+  // },
 
 }, {
   tabBarPosition: 'bottom',

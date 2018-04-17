@@ -49,6 +49,7 @@ export default class HomeScreen extends React.Component {
    * veterans
    */
   getVeterans() {
+    console.log("fuck");
     const route = APIRoutes.veteransPath();
     BaseRequester.get(route).then((response) => {
       this.setState({ veterans: response });

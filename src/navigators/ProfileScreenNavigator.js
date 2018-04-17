@@ -14,7 +14,7 @@ const ProfileScreenNavigator = StackNavigator({
     screen: EditProfileScreen,
   },
 }, {
-  initialRouteName: 'Profile',
+  initialRouteName: 'ProfileScreen',
   headerMode: 'none',
   navigationOptions: {
       gesturesEnabled: false,
