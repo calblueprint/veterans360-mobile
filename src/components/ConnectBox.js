@@ -142,7 +142,7 @@ export default class ConnectBox extends React.Component {
     } else {
       return (
         <Image
-          source={require('../../assets/images/photogenic.jpg')}
+          source={require('../../assets/images/default_icon.png')}
           style={styles.profileImage}
         />
       );
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   profileButtonText: {
     fontSize: 12,
     fontWeight: 'bold',
-  }, 
+  },
   name: {
     fontSize: 22,
     fontFamily: 'source-sans-pro-bold',
