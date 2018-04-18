@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import { StyleSheet, Text, View, TouchableHighlight, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, ScrollView, Image } from 'react-native';
 import { Form, t } from '../components/Form';
 
 import { imageStyles } from '../styles/images';
@@ -19,6 +19,8 @@ import LoginRequester from '../helpers/requesters/LoginRequester';
 import BackgroundOverlay from '../components/BackgroundOverlay';
 import RaisedContainer from '../components/RaisedContainer';
 import Button from '../components/Button';
+import PhotoUpload from 'react-native-photo-upload'
+
 
 export default class SignupScreen extends React.Component {
 
