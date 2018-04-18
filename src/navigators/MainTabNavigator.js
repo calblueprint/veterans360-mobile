@@ -17,6 +17,7 @@ import { colors } from '../styles/colors';
 import HomeStackNavigator from '../navigators/HomeStackNavigator';
 import ConnectSignUpStackNavigator from '../navigators/ConnectSignUpStackNavigator';
 import VaultStackNavigator from '../navigators/VaultStackNavigator';
+import ResponseStackNavigator from '../navigators/ResponseStackNavigator';
 
 const MainTabNavigator = TabNavigator({
   Home: {
@@ -47,11 +48,11 @@ const MainTabNavigator = TabNavigator({
     },
   },
   Response: {
-    screen: ResponseScreen,
+    screen: ResponseStackNavigator,
     navigationOptions: {
       tabBarLabel: 'Response',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="file-o" size={21} color={tintColor} />
+        <Icon name="exclamation-circle" size={21} color={tintColor} />
       ),
     },
   },
