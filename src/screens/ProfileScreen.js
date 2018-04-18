@@ -18,7 +18,6 @@
 // import { Actions } from 'react_native_route_flux';
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
-import Resource from '../components/Resource';
 import {
   StyleSheet,
   Text,
@@ -31,7 +30,6 @@ import {
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import LoginRequester from '../helpers/requesters/LoginRequester';
-import CategoryRequester from '../helpers/requesters/CategoryRequester';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
@@ -54,7 +52,6 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       sentConnectRequest: false,
       veteran : { },
-      categories: [],
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -64,23 +61,23 @@ export default class ProfileScreen extends React.Component {
 
   }
 
+
   _fetchVeteran(id, onSuccess, onFailure) {
     ProfileRequester.getCurrentUser(id).then((response) => {
       this.setState({veteran: response});
-      onSuccess && onSuccess(response);
-    }).catch((error) => {
-      onFailure && onFailure(error.error);
-      this.setState({ errors: error.error });
-    });
-  }
+    onSuccess && onSuccess(response);
+  }).catch((error) => {
+    onFailure && onFailure(error.error);
+    this.setState({ errors: error.error });
+    console.error(error);;
+  });
+}
 
   componentDidMount() {
-    CategoryRequester.retrieveCategories().then((response) => {
-      let categories = this.state.categories.slice();
-      categories = categories.concat(response);
-      this.setState({ categories: categories });
-    })
+    const params = this.getParams();
+    this._fetchVeteran(params.id);
   }
+
 
   getParams() {
     return this.props.navigation.state.params;
@@ -245,7 +242,7 @@ export default class ProfileScreen extends React.Component {
     } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
-          style={styles.connectButton}
+          style={[margins.marginTop.md, {backgroundColor: colors.gray}]}
           onPress={connectMethod}
           text={params.is_subscribed_to ? "FOLLOWING" : "REQUESTED"}
           disabled={true}
@@ -285,48 +282,25 @@ export default class ProfileScreen extends React.Component {
 
   navigateEditScreen() {
     const params = this.getParams();
-    return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('EditProfile', {params: params})}
-        style={styles.editButton}
-      >
-        <Text style={fontStyles.boldTextGreen}>
+    return(
+    <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('EditProfile', {
+            params: params})}
+            style={styles.editButton}>
+
+          <Text style={fontStyles.boldTextGreen}>
           Edit
-        </Text>
+          </Text>
       </TouchableOpacity>
     );
-  }
-
-
-  renderResources() {
-    const params = this.getParams();
-    if (params.profileType === 'po') {
-      return (
-        <View style={styles.resourcesContainer}>
-          <Text style={fontStyles.resourcesTitleText}>
-            RESOURCES
-          </Text>
-          <Resource
-            veteranId={this.props.navigation.state.params.id}
-            categories={this.state.categories}
-            urlParams={{
-              "by_partnering_org" : params.id,
-            }}
-          />
-        </View>
-      )
     }
-  }
 
 
   render() {
     const params = this.getParams();
-    this._fetchVeteran(params.id);
-
     return (
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>
-          {this.renderConnectButton()}
           <Image
             source={require('../../assets/images/default_icon.png')}
             style={styles.profilePicture}
@@ -342,10 +316,10 @@ export default class ProfileScreen extends React.Component {
             {this.renderDetails()}
             <View style={styles.bioContainer}>
             </View>
+            {this.renderConnectButton()}
             {this.renderLogoutButton()}
             {this.navigateEditScreen()}
           </View>
-          {this.renderResources()}
         </ScrollView>
       </View>
     );
@@ -378,43 +352,39 @@ const styles = StyleSheet.create({
   /* Container for the body content */
   bodyContainer: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    marginLeft: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 20,
   },
 
   /* Container for the details of this veteran/PO */
   detailsContainer: {
-    marginTop: 50,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-  },
-
-  resourcesContainer: {
-    margin: 5,
+    margin: 20,
     padding: 10,
-    backgroundColor: colors.light_gray,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   /* Container for one row of details LABEL -> value */
   detailRowContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    margin: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   /* Container for label in a row */
   detailLabelContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    flex: 1,
+    marginRight: 30,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
 
   /* Container for value field in a row */
   detailValueContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
+    flex: 2,
+    justifyContent: 'center',
     alignItems: 'flex-start',
   },
 
@@ -482,7 +452,7 @@ const styles = StyleSheet.create({
     borderColor: colors.green,
     borderWidth: 2,
     backgroundColor: colors.white,
-  },
+  }
   // editButton: {
   //   marginTop: 30,
   //   paddingTop: 10,
@@ -494,10 +464,4 @@ const styles = StyleSheet.create({
   //   borderWidth: 2,
   //   backgroundColor: colors.white,
   // }
-  connectButton: {
-    top: 20,
-    position: 'absolute',
-    right: 20,
-  }
-
 });
