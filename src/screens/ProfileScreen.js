@@ -482,7 +482,7 @@ const styles = StyleSheet.create({
     borderColor: colors.green,
     borderWidth: 2,
     backgroundColor: colors.white,
-  }
+  },
   // editButton: {
   //   marginTop: 30,
   //   paddingTop: 10,
