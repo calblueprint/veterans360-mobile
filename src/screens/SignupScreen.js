@@ -173,8 +173,8 @@ export default class SignupScreen extends React.Component {
     return (
       <BackgroundOverlay>
         <RaisedContainer style={styles.raisedContainer}>
+          <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollAlign}>
           <Text style={styles.titleStyle}>Sign Up</Text>
-          <ScrollView style={styles.scrollContainer}>
             <View style={styles.formContainer}>
               <Form
                 refCallback={(ref) => this.form = ref}
@@ -189,13 +189,13 @@ export default class SignupScreen extends React.Component {
                 text="SUBMIT"
               />
             </View>
-          </ScrollView>
           <Button
             style={styles.signupButtonStyle}
             textStyle={styles.signupButtonTextStyle}
             onPress={this.navigateToLoginScreen}
             text="LOGIN"
           />
+          </ScrollView>
         </RaisedContainer>
       </BackgroundOverlay>
     );
@@ -205,38 +205,49 @@ export default class SignupScreen extends React.Component {
 
 const styles = StyleSheet.create({
   raisedContainer: {
-    position: 'absolute',
-    left: '10%',
-    width: '80%',
-    height: '60%',
+    width: '100%',
+    height: '100%',
     flex: 1,
+    marginTop: 30,
+    marginBottom: 80,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   scrollContainer: {
     width: '100%',
-    paddingTop: 40,
-    paddingBottom: 40,
-    paddingLeft: 40,
-    paddingRight: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  scrollAlign: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   formContainer: {
-    marginBottom: 80,
+    width: '100%',
+    marginBottom: 40,
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 4,
   },
   titleStyle: {
-    position: 'absolute',
-    top: -72,
     color: colors.white,
     backgroundColor: 'transparent',
     fontSize: 36,
     fontWeight: '300',
     zIndex: 100,
+    marginTop: 30,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   signupButtonStyle: {
-    position: 'absolute',
-    bottom: -72,
     height: 32,
     borderRadius: 16,
+    width: '30%',
   },
   signupButtonTextStyle: {
     fontSize: 13,
