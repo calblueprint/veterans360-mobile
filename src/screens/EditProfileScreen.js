@@ -17,27 +17,25 @@ import {
 class EditProfileScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      defaultValues : { },
+    };
+  }
 
-  this.state = {
-    defaultValues : { },
+  componentDidMount() {
+    this._fetchVeteran(this.props.navigation.state.params.id);
+  }
 
-  };
-}
-
-componentDidMount() {
-  this._fetchVeteran(this.props.navigation.state.params.id);
-}
-
-_fetchVeteran(id, onSuccess, onFailure) {
-  ProfileRequester.getCurrentUser(id).then((response) => {
-    this.setState({defaultValues: response});
-  onSuccess && onSuccess(response);
-}).catch((error) => {
-  onFailure && onFailure(error.error);
-  this.setState({ errors: error.error });
-  console.error(error);;
-});
-}
+  _fetchVeteran(id, onSuccess, onFailure) {
+    ProfileRequester.getCurrentUser(id).then((response) => {
+      this.setState({defaultValues: response});
+      onSuccess && onSuccess(response);
+    }).catch((error) => {
+      onFailure && onFailure(error.error);
+      this.setState({ errors: error.error });
+      console.error(error);;
+    });
+  }
 
 /**
  *
@@ -46,8 +44,6 @@ _fetchVeteran(id, onSuccess, onFailure) {
  */
 
   _handleUpdate(params, onSuccess, onFailure) {
-    console.log('update');
-    console.log(params);
     const successFunc = (responseData) => {
       this.props.navigation.navigate('Profile');
     }
@@ -58,14 +54,12 @@ _fetchVeteran(id, onSuccess, onFailure) {
       onFailure && onFailure(error.error);
       this.setState({ errors: error.error });
       console.error(error);;
-  });
-}
+    });
+  }
 
-_getParams() {
-  return this.props.navigation.state.params;
-}
-
-
+  _getParams() {
+    return this.props.navigation.state.params;
+  }
 
   render() {
     const params = this._getParams(); //replace with params
@@ -73,12 +67,13 @@ _getParams() {
     return(
       <View>
         <EditProfileForm
-          first_name={this.props.navigation.state.params.first_name.first_name}
-          last_name={this.props.navigation.state.params.last_name}
-          email={this.props.navigation.state.params.email}
+          first_name={params.first_name}
+          last_name={params.last_name}
+          email={params.email}
           id={veteran_id}
-          role= {this.props.navigation.state.params.role}
-          updateSave={this._handleUpdate.bind(this)}  />
+          role= {params.role}
+          updateSave={this._handleUpdate.bind(this)}
+        />
       </View>
     )
   }
