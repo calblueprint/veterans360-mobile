@@ -328,7 +328,7 @@ export default class ProfileScreen extends React.Component {
         <View style={styles.coverContainer}>
           {this.renderConnectButton()}
           <Image
-            source={require('../../assets/images/photogenic.jpg')}
+            source={require('../../assets/images/default_icon.png')}
             style={styles.profilePicture}
           />
           <Text style={styles.profileName}>
