@@ -89,7 +89,7 @@ export default class HomeScreen extends React.Component {
     } else {
       return(
         <Resource
-          endpoint={APIRoutes.homeResources()}
+          endpoint={APIRoutes.recentResources()}
           veteranId={this.props.navigation.state.params.id}
           categories={this.state.categories}
         />
