@@ -379,39 +379,43 @@ const styles = StyleSheet.create({
   /* Container for the body content */
   bodyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginLeft: 25,
     marginTop: 20,
   },
 
   /* Container for the details of this veteran/PO */
   detailsContainer: {
-    margin: 20,
+    marginTop: 50,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+
+  resourcesContainer: {
+    margin: 5,
     padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: colors.light_gray,
   },
 
   /* Container for one row of details LABEL -> value */
   detailRowContainer: {
-    margin: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
 
   /* Container for label in a row */
   detailLabelContainer: {
-    flex: 1,
-    marginRight: 30,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
 
   /* Container for value field in a row */
   detailValueContainer: {
-    flex: 2,
-    justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
 
@@ -479,7 +483,7 @@ const styles = StyleSheet.create({
     borderColor: colors.green,
     borderWidth: 2,
     backgroundColor: colors.white,
-  }
+  },
   // editButton: {
   //   marginTop: 30,
   //   paddingTop: 10,
@@ -491,4 +495,10 @@ const styles = StyleSheet.create({
   //   borderWidth: 2,
   //   backgroundColor: colors.white,
   // }
+  connectButton: {
+    top: 20,
+    position: 'absolute',
+    right: 20,
+  }
+
 });
