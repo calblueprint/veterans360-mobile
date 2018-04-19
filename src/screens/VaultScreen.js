@@ -32,7 +32,7 @@ export default class VaultScreen extends React.Component {
   }
 
   componentDidMount() {
-    CategoryRequester.retrieveCategories().then((response) => {
+    CategoryRequester.retrieveCategories("Vault").then((response) => {
       this.setState({ categories: response, stillLoading: false });
     })
   }
@@ -45,9 +45,7 @@ export default class VaultScreen extends React.Component {
 
   updateSelected = (item) => {
     let params = {
-      // TODO: fix
       veteranId: this.props.navigation.state.params.id,
-      // veteranId: 1,
       categories: this.state.categories,
       categoryToDisplay: item.id,
       title: item.key,
@@ -67,11 +65,17 @@ export default class VaultScreen extends React.Component {
     );
   };
 
-  renderResourceContent = () => {
+  renderCategories = () => {
     return (
       <View style={ styles.backgroundContainer }>
         <View style={{flex: 1,}}>
           <View style={ styles.contentContainer }>
+            <Text style={ styles.subtitleText }>
+              Select a
+            </Text>
+            <Text style={ styles.titleText }>
+              Vault Category
+            </Text>
             <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
               <FlatList
                 ItemSeparatorComponent={this.renderSeparator}
@@ -100,7 +104,7 @@ export default class VaultScreen extends React.Component {
     } else {
       return (
         <View style={{flex: 1,}}>
-          {this.renderResourceContent()}
+          {this.renderCategories()}
         </View>
       );
     }
@@ -115,8 +119,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     fontFamily: 'source-sans-pro-semibold',
-    paddingLeft: 10,
-    paddingTop: 10,
+    textAlign: 'center',
+  },
+  subtitleText: {
+    fontSize: 24,
+    fontFamily: 'source-sans-pro-light',
+    textAlign: 'center',
   },
   bodyText: {
     fontSize: 12,

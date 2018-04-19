@@ -39,7 +39,7 @@ export default class ConnectPin extends React.Component {
       >
         {this.renderPin()}
         <Image
-          source={require('../../assets/images/photogenic.jpg')}
+          source={require('../../assets/images/default_icon.png')}
           style={styles.image}
         />
       </View>

@@ -10,13 +10,14 @@ import HomeScreen from '../screens/HomeScreen';
 import ConnectScreen from '../screens/ConnectScreen';
 import VaultScreen from '../screens/VaultScreen';
 import ResponseScreen from '../screens/ResponseScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
 import EditProfileScreen from '../screens/EditProfileScreen';
 
 import { colors } from '../styles/colors';
 import HomeStackNavigator from '../navigators/HomeStackNavigator';
 import ConnectSignUpStackNavigator from '../navigators/ConnectSignUpStackNavigator';
 import VaultStackNavigator from '../navigators/VaultStackNavigator';
+import ResponseStackNavigator from '../navigators/ResponseStackNavigator';
 
 const MainTabNavigator = TabNavigator({
   Home: {
@@ -47,27 +48,18 @@ const MainTabNavigator = TabNavigator({
     },
   },
   Response: {
-    screen: ResponseScreen,
+    screen: ResponseStackNavigator,
     navigationOptions: {
       tabBarLabel: 'Response',
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="file-o" size={21} color={tintColor} />
+        <Icon name="exclamation-circle" size={21} color={tintColor} />
       ),
     },
   },
   Profile: {
-    screen: ProfileScreen,
+    screen: ProfileScreenNavigator,
     navigationOptions: {
       tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="user" size={22} color={tintColor} />
-      ),
-    },
-  },
-  EditProfile: {
-    screen: EditProfileScreen,
-    navigationOptions: {
-      tabBarLabel: 'Settings',
       tabBarIcon: ({ tintColor }) => (
         <Icon name="user" size={22} color={tintColor} />
       ),

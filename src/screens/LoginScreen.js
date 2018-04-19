@@ -37,7 +37,7 @@ export default class LoginScreen extends React.Component {
 
   getInitialFormValues() {
     return {
-      email: 'lbkchen@gmail.com',
+      email: 'melodywei861016@gmail.com',
       password: 'password',
     };
   }

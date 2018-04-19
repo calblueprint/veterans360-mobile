@@ -24,6 +24,7 @@ export default class Resource extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props.categories)
     let categoryId = this.props.navigation.state.params.categoryToDisplay;
     const resourcesRoute = APIRoutes.getCategoryResources(categoryId);
     this.retrieveResources(resourcesRoute).then((resources) => {
@@ -51,6 +52,7 @@ export default class Resource extends React.Component {
   async retrieveResources(endpoint) {
     try {
       // this merge conflict might have been fixed wrong
+      console.log(this.props.categories)
       const urlParams = {
         by_category: JSON.stringify(this.props.navigation.state.params.categoryToDisplay),
       };
@@ -101,7 +103,7 @@ export default class Resource extends React.Component {
           <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ item.partner_org_description }</Text>
           <View style={[resourceStyle.contentInformation, { marginTop: 10,}]}>
             <View style={ resourceStyle.button }>
-              <Button color="white" title="OPEN RESOURCE"
+              <Button color="white" title="VIEW PDF"
               onPress={ ()=>{ Linking.openURL(item.file_link)}} />
             </View>
             <View style={ resourceStyle.upvote }>

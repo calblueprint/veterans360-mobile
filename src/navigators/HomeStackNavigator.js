@@ -20,9 +20,6 @@ const HomeStackNavigator = StackNavigator({
 }, {
   initialRouteName: 'Home',
   headerMode: 'none',
-  navigationOptions: {
-    gesturesEnabled: false,
-  },
 });
 
 export default HomeStackNavigator;
