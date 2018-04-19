@@ -31,7 +31,6 @@ import {
 import { APIRoutes } from '../helpers/routes/routes';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import LoginRequester from '../helpers/requesters/LoginRequester';
-import CategoryRequester from '../helpers/requesters/CategoryRequester';
 import { colors } from '../styles/colors';
 import { margins } from '../styles/layout';
 import { fontStyles } from '../styles/fonts';
@@ -53,8 +52,7 @@ export default class ProfileScreen extends React.Component {
      */
     this.state = {
       sentConnectRequest: false,
-      veteran : { },
-      categories: [],
+      veteran : {},
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -63,6 +61,7 @@ export default class ProfileScreen extends React.Component {
     this.logout = this.logout.bind(this);
 
   }
+
 
   _fetchVeteran(id, onSuccess, onFailure) {
     ProfileRequester.getCurrentUser(id).then((response) => {
@@ -75,12 +74,10 @@ export default class ProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    CategoryRequester.retrieveCategories().then((response) => {
-      let categories = this.state.categories.slice();
-      categories = categories.concat(response);
-      this.setState({ categories: categories });
-    })
+    const params = this.getParams();
+    this._fetchVeteran(params.id);
   }
+
 
   getParams() {
     return this.props.navigation.state.params;
@@ -283,22 +280,11 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
-  navigateEditScreen() {
-    const params = this.getParams();
-    return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('EditProfile', {params: params})}
-        style={styles.editButton}
-      >
-        <Text style={fontStyles.boldTextGreen}>
-          Edit
-        </Text>
-      </TouchableOpacity>
-    );
-  }
-
-
-  renderResources() {
+  /**
+   * Renders resources IF the profile is a
+   * po Commented out because we changed Resource.js
+   */
+  /* renderResources() {
     const params = this.getParams();
     if (params.profileType === 'po') {
       return (
@@ -316,17 +302,32 @@ export default class ProfileScreen extends React.Component {
         </View>
       )
     }
+  } */
+
+
+
+  navigateEditScreen() {
+    const params = this.getParams();
+    if (!params.source) {
+      return (
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('EditProfile', params)}
+          style={styles.editButton}
+        >
+          <Text style={fontStyles.boldTextGreen}>
+            Edit
+          </Text>
+        </TouchableOpacity>
+      );
+    }
   }
 
 
   render() {
     const params = this.getParams();
-    this._fetchVeteran(params.id);
-
     return (
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>
-          {this.renderConnectButton()}
           <Image
             source={require('../../assets/images/default_icon.png')}
             style={styles.profilePicture}
@@ -342,10 +343,10 @@ export default class ProfileScreen extends React.Component {
             {this.renderDetails()}
             <View style={styles.bioContainer}>
             </View>
+            {this.renderConnectButton()}
             {this.renderLogoutButton()}
             {this.navigateEditScreen()}
           </View>
-          {this.renderResources()}
         </ScrollView>
       </View>
     );
