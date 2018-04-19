@@ -71,7 +71,7 @@ export default class ProfileCard extends React.Component {
 
           <View style={styles.contentContainer}>
             <Image
-              source={require('../../assets/images/photogenic.jpg')}
+              source={require('../../assets/images/default_icon.png')}
               style={styles.veteranImage}
             />
           <Text style={[fontStyles.boldText, margins.marginTop.md, fontStyles.centered]}>

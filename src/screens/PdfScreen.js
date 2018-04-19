@@ -7,7 +7,8 @@ import { StyleSheet, Dimensions, View } from 'react-native';
 export default class PdfScreen extends React.Component {
     render() {
         const source = {
-            uri: this.props.file_link,
+            // uri: this.props.file_link,
+            uri: this.props.navigation.state.params.file_link,
             cache:  true,
         };
  

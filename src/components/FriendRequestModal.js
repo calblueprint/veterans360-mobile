@@ -149,7 +149,7 @@ export default class FriendRequestModal extends React.Component {
         <View style={styles.profileRowContainer}>
           <View style={styles.nameImageContainer}>
             <Image
-              source={require('../../assets/images/photogenic.jpg')}
+              source={require('../../assets/images/default_icon.png')}
               style={styles.image}
             />
             <Text style={styles.name}>
