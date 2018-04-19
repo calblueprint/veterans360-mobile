@@ -100,7 +100,7 @@ export default class Resource extends React.Component {
           <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ item.partner_org_description }</Text>
           <View style={[resourceStyle.contentInformation, { marginTop: 10,}]}>
             <View style={ resourceStyle.button }>
-              <Button color="white" title="OPEN RESOURCE"
+              <Button color="white" title="VIEW PDF"
               onPress={ ()=>{ Linking.openURL(item.file_link)}} />
             </View>
             <View style={ resourceStyle.upvote }>
