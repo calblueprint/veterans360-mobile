@@ -51,7 +51,7 @@ export default class ProfileScreen extends React.Component {
      */
     this.state = {
       sentConnectRequest: false,
-      veteran : { },
+      veteran : {},
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -69,7 +69,6 @@ export default class ProfileScreen extends React.Component {
     }).catch((error) => {
       onFailure && onFailure(error.error);
       this.setState({ errors: error.error });
-      console.error(error);;
     });
   }
 

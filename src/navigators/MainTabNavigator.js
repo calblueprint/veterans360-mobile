@@ -12,7 +12,6 @@ import VaultScreen from '../screens/VaultScreen';
 import ResponseScreen from '../screens/ResponseScreen';
 import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
 import EditProfileScreen from '../screens/EditProfileScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 
 import { colors } from '../styles/colors';
 import HomeStackNavigator from '../navigators/HomeStackNavigator';
@@ -66,15 +65,6 @@ const MainTabNavigator = TabNavigator({
       ),
     },
   },
-  // EditProfile: {
-  //   screen: EditProfileScreen,
-  //   navigationOptions: {
-  //     tabBarLabel: 'Settings',
-  //     tabBarIcon: ({ tintColor }) => (
-  //       <Icon name="user" size={22} color={tintColor} />
-  //     ),
-  //   },
-  // },
 
 }, {
   tabBarPosition: 'bottom',

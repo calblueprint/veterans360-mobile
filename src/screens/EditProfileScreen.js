@@ -17,7 +17,7 @@ class EditProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      defaultValues : { },
+      defaultValues: {},
     };
   }
 
