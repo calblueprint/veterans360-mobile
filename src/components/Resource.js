@@ -24,6 +24,7 @@ export default class Resource extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props.categories)
     let categoryId = this.props.navigation.state.params.categoryToDisplay;
     const resourcesRoute = APIRoutes.getCategoryResources(categoryId);
     this.retrieveResources(resourcesRoute).then((resources) => {
@@ -48,6 +49,7 @@ export default class Resource extends React.Component {
   async retrieveResources(endpoint) {
     try {
       // this merge conflict might have been fixed wrong
+      console.log(this.props.categories)
       const urlParams = {
         by_category: JSON.stringify(this.props.navigation.state.params.categoryToDisplay),
       };
