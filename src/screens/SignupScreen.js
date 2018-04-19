@@ -54,6 +54,7 @@ export default class SignupScreen extends React.Component {
       email: t.String,
       password: t.String,
       confirmPassword: t.String,
+      description: t.String,
       activeDuty: t.Boolean,
       veteran: t.Boolean,
       post_911: t.Boolean,
@@ -78,6 +79,10 @@ export default class SignupScreen extends React.Component {
           type: 'email',
           hasError: !!this.state.errors.email,
           error: this.state.errors.email,
+        },
+        description: {
+          hasError: !!this.state.errors.first_name,
+          error: this.state.errors.first_name,
         },
         password: {
           password: true,

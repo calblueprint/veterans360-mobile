@@ -77,9 +77,9 @@ export default class ProfileCard extends React.Component {
           <Text style={[fontStyles.boldText, margins.marginTop.md, fontStyles.centered]}>
               {`${veteran.first_name} ${veteran.last_name}`}
             </Text>
-            <Text style={[fontStyles.bodyTextSmall, margins.marginTop.xs, fontStyles.centered]}>
-              {`${veteran.military_branch}`}
-            </Text>
+            {veteran.military_branch ? <Text style={[fontStyles.bodyTextSmall, margins.marginTop.xs, fontStyles.centered]}>
+              {`${veteran.military_branch}` }
+            </Text> : null}
           </View>
 
           <View style={styles.buttonContainer}>
