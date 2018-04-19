@@ -37,13 +37,7 @@ export default class HomeScreen extends React.Component {
 
   async componentDidMount() {
     this.getVeterans();
-    // CategoryRequester.retrieveCategories().then((response) => {
-    //   categories = this.state.categories.slice();
-    //   categories = categories.concat(response);
-    //   this.setState({ categories: categories, stillLoading: false });
-    // })
     let endpoint = APIRoutes.recentResources();
-
     BaseRequester.get(endpoint).then((response) => {
       this.setState({ resources: response });
     });
@@ -88,33 +82,24 @@ export default class HomeScreen extends React.Component {
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
-    // if (this.state.stillLoading) {
-    //   return(
-    //     <View />
-    //   );
-    // } else {
-        return this.state.resources.map((item) => {
-          return (
-            <View>
-              <ResourceCard
-                resource_id={item.owner.id}
-                resource_description={item.description}
-                resource_partneringOrg_name={item.owner.name}
-                resource_partneringOrg_description={item.owner.description}
-                resource_upvotes={item.upvotes}
-                resource_category={item.category}
-                resource_file_link={item.file.url}
-                resource_veteran_has_upvoted={item.veteran_has_upvoted}
-              />
-            </View>
-          );
-        });
-        // <Resource
-        //   endpoint={APIRoutes.recentResources()}
-        //   veteranId={this.props.navigation.state.params.id}
-        //   categories={this.state.categories}
-        // />
-    // }
+    return this.state.resources.map((item) => {
+      console.log(this.props.navigation.state.params)
+      return (
+        <View>
+          <ResourceCard
+            resource_id={item.id}
+            resource_description={item.description}
+            resource_partneringOrg_name={item.owner.name}
+            resource_partneringOrg_description={item.owner.description}
+            resource_upvotes={item.num_upvotes}
+            resource_category={item.category}
+            resource_file_link={item.file.url}
+            resource_veteran_has_upvoted={item.veteran_has_upvoted}
+            veteran_id={this.props.navigation.state.params.id}
+          />
+        </View>
+      );
+    });
   }
 
   render() {
