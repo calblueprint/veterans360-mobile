@@ -23,7 +23,7 @@ class EditProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    this._fetchVeteran(this.props.navigation.state.params.id);
+    this._fetchVeteran(this.props.navigation.state.params.params.id);
   }
 
   _fetchVeteran(id, onSuccess, onFailure) {
@@ -44,6 +44,7 @@ class EditProfileScreen extends React.Component {
  */
 
   _handleUpdate(params, onSuccess, onFailure) {
+    console.log(params)
     const successFunc = (responseData) => {
       this.props.navigation.navigate('Profile');
     }
@@ -58,12 +59,12 @@ class EditProfileScreen extends React.Component {
   }
 
   _getParams() {
-    return this.props.navigation.state.params;
+    return this.props.navigation.state.params.params;
   }
 
   render() {
     const params = this._getParams(); //replace with params
-    const veteran_id= this.props.navigation.state.params.id;
+    const veteran_id= this.props.navigation.state.params.params.id;
     return(
       <View>
         <EditProfileForm

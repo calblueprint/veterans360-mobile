@@ -19,7 +19,7 @@ import LoginRequester from '../helpers/requesters/LoginRequester';
 import BackgroundOverlay from '../components/BackgroundOverlay';
 import RaisedContainer from '../components/RaisedContainer';
 import Button from '../components/Button';
-import PhotoUpload from 'react-native-photo-upload'
+// import PhotoUpload from 'react-native-photo-upload'
 
 
 export default class SignupScreen extends React.Component {
