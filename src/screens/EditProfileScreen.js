@@ -67,7 +67,6 @@ class EditProfileScreen extends React.Component {
           email={params.email}
           id={params.id}
           role= {params.role}
-          description={params.description}
           updateSave={this._handleUpdate.bind(this)}
         />
       </View>

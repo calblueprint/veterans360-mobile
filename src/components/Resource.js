@@ -29,9 +29,6 @@ export default class Resource extends React.Component {
     const resourcesRoute = APIRoutes.getCategoryResources(categoryId);
     this.retrieveResources(resourcesRoute).then((resources) => {
       this.setState({ resources: resources, stillLoading: false });
-    }).catch((error) => {
-      console.log('Error');
-      return Promise.reject(error);
     });
     this._mounted = true;
   }
