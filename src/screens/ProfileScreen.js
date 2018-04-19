@@ -225,6 +225,7 @@ export default class ProfileScreen extends React.Component {
         {!!params.address ? this.renderDetailRow("ADDRESS", this.state.veteran.address) : null}
         {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", this.state.veteran.demographic) : null}
         {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", this.state.military_branch) : null}
+        {!!params.description ? this.renderDetailRow("DESCRIPTION", this.state.description) : null}
         {params.is_friend && !!veteran.phone_number ? this.renderDetailRow("PHONE_NUMBER", this.state.phone_number) : null}
       </View>
     );

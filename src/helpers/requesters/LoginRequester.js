@@ -52,7 +52,8 @@ class LoginRequester {
         email: fields.email,
         password: fields.password,
         password_confirmation: fields.confirmPassword,
-        roles: roles,
+        roles: roles ? roles : [],
+        description: fields.description
       },
     };
     const endpoint = APIRoutes.veteransSignUpPath();
@@ -61,6 +62,7 @@ class LoginRequester {
       let response_json = await BaseRequester.post(endpoint, params);
       return Promise.resolve(response_json);
     } catch (error) {
+      console.log(error);
       return Promise.reject(error);
     }
   }
