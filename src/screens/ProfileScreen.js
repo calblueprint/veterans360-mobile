@@ -18,6 +18,7 @@
 // import { Actions } from 'react_native_route_flux';
 import React from 'react';
 import Icon from '@expo/vector-icons/FontAwesome';
+import Resource from '../components/Resource';
 import {
   StyleSheet,
   Text,
@@ -241,7 +242,7 @@ export default class ProfileScreen extends React.Component {
     } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
       return (
         <Button
-          style={[margins.marginTop.md, {backgroundColor: colors.gray}]}
+          style={styles.connectButton}
           onPress={connectMethod}
           text={params.is_subscribed_to ? "FOLLOWING" : "REQUESTED"}
           disabled={true}
@@ -279,18 +280,46 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
+  /**
+   * Renders resources IF the profile is a
+   * po Commented out because we changed Resource.js
+   */
+  /* renderResources() {
+    const params = this.getParams();
+    if (params.profileType === 'po') {
+      return (
+        <View style={styles.resourcesContainer}>
+          <Text style={fontStyles.resourcesTitleText}>
+            RESOURCES
+          </Text>
+          <Resource
+            veteranId={this.props.navigation.state.params.id}
+            categories={this.state.categories}
+            urlParams={{
+              "by_partnering_org" : params.id,
+            }}
+          />
+        </View>
+      )
+    }
+  } */
+
+
+
   navigateEditScreen() {
     const params = this.getParams();
-    return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('EditProfile', params)}
-        style={styles.editButton}
-      >
-        <Text style={fontStyles.boldTextGreen}>
-          Edit
-        </Text>
-      </TouchableOpacity>
-    );
+    if (!params.source) {
+      return (
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('EditProfile', params)}
+          style={styles.editButton}
+        >
+          <Text style={fontStyles.boldTextGreen}>
+            Edit
+          </Text>
+        </TouchableOpacity>
+      );
+    }
   }
 
 
