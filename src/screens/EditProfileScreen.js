@@ -1,4 +1,3 @@
-//passing in props==params-> this.props.navigation.state.params
 import EditProfileForm from '../components/EditProfileForm';
 import React from 'react';
 import { APIRoutes } from '../helpers/routes/routes';
@@ -23,7 +22,7 @@ class EditProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    this._fetchVeteran(this.props.navigation.state.params.params.id);
+    this._fetchVeteran(this.props.navigation.state.params.id);
   }
 
   _fetchVeteran(id, onSuccess, onFailure) {
@@ -44,12 +43,8 @@ class EditProfileScreen extends React.Component {
  */
 
   _handleUpdate(params, onSuccess, onFailure) {
-    console.log(params)
-    const successFunc = (responseData) => {
-      this.props.navigation.navigate('Profile');
-    }
     ProfileRequester.updateUser(params).then((response) => {
-      this.props.navigation.navigate('Profile')
+      this.props.navigation.navigate('Profile', params.veteran)
       onSuccess && onSuccess(response);
     }).catch((error) => {
       onFailure && onFailure(error.error);
@@ -59,19 +54,18 @@ class EditProfileScreen extends React.Component {
   }
 
   _getParams() {
-    return this.props.navigation.state.params.params;
+    return this.props.navigation.state.params;
   }
 
   render() {
     const params = this._getParams(); //replace with params
-    const veteran_id= this.props.navigation.state.params.params.id;
     return(
       <View>
         <EditProfileForm
           first_name={params.first_name}
           last_name={params.last_name}
           email={params.email}
-          id={veteran_id}
+          id={params.id}
           role= {params.role}
           updateSave={this._handleUpdate.bind(this)}
         />

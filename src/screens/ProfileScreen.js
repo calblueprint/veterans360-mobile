@@ -282,18 +282,17 @@ export default class ProfileScreen extends React.Component {
 
   navigateEditScreen() {
     const params = this.getParams();
-    return(
-    <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('EditProfile', {
-            params: params})}
-            style={styles.editButton}>
-
-          <Text style={fontStyles.boldTextGreen}>
+    return (
+      <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('EditProfile', params)}
+        style={styles.editButton}
+      >
+        <Text style={fontStyles.boldTextGreen}>
           Edit
-          </Text>
+        </Text>
       </TouchableOpacity>
     );
-    }
+  }
 
 
   render() {
