@@ -61,6 +61,10 @@ class APIRoutes {
     return APIRoutes.create('/resources/get_home_resources');
   }
 
+  static recentResources() {
+    return APIRoutes.create('/resources/get_recent_resources');
+  }
+
   // Partnering Orgs
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
@@ -69,14 +73,6 @@ class APIRoutes {
   // Categories
   static allCategories() {
     return APIRoutes.create('/categories');
-  }
-
-  static vaultCategories() {
-    return APIRoutes.create('/categories/vault');
-  }
-
-  static responseCategories() {
-    return APIRoutes.create('/categories/response');
   }
 
   static getProfile(veteran_id) {
