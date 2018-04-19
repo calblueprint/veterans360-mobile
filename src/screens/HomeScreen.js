@@ -16,7 +16,7 @@ import { colors } from '../styles/colors';
 import BaseRequester from '../helpers/requesters/BaseRequester';
 import ProfileGallery from '../components/ProfileGallery';
 import BackgroundOverlay from '../components/BackgroundOverlay';
-import Resource from '../components/Resource';
+import ResourceCard from '../components/ResourceCard';
 import CategoryRequester from '../helpers/requesters/CategoryRequester';
 
 export default class HomeScreen extends React.Component {
@@ -27,6 +27,7 @@ export default class HomeScreen extends React.Component {
     this.state = {
       veterans: [],
       categories: [],
+      resources: [],
       stillLoading: true
     };
 
@@ -36,11 +37,16 @@ export default class HomeScreen extends React.Component {
 
   async componentDidMount() {
     this.getVeterans();
-    CategoryRequester.retrieveCategories().then((response) => {
-      categories = this.state.categories.slice();
-      categories = categories.concat(response);
-      this.setState({ categories: categories, stillLoading: false });
-    })
+    // CategoryRequester.retrieveCategories().then((response) => {
+    //   categories = this.state.categories.slice();
+    //   categories = categories.concat(response);
+    //   this.setState({ categories: categories, stillLoading: false });
+    // })
+    let endpoint = APIRoutes.recentResources();
+
+    BaseRequester.get(endpoint).then((response) => {
+      this.setState({ resources: response });
+    });
   }
 
   /**
@@ -82,19 +88,33 @@ export default class HomeScreen extends React.Component {
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
-    if (this.state.stillLoading) {
-      return(
-        <View />
-      );
-    } else {
-      return(
-        <Resource
-          endpoint={APIRoutes.homeResources()}
-          veteranId={this.props.navigation.state.params.id}
-          categories={this.state.categories}
-        />
-      );
-    }
+    // if (this.state.stillLoading) {
+    //   return(
+    //     <View />
+    //   );
+    // } else {
+        return this.state.resources.map((item) => {
+          return (
+            <View>
+              <ResourceCard
+                resource_id={item.owner.id}
+                resource_description={item.description}
+                resource_partneringOrg_name={item.owner.name}
+                resource_partneringOrg_description={item.owner.description}
+                resource_upvotes={item.upvotes}
+                resource_category={item.category}
+                resource_file_link={item.file.url}
+                resource_veteran_has_upvoted={item.veteran_has_upvoted}
+              />
+            </View>
+          );
+        });
+        // <Resource
+        //   endpoint={APIRoutes.recentResources()}
+        //   veteranId={this.props.navigation.state.params.id}
+        //   categories={this.state.categories}
+        // />
+    // }
   }
 
   render() {
@@ -112,12 +132,14 @@ export default class HomeScreen extends React.Component {
               {`Welcome back`}
             </Text>
           </View>
-          <ProfileGallery
-            veterans={this.state.veterans}
-            currentVeteran={currentVeteran}
-            onConnect={this.onConnectRequest}
-            showProfile={this.navigateToProfile}
-          />
+          <View style={styles.profileGalleryContainer}>
+            <ProfileGallery
+              veterans={this.state.veterans}
+              currentVeteran={currentVeteran}
+              onConnect={this.onConnectRequest}
+              showProfile={this.navigateToProfile}
+            />
+          </View>
           {this.renderResources()}
         </ScrollView>
       </BackgroundOverlay>
@@ -144,6 +166,15 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: 'transparent',
   },
+
+  profileGalleryContainer: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  }
 
   /* Individual items */
 });

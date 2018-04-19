@@ -61,6 +61,13 @@ class APIRoutes {
     return APIRoutes.create('/resources/get_home_resources');
   }
 
+  static recentResources() {
+    return APIRoutes.create('/resources/get_recent_resources');
+  }
+static resourceCategories() {
+  return APIRoutes.create('/resources/get_resource_categories')
+}
+
   // Partnering Orgs
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
