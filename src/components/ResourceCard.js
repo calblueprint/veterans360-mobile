@@ -72,7 +72,7 @@ export default class ResourceCard extends React.Component {
         <Text style={[resourceStyle.bodyText, {marginTop: 10,}]}>{ this.props.resource_partneringOrg_description }</Text>
         <View style={[resourceStyle.contentInformation, { marginTop: 10,}]}>
           <View style={ resourceStyle.button }>
-            <Button color="white" title="OPEN RESOURCE"
+            <Button color="white" title="VIEW PDF"
             onPress={ ()=>{ Linking.openURL(this.props.resource_file_link)}} />
           </View>
           <View style={ resourceStyle.upvote }>
