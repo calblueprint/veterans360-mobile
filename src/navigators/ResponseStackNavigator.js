@@ -12,8 +12,8 @@ const ResponseStackNavigator = StackNavigator({
   Resource: {
     screen: Resource,
     navigationOptions: ({navigation}) => ({
-        title: navigation.state.params.title,
-      })
+      title: navigation.state.params.title,
+    })
   },
   Pdf: {
     screen: PdfScreen,
