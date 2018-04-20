@@ -213,17 +213,17 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
-    // (JASON) look into whether this needs fixing (params.is_friend should add another || with or params.is_friend == null)
+    console.log(params)
     return (
       <View style={styles.detailsContainer}>
-        {!!params.email ? this.renderDetailRow("EMAIL", this.state.veteran.email) : null}
-        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", this.state.veteran.roles) : null}
-        {!!params.website ? this.renderDetailRow("WEBSITE", this.state.veteran.website) : null}
-        {!!params.address ? this.renderDetailRow("ADDRESS", this.state.veteran.address) : null}
-        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", this.state.veteran.demographic) : null}
-        {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", this.state.military_branch) : null}
-        {!!params.description ? this.renderDetailRow("DESCRIPTION", this.state.description) : null}
-        {params.is_friend && !!veteran.phone_number ? this.renderDetailRow("PHONE_NUMBER", this.state.phone_number) : null}
+        {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
+        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles) : null}
+        {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
+        {params.is_friend && !!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
+        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
+        {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", params.military_branch) : null}
+        {!!params.description ? this.renderDetailRow("DESCRIPTION", params.description) : null}
+        {params.is_friend && !!params.phone_number ? this.renderDetailRow("PHONE_NUMBER", params.phone_number) : null}
       </View>
     );
   }
