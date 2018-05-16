@@ -38,6 +38,7 @@ import Button from '../components/Button';
 import EditProfileScreen from './EditProfileScreen';
 import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
 import ProfileRequester from '../helpers/requesters/ProfileRequester';
+import ResourceCard from '../components/ResourceCard';
 
 
 export default class ProfileScreen extends React.Component {
@@ -53,6 +54,7 @@ export default class ProfileScreen extends React.Component {
     this.state = {
       sentConnectRequest: false,
       veteran : {},
+      resources: []
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -76,8 +78,22 @@ export default class ProfileScreen extends React.Component {
   componentDidMount() {
     const params = this.getParams();
     this._fetchVeteran(params.id);
+    if (params.profileType === 'po') {
+      this._fetchResources(params.id);
+    }
   }
 
+  _fetchResources(id) {
+    const route = APIRoutes.partnerOrgsResourcesPath(id);
+    console.log("HERE")
+    console.log(route)
+    BaseRequester.get(route).then((response) => {
+      console.log(response)
+      this.setState({ resources: response });
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
 
   getParams() {
     return this.props.navigation.state.params;
@@ -213,17 +229,17 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
-    console.log(params)
     return (
       <View style={styles.detailsContainer}>
         {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
-        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles) : null}
         {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
+        {!!params.unit ? this.renderDetailRow("UNIT", params.unit) : null}
         {params.is_friend && !!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
         {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
         {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", params.military_branch) : null}
         {!!params.description ? this.renderDetailRow("DESCRIPTION", params.description) : null}
         {params.is_friend && !!params.phone_number ? this.renderDetailRow("PHONE_NUMBER", params.phone_number) : null}
+        {this.renderResources()}
       </View>
     );
   }
@@ -281,29 +297,38 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
-  /**
-   * Renders resources IF the profile is a
-   * po Commented out because we changed Resource.js
-   */
-  /* renderResources() {
+  renderResourceCards() {
+    return this.state.resources.map((item) => {
+      return (
+        <View>
+          <ResourceCard
+            resource_id={item.id}
+            resource_description={item.description}
+            resource_partneringOrg_name={item.owner.name}
+            resource_partneringOrg_description={item.owner.description}
+            resource_upvotes={item.num_upvotes}
+            resource_category={item.category}
+            resource_file_link={item.file.url}
+            resource_veteran_has_upvoted={item.veteran_has_upvoted}
+            veteran_id={this.props.navigation.state.params.id}
+          />
+        </View>
+      );
+    });  }
+
+  renderResources() {
     const params = this.getParams();
     if (params.profileType === 'po') {
       return (
-        <View style={styles.resourcesContainer}>
+        <View style={styles.resourcesContainer} key={1}>
           <Text style={fontStyles.resourcesTitleText}>
             RESOURCES
           </Text>
-          <Resource
-            veteranId={this.props.navigation.state.params.id}
-            categories={this.state.categories}
-            urlParams={{
-              "by_partnering_org" : params.id,
-            }}
-          />
+          {this.renderResourceCards()}
         </View>
       )
     }
-  } */
+  }
 
 
 
@@ -397,6 +422,7 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     backgroundColor: colors.light_gray,
+    width: '100%'
   },
 
   /* Container for one row of details LABEL -> value */

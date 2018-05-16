@@ -64,13 +64,18 @@ class APIRoutes {
   static recentResources() {
     return APIRoutes.create('/resources/get_recent_resources');
   }
-static resourceCategories() {
-  return APIRoutes.create('/resources/get_resource_categories')
-}
+
+  static resourceCategories() {
+    return APIRoutes.create('/resources/get_resource_categories')
+  }
 
   // Partnering Orgs
   static parterOrgsPath() {
     return APIRoutes.create('/partnering_organizations');
+  }
+
+  static partnerOrgsResourcesPath(id) {
+    return APIRoutes.create(`/partnering_organizations/${id}/resources`)
   }
 
   // Categories

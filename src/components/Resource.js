@@ -52,7 +52,6 @@ export default class Resource extends React.Component {
   async retrieveResources(endpoint) {
     try {
       // this merge conflict might have been fixed wrong
-      console.log(this.props.categories)
       const urlParams = {
         by_category: JSON.stringify(this.props.navigation.state.params.categoryToDisplay),
       };
