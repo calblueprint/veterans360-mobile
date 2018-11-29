@@ -2,33 +2,27 @@
  * Login screen for veterans.
  */
 
-import React from 'react';
-import Icon from '@expo/vector-icons/FontAwesome';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
-} from 'react-native';
+import React from "react";
+import Icon from "@expo/vector-icons/FontAwesome";
+import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
 
-import { Form, t } from '../components/Form';
-import { imageStyles } from '../styles/images';
-import { layoutStyles, margins } from '../styles/layout';
-import { colors } from '../styles/colors';
-import LoginRequester from '../helpers/requesters/LoginRequester';
-import BackgroundOverlay from '../components/BackgroundOverlay';
-import RaisedContainer from '../components/RaisedContainer';
-import Button from '../components/Button';
+import { Form, t } from "../components/Form";
+import { imageStyles } from "../styles/images";
+import { layoutStyles, margins } from "../styles/layout";
+import { colors } from "../styles/colors";
+import LoginRequester from "../helpers/requesters/LoginRequester";
+import BackgroundOverlay from "../components/BackgroundOverlay";
+import RaisedContainer from "../components/RaisedContainer";
+import Button from "../components/Button";
 
 export default class LoginScreen extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       formValues: this.getInitialFormValues(),
-      errors: [],
-    }
+      errors: []
+    };
 
     this.onFormChange = this.onFormChange.bind(this);
     this.login = this.login.bind(this);
@@ -37,15 +31,15 @@ export default class LoginScreen extends React.Component {
 
   getInitialFormValues() {
     return {
-      email: 'melodywei861016@gmail.com',
-      password: 'password',
+      email: "kenchen@berkeley.edu",
+      password: "password"
     };
   }
 
   getFormType() {
     return t.struct({
       email: t.String,
-      password: t.String,
+      password: t.String
     });
   }
 
@@ -54,14 +48,14 @@ export default class LoginScreen extends React.Component {
       error: this.state.errors,
       fields: {
         email: {
-          value: 'gretahuang@berkeley.edu',
+          value: "gretahuang@berkeley.edu"
         },
         password: {
           secureTextEntry: true,
           password: true,
-          value: 'password',
-        },
-      },
+          value: "password"
+        }
+      }
     };
   }
 
@@ -88,17 +82,16 @@ export default class LoginScreen extends React.Component {
     this.clearFormErrors();
     const values = this.form.getValue();
     if (values) {
-      LoginRequester.login(
-        values.email,
-        values.password,
-      ).then((response) => {
-        onSuccess && onSuccess(response);
-        this.navigateToApp(response);
-      }).catch((error) => {
-        onFailure && onFailure(error.error);
-        this.setState({ errors: error.error });
-        alert('Invalid Username or Password');
-      });
+      LoginRequester.login(values.email, values.password)
+        .then(response => {
+          onSuccess && onSuccess(response);
+          this.navigateToApp(response);
+        })
+        .catch(error => {
+          onFailure && onFailure(error.error);
+          this.setState({ errors: error.error });
+          alert("Invalid Username or Password");
+        });
     } else {
       onFailure && onFailure();
     }
@@ -108,7 +101,7 @@ export default class LoginScreen extends React.Component {
    * Routes the user to the app.
    */
   navigateToApp(navProps) {
-    this.props.navigation.navigate('App', navProps);
+    this.props.navigation.navigate("App", navProps);
   }
 
   /**
@@ -116,7 +109,7 @@ export default class LoginScreen extends React.Component {
    */
   navigateToSignupScreen(event, onSuccess, onFailure) {
     event.preventDefault();
-    this.props.navigation.navigate('Signup', this.state.formValues);
+    this.props.navigation.navigate("Signup", this.state.formValues);
     onSuccess && onSuccess();
   }
 
@@ -127,7 +120,7 @@ export default class LoginScreen extends React.Component {
           <Text style={styles.titleStyle}>Login</Text>
           <View style={styles.formContainer}>
             <Form
-              refCallback={(ref) => this.form = ref}
+              refCallback={ref => (this.form = ref)}
               type={this.getFormType()}
               options={this.getFormOptions()}
               value={this.state.formValues}
@@ -151,40 +144,39 @@ export default class LoginScreen extends React.Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   raisedContainer: {
-    position: 'absolute',
-    left: '10%',
-    width: '80%',
+    position: "absolute",
+    left: "10%",
+    width: "80%",
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center"
   },
   formContainer: {
-    width: '100%',
-    justifyContent: 'center',
+    width: "100%",
+    justifyContent: "center",
     paddingTop: 40,
     paddingBottom: 40,
     paddingLeft: 40,
-    paddingRight: 40,
+    paddingRight: 40
   },
   titleStyle: {
-    position: 'absolute',
+    position: "absolute",
     top: -72,
     color: colors.white,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     fontSize: 36,
-    fontWeight: '300',
-    zIndex: 100,
+    fontWeight: "300",
+    zIndex: 100
   },
   signupButtonStyle: {
-    position: 'absolute',
+    position: "absolute",
     bottom: -72,
     height: 32,
-    borderRadius: 16,
+    borderRadius: 16
   },
   signupButtonTextStyle: {
-    fontSize: 13,
-  },
+    fontSize: 13
+  }
 });

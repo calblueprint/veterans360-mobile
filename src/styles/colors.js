@@ -1,4 +1,4 @@
-colors = {
+let colors = {
   // 5 grays from darkest to lightest
   charcoal          : '#404040',
   light_charcoal    : '#686868',
