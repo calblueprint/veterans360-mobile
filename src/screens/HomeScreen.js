@@ -31,10 +31,7 @@ export default class HomeScreen extends React.Component {
 
   async componentDidMount() {
     this.getVeterans();
-    let endpoint = APIRoutes.recentResources();
-    BaseRequester.get(endpoint).then(response => {
-      this.setState({ resources: response });
-    });
+    // this.getRecentResources();
   }
 
   /**
@@ -51,6 +48,14 @@ export default class HomeScreen extends React.Component {
       .catch(error => {
         console.error(error);
       });
+  }
+
+  /** Disable for now. Get recent resources */
+  getRecentResources() {
+    let endpoint = APIRoutes.recentResources();
+    BaseRequester.get(endpoint).then(response => {
+      this.setState({ resources: response });
+    });
   }
 
   /**
