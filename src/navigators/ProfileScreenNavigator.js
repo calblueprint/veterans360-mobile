@@ -1,12 +1,12 @@
 /**
  * Navigator that controls the Profile and EditProfile Screen
  */
+import { createStackNavigator } from "react-navigation";
 
-import { StackNavigator } from "react-navigation";
 import ProfileScreen from "../screens/ProfileScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
 
-const ProfileScreenNavigator = StackNavigator(
+const ProfileScreenNavigator = createStackNavigator(
   {
     Profile: {
       screen: ProfileScreen

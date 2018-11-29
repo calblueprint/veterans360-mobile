@@ -1,10 +1,10 @@
 import React from "react";
-import { StackNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 import Resource from "../components/Resource.js";
 import VaultScreen from "../screens/VaultScreen";
 import PdfScreen from "../screens/PdfScreen";
 
-const VaultStackNavigator = StackNavigator(
+const VaultStackNavigator = createStackNavigator(
   {
     Vault: {
       screen: VaultScreen
