@@ -16,32 +16,29 @@
  * @params.roles
  */
 // import { Actions } from 'react_native_route_flux';
-import React from 'react';
-import Icon from '@expo/vector-icons/FontAwesome';
-import Resource from '../components/Resource';
+import React from "react";
+import Icon from "@expo/vector-icons/FontAwesome";
+import Resource from "../components/Resource";
 import {
   StyleSheet,
   Text,
   View,
   ScrollView,
   Image,
-  TouchableOpacity,
-} from 'react-native';
+  TouchableOpacity
+} from "react-native";
 
-import { APIRoutes } from '../helpers/routes/routes';
-import BaseRequester from '../helpers/requesters/BaseRequester';
-import LoginRequester from '../helpers/requesters/LoginRequester';
-import { colors } from '../styles/colors';
-import { margins } from '../styles/layout';
-import { fontStyles } from '../styles/fonts';
-import Button from '../components/Button';
-import EditProfileScreen from './EditProfileScreen';
-import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
-import ProfileRequester from '../helpers/requesters/ProfileRequester';
-
+import { APIRoutes } from "../helpers/routes/routes";
+import BaseRequester from "../helpers/requesters/BaseRequester";
+import LoginRequester from "../helpers/requesters/LoginRequester";
+import { colors } from "../styles/colors";
+import { margins } from "../styles/layout";
+import { fontStyles } from "../styles/fonts";
+import Button from "../components/Button";
+import EditProfileScreen from "./EditProfileScreen";
+import ProfileRequester from "../helpers/requesters/ProfileRequester";
 
 export default class ProfileScreen extends React.Component {
-
   constructor(props) {
     super(props);
     /**
@@ -52,32 +49,31 @@ export default class ProfileScreen extends React.Component {
      */
     this.state = {
       sentConnectRequest: false,
-      veteran : {},
+      veteran: {}
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
     this.connectWithPO = this.connectWithPO.bind(this);
     this.goBack = this.goBack.bind(this);
     this.logout = this.logout.bind(this);
-
   }
 
-
   _fetchVeteran(id, onSuccess, onFailure) {
-    ProfileRequester.getCurrentUser(id).then((response) => {
-      this.setState({veteran: response});
-      onSuccess && onSuccess(response);
-    }).catch((error) => {
-      onFailure && onFailure(error.error);
-      this.setState({ errors: error.error });
-    });
+    ProfileRequester.getCurrentUser(id)
+      .then(response => {
+        this.setState({ veteran: response });
+        onSuccess && onSuccess(response);
+      })
+      .catch(error => {
+        onFailure && onFailure(error.error);
+        this.setState({ errors: error.error });
+      });
   }
 
   componentDidMount() {
     const params = this.getParams();
     this._fetchVeteran(params.id);
   }
-
 
   getParams() {
     return this.props.navigation.state.params;
@@ -88,7 +84,10 @@ export default class ProfileScreen extends React.Component {
    */
   getName() {
     const params = this.getParams();
-    return params.name || `${this.state.veteran.first_name} ${this.state.veteran.last_name}`;
+    return (
+      params.name ||
+      `${this.state.veteran.first_name} ${this.state.veteran.last_name}`
+    );
   }
 
   /**
@@ -105,17 +104,19 @@ export default class ProfileScreen extends React.Component {
     const route = APIRoutes.veteranFriendshipsPath(id);
     const params = {
       friendship: {
-        friend_id: navParams.id,
-      },
+        friend_id: navParams.id
+      }
     };
-    BaseRequester.post(route, params).then((response) => {
-      navParams.onConnect(navParams.id);
-      this.setState({ sentConnectRequest: true });
-      onSuccess && onSuccess(response);
-    }).catch((error) => {
-      console.error(error);
-      onFailure && onFailure(error);
-    });
+    BaseRequester.post(route, params)
+      .then(response => {
+        navParams.onConnect(navParams.id);
+        this.setState({ sentConnectRequest: true });
+        onSuccess && onSuccess(response);
+      })
+      .catch(error => {
+        console.error(error);
+        onFailure && onFailure(error);
+      });
   }
 
   connectWithPO(event, onSuccess, onFailure) {
@@ -125,17 +126,19 @@ export default class ProfileScreen extends React.Component {
     const route = APIRoutes.veteranSubscribePath(id);
     const params = {
       subscription: {
-        partnering_organization_id: navParams.id,
-      },
+        partnering_organization_id: navParams.id
+      }
     };
-    BaseRequester.post(route, params).then((response) => {
-      navParams.onConnect();
-      this.setState({ sentConnectRequest: true });
-      onSuccess && onSuccess(response);
-    }).catch((error) => {
-      console.error(error);
-      onFailure && onFailure(error);
-    });
+    BaseRequester.post(route, params)
+      .then(response => {
+        navParams.onConnect();
+        this.setState({ sentConnectRequest: true });
+        onSuccess && onSuccess(response);
+      })
+      .catch(error => {
+        console.error(error);
+        onFailure && onFailure(error);
+      });
   }
 
   /**
@@ -145,19 +148,18 @@ export default class ProfileScreen extends React.Component {
     return this.props.navigation.goBack();
   }
 
-
-
   /**
    * Logs out the user from the app.
    */
   logout() {
-    LoginRequester.logout().then((response) => {
-      this.props.navigation.navigate('Login');
-    }).catch((error) => {
-      console.error(error);
-    });
+    LoginRequester.logout()
+      .then(response => {
+        this.props.navigation.navigate("Login");
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
-
 
   /**
    * Renders the back button and label unless comes from the main
@@ -167,15 +169,9 @@ export default class ProfileScreen extends React.Component {
     const params = this.getParams();
     if (!!params.source) {
       return (
-        <TouchableOpacity
-          onPress={this.goBack}
-        >
+        <TouchableOpacity onPress={this.goBack}>
           <View style={styles.backButtonContainer}>
-            <Icon
-              name="chevron-left"
-              size={20}
-              color={colors.white}
-            />
+            <Icon name="chevron-left" size={20} color={colors.white} />
             <Text style={[fontStyles.boldTextWhite, margins.marginLeft.md]}>
               BACK
             </Text>
@@ -213,17 +209,31 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
-    console.log(params)
+    console.log(params);
     return (
       <View style={styles.detailsContainer}>
         {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
-        {!!params.roles ? this.renderDetailRow("BRANCH OF SERVICE", params.roles) : null}
-        {!!params.website ? this.renderDetailRow("WEBSITE", params.website) : null}
-        {params.is_friend && !!params.address ? this.renderDetailRow("ADDRESS", params.address) : null}
-        {!!params.demographic ? this.renderDetailRow("DEMOGRAPHIC", params.demographic) : null}
-        {!!params.military_branch ? this.renderDetailRow("MILITARY BRANCH", params.military_branch) : null}
-        {!!params.description ? this.renderDetailRow("DESCRIPTION", params.description) : null}
-        {params.is_friend && !!params.phone_number ? this.renderDetailRow("PHONE_NUMBER", params.phone_number) : null}
+        {!!params.roles
+          ? this.renderDetailRow("BRANCH OF SERVICE", params.roles)
+          : null}
+        {!!params.website
+          ? this.renderDetailRow("WEBSITE", params.website)
+          : null}
+        {params.is_friend && !!params.address
+          ? this.renderDetailRow("ADDRESS", params.address)
+          : null}
+        {!!params.demographic
+          ? this.renderDetailRow("DEMOGRAPHIC", params.demographic)
+          : null}
+        {!!params.military_branch
+          ? this.renderDetailRow("MILITARY BRANCH", params.military_branch)
+          : null}
+        {!!params.description
+          ? this.renderDetailRow("DESCRIPTION", params.description)
+          : null}
+        {params.is_friend && !!params.phone_number
+          ? this.renderDetailRow("PHONE_NUMBER", params.phone_number)
+          : null}
       </View>
     );
   }
@@ -237,10 +247,17 @@ export default class ProfileScreen extends React.Component {
    */
   renderConnectButton() {
     const params = this.getParams();
-    const connectMethod = params.profileType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
+    const connectMethod =
+      params.profileType === "veteran"
+        ? this.connectWithVeteran
+        : this.connectWithPO;
     if (params.is_friend || !params.source) {
       return;
-    } else if (params.sent_friend_request || params.is_subscribed_to || this.state.sentConnectRequest) {
+    } else if (
+      params.sent_friend_request ||
+      params.is_subscribed_to ||
+      this.state.sentConnectRequest
+    ) {
       return (
         <Button
           style={styles.connectButton}
@@ -269,13 +286,8 @@ export default class ProfileScreen extends React.Component {
     const params = this.getParams();
     if (!params.source) {
       return (
-        <TouchableOpacity
-          onPress={this.logout}
-          style={styles.logoutButton}
-        >
-          <Text style={fontStyles.boldTextRed}>
-            LOG OUT
-          </Text>
+        <TouchableOpacity onPress={this.logout} style={styles.logoutButton}>
+          <Text style={fontStyles.boldTextRed}>LOG OUT</Text>
         </TouchableOpacity>
       );
     }
@@ -305,24 +317,19 @@ export default class ProfileScreen extends React.Component {
     }
   } */
 
-
-
   navigateEditScreen() {
     const params = this.getParams();
     if (!params.source) {
       return (
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('EditProfile', params)}
+          onPress={() => this.props.navigation.navigate("EditProfile", params)}
           style={styles.editButton}
         >
-          <Text style={fontStyles.boldTextGreen}>
-            Edit
-          </Text>
+          <Text style={fontStyles.boldTextGreen}>Edit</Text>
         </TouchableOpacity>
       );
     }
   }
-
 
   render() {
     const params = this.getParams();
@@ -330,20 +337,17 @@ export default class ProfileScreen extends React.Component {
       <View style={styles.baseContainer}>
         <View style={styles.coverContainer}>
           <Image
-            source={require('../../assets/images/default_icon.png')}
+            source={require("../../assets/images/default_icon.png")}
             style={styles.profilePicture}
           />
-          <Text style={styles.profileName}>
-            {this.getName()}
-          </Text>
+          <Text style={styles.profileName}>{this.getName()}</Text>
           {this.renderBackButton()}
         </View>
 
         <ScrollView style={styles.scrollContainer}>
           <View style={styles.bodyContainer}>
             {this.renderDetails()}
-            <View style={styles.bioContainer}>
-            </View>
+            <View style={styles.bioContainer} />
             {this.renderConnectButton()}
             {this.renderLogoutButton()}
             {this.navigateEditScreen()}
@@ -354,93 +358,92 @@ export default class ProfileScreen extends React.Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   /* Container for the whole screen */
   baseContainer: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: colors.light_snow,
+    width: "100%",
+    height: "100%",
+    backgroundColor: colors.light_snow
   },
 
   /* Container for the header bg/photo */
   coverContainer: {
-    height: '30%',
-    width: '100%',
+    height: "30%",
+    width: "100%",
     backgroundColor: colors.green,
-    zIndex: 100,
+    zIndex: 100
   },
 
   /* Container for the ScrollView */
   scrollContainer: {
-    flex: 1,
+    flex: 1
   },
 
   /* Container for the body content */
   bodyContainer: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     marginLeft: 25,
-    marginTop: 20,
+    marginTop: 20
   },
 
   /* Container for the details of this veteran/PO */
   detailsContainer: {
     marginTop: 50,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
   },
 
   resourcesContainer: {
     margin: 5,
     padding: 10,
-    backgroundColor: colors.light_gray,
+    backgroundColor: colors.light_gray
   },
 
   /* Container for one row of details LABEL -> value */
   detailRowContainer: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
   },
 
   /* Container for label in a row */
   detailLabelContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
   },
 
   /* Container for value field in a row */
   detailValueContainer: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    justifyContent: "flex-start",
+    alignItems: "flex-start"
   },
 
   /* Container for this veteran/PO's bio */
   bioContainer: {
     margin: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center"
   },
 
   /* Back button and text container */
   backButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    position: 'absolute',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    position: "absolute",
     top: 25,
     left: 10,
-    padding: 5,
+    padding: 5
   },
 
   /* Individual items */
   profilePicture: {
-    position: 'absolute',
+    position: "absolute",
     left: 20,
     bottom: -40,
     width: 120,
@@ -452,15 +455,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowOffset: { width: 5, height: 5 },
     shadowRadius: 5,
-    zIndex: 100,
+    zIndex: 100
   },
   profileName: {
-    position: 'absolute',
+    position: "absolute",
     left: 160,
     bottom: 10,
     fontSize: 28,
-    fontFamily: 'source-sans-pro-regular',
-    color: colors.white,
+    fontFamily: "source-sans-pro-regular",
+    color: colors.white
   },
   logoutButton: {
     marginTop: 30,
@@ -471,7 +474,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: colors.red,
     borderWidth: 2,
-    backgroundColor: colors.white,
+    backgroundColor: colors.white
   },
 
   editButton: {
@@ -483,7 +486,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: colors.green,
     borderWidth: 2,
-    backgroundColor: colors.white,
+    backgroundColor: colors.white
   },
   // editButton: {
   //   marginTop: 30,
@@ -498,8 +501,7 @@ const styles = StyleSheet.create({
   // }
   connectButton: {
     top: 20,
-    position: 'absolute',
-    right: 20,
+    position: "absolute",
+    right: 20
   }
-
 });
