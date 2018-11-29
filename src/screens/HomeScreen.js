@@ -98,9 +98,7 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    const currentVeteran = this.props.navigation.state.params;
-    console.log(this.props.navigation.state.params);
-    console.log(this.props.navigation);
+    const currentVeteran = this.props.navigation.getParam("veteran", {});
     console.log(currentVeteran);
 
     return (

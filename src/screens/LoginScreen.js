@@ -85,7 +85,7 @@ export default class LoginScreen extends React.Component {
       LoginRequester.login(values.email, values.password)
         .then(response => {
           onSuccess && onSuccess(response);
-          this.navigateToApp(response);
+          this.navigateToApp({ veteran: response, hello: true });
         })
         .catch(error => {
           onFailure && onFailure(error.error);
@@ -101,7 +101,7 @@ export default class LoginScreen extends React.Component {
    * Routes the user to the app.
    */
   navigateToApp(navProps) {
-    this.props.navigation.navigate("App", navProps);
+    this.props.navigation.navigate("Home", navProps);
   }
 
   /**
