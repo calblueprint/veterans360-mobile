@@ -1,26 +1,20 @@
-import React from 'react';
-import Icon from '@expo/vector-icons/FontAwesome';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-} from 'react-native';
-import update from 'immutability-helper';
+import React from "react";
+import Icon from "@expo/vector-icons/FontAwesome";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+import update from "immutability-helper";
 
-import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
-import { fontStyles } from '../styles/fonts';
-import { APIRoutes } from '../helpers/routes/routes';
-import { colors } from '../styles/colors';
-import BaseRequester from '../helpers/requesters/BaseRequester';
-import ProfileGallery from '../components/ProfileGallery';
-import BackgroundOverlay from '../components/BackgroundOverlay';
-import ResourceCard from '../components/ResourceCard';
-import CategoryRequester from '../helpers/requesters/CategoryRequester';
+import { imageStyles } from "../styles/images";
+import { layoutStyles } from "../styles/layout";
+import { fontStyles } from "../styles/fonts";
+import { APIRoutes } from "../helpers/routes/routes";
+import { colors } from "../styles/colors";
+import BaseRequester from "../helpers/requesters/BaseRequester";
+import ProfileGallery from "../components/ProfileGallery";
+import BackgroundOverlay from "../components/BackgroundOverlay";
+import ResourceCard from "../components/ResourceCard";
+import CategoryRequester from "../helpers/requesters/CategoryRequester";
 
 export default class HomeScreen extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -37,10 +31,7 @@ export default class HomeScreen extends React.Component {
 
   async componentDidMount() {
     this.getVeterans();
-    let endpoint = APIRoutes.recentResources();
-    BaseRequester.get(endpoint).then((response) => {
-      this.setState({ resources: response });
-    });
+    // this.getRecentResources();
   }
 
   /**
@@ -50,10 +41,20 @@ export default class HomeScreen extends React.Component {
    */
   getVeterans() {
     const route = APIRoutes.veteransPath();
-    BaseRequester.get(route).then((response) => {
-      this.setState({ veterans: response });
-    }).catch((error) => {
-      console.error(error);
+    BaseRequester.get(route)
+      .then(response => {
+        this.setState({ veterans: response });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  /** Disable for now. Get recent resources */
+  getRecentResources() {
+    let endpoint = APIRoutes.recentResources();
+    BaseRequester.get(endpoint).then(response => {
+      this.setState({ resources: response });
     });
   }
 
@@ -68,22 +69,21 @@ export default class HomeScreen extends React.Component {
   onConnectRequest(i) {
     const newVeterans = update(this.state.veterans, {
       [i]: {
-        sent_friend_request: { $set: true },
-      },
+        sent_friend_request: { $set: true }
+      }
     });
     this.setState({ veterans: newVeterans });
   }
 
   navigateToProfile(params) {
-    this.props.navigation.navigate('HomeProfile', params);
+    this.props.navigation.navigate("HomeProfile", params);
   }
 
   /**
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
-    return this.state.resources.map((item) => {
-      console.log(this.props.navigation.state.params)
+    return this.state.resources.map(item => {
       return (
         <View>
           <ResourceCard
@@ -103,7 +103,8 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    const currentVeteran = this.props.navigation.state.params;
+    const currentVeteran = this.props.navigation.getParam("veteran", {});
+    console.log(currentVeteran);
 
     return (
       <BackgroundOverlay
@@ -113,9 +114,7 @@ export default class HomeScreen extends React.Component {
       >
         <ScrollView>
           <View style={styles.welcomeContainer}>
-            <Text style={fontStyles.welcomeHeader}>
-              {`Welcome back`}
-            </Text>
+            <Text style={fontStyles.welcomeHeader}>{`Welcome back`}</Text>
           </View>
           <View style={styles.profileGalleryContainer}>
             <ProfileGallery
@@ -130,18 +129,17 @@ export default class HomeScreen extends React.Component {
       </BackgroundOverlay>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
   /* Container for the entire screen */
   baseContainer: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    width: "100%",
+    height: "100%",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center"
   },
 
   /* Container for the welcome text */
@@ -149,16 +147,16 @@ const styles = StyleSheet.create({
     margin: 20,
     marginTop: 40,
     marginBottom: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent"
   },
 
   profileGalleryContainer: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    width: "100%",
+    height: "100%",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center"
   }
 
   /* Individual items */

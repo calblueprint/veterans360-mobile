@@ -1,23 +1,24 @@
 /**
  * Navigator that controls the Profile and EditProfile Screen
  */
+import { createStackNavigator } from "react-navigation";
 
-import React from 'react';
-import { StackNavigator } from 'react-navigation';
-import ProfileScreen from '../screens/ProfileScreen';
-import EditProfileScreen from '../screens/EditProfileScreen';
+import ProfileScreen from "../screens/ProfileScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
 
-
-const ProfileScreenNavigator = StackNavigator({
-  Profile: {
-    screen: ProfileScreen,
+const ProfileScreenNavigator = createStackNavigator(
+  {
+    Profile: {
+      screen: ProfileScreen
+    },
+    EditProfile: {
+      screen: EditProfileScreen
+    }
   },
-  EditProfile: {
-    screen: EditProfileScreen,
-  },
-}, {
-  initialRouteName: 'Profile',
-  headerMode: 'none',
-});
+  {
+    initialRouteName: "Profile",
+    headerMode: "none"
+  }
+);
 
 export default ProfileScreenNavigator;

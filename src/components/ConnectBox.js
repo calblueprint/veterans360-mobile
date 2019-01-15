@@ -18,32 +18,25 @@
  *                          a user or PO's profile
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import Icon from '@expo/vector-icons/FontAwesome';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Animated,
-  Image,
-} from 'react-native';
-import update from 'immutability-helper';
+import React from "react";
+import PropTypes from "prop-types";
+import Icon from "@expo/vector-icons/FontAwesome";
+import { StyleSheet, Text, View, Animated, Image } from "react-native";
+import update from "immutability-helper";
 
-import { colors } from '../styles/colors';
-import { layoutStyles, margins } from '../styles/layout';
-import { APIRoutes } from '../helpers/routes/routes';
-import BaseRequester from '../helpers/requesters/BaseRequester';
-import Animations from '../styles/animations';
-import Button from '../components/Button';
+import { colors } from "../styles/colors";
+import { layoutStyles, margins } from "../styles/layout";
+import { APIRoutes } from "../helpers/routes/routes";
+import BaseRequester from "../helpers/requesters/BaseRequester";
+import Animations from "../styles/animations";
+import Button from "../components/Button";
 
 export default class ConnectBox extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      animationValue: new Animated.Value(0),
+      animationValue: new Animated.Value(0)
     };
 
     this.onBoxClose = this.onBoxClose.bind(this);
@@ -53,7 +46,7 @@ export default class ConnectBox extends React.Component {
   }
 
   componentDidMount() {
-    Animations.fade(this.state.animationValue, toValue = 1).start();
+    Animations.fade(this.state.animationValue, (toValue = 1)).start();
   }
 
   onBoxClose() {
@@ -64,24 +57,28 @@ export default class ConnectBox extends React.Component {
 
   getConnectionName() {
     const connection = this.props.connection;
-    return connection.name || `${connection.first_name} ${connection.last_name}`;
+    return (
+      connection.name || `${connection.first_name} ${connection.last_name}`
+    );
   }
 
   getConnectionTitle() {
-    return this.props.connection.roles ?
-      this.props.connection.roles.join(', ') :
-      'Partering Organization';
+    return this.props.connection.roles
+      ? this.props.connection.roles.join(", ")
+      : "Partering Organization";
   }
 
   getAnimationStyle() {
     return {
       opacity: this.state.animationValue,
-      transform: [{
-        translateY: this.state.animationValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [200, 0],
-        }),
-      }],
+      transform: [
+        {
+          translateY: this.state.animationValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [200, 0]
+          })
+        }
+      ]
     };
   }
 
@@ -92,16 +89,18 @@ export default class ConnectBox extends React.Component {
     const params = {
       friendship: {
         veteran_id: id,
-        friend_id: this.props.connection.id,
-      },
+        friend_id: this.props.connection.id
+      }
     };
-    BaseRequester.post(route, params).then((response) => {
-      this.props.onConnect(this.props.connection.id);
-      onSuccess && onSuccess(response);
-    }).catch((error) => {
-      console.error(error);
-      onFailure && onFailure(error);
-    });
+    BaseRequester.post(route, params)
+      .then(response => {
+        this.props.onConnect(this.props.connection.id);
+        onSuccess && onSuccess(response);
+      })
+      .catch(error => {
+        console.error(error);
+        onFailure && onFailure(error);
+      });
   }
 
   connectWithPO(event, onSuccess, onFailure) {
@@ -111,41 +110,46 @@ export default class ConnectBox extends React.Component {
     const params = {
       subscription: {
         veteran_id: id,
-        partnering_organization_id: this.props.connection.id,
-      },
+        partnering_organization_id: this.props.connection.id
+      }
     };
-    BaseRequester.post(route, params).then((response) => {
-      onSuccess && onSuccess(response);
-    }).catch((error) => {
-      console.error(error);
-      onFailure && onFailure(error);
-    });
+    BaseRequester.post(route, params)
+      .then(response => {
+        onSuccess && onSuccess(response);
+      })
+      .catch(error => {
+        console.error(error);
+        onFailure && onFailure(error);
+      });
   }
 
   showProfile(event, onSuccess, onFailure) {
-    const connection = update(this.props.connection, {$merge: {
-      profileType: this.props.connectionType,
-    }});
+    const connection = update(this.props.connection, {
+      $merge: {
+        profileType: this.props.connectionType
+      }
+    });
     this.props.showProfile(connection);
     onSuccess && onSuccess();
   }
 
   renderProfileImage() {
-    if (this.props.connection.image) {
-      return (
-        <Image
-          source={require(this.props.connection.image)}
-          style={styles.profileImage}
-        />
-      );
-    } else {
-      return (
-        <Image
-          source={require('../../assets/images/default_icon.png')}
-          style={styles.profileImage}
-        />
-      );
-    }
+    return <div />; // FIXME: FIND OUT WHY IMAGE FAILING
+    // if (this.props.connection.image) {
+    //   return (
+    //     <Image
+    //       source={require(this.props.connection.image)}
+    //       style={styles.profileImage}
+    //     />
+    //   );
+    // } else {
+    //   return (
+    //     <Image
+    //       source={require("../../assets/images/default_icon.png")}
+    //       style={styles.profileImage}
+    //     />
+    //   );
+    // }
   }
 
   renderCloseButton() {
@@ -162,14 +166,23 @@ export default class ConnectBox extends React.Component {
 
   render() {
     const connection = this.props.connection;
-    const buttonStyle = connection.is_friend ? styles.friendButton : connection.sent_friend_request ?  styles.disabledProfileButton  : styles.profileButton;
-    const connectMethod = this.props.connectionType === 'veteran' ? this.connectWithVeteran : this.connectWithPO;
+    const buttonStyle = connection.is_friend
+      ? styles.friendButton
+      : connection.sent_friend_request
+      ? styles.disabledProfileButton
+      : styles.profileButton;
+    const connectMethod =
+      this.props.connectionType === "veteran"
+        ? this.connectWithVeteran
+        : this.connectWithPO;
 
     return (
       <Animated.View
-        style={[styles.baseContainer,
-                this.getAnimationStyle(),
-                this.props.style]}
+        style={[
+          styles.baseContainer,
+          this.getAnimationStyle(),
+          this.props.style
+        ]}
       >
         <View style={styles.leftContainer}>
           {this.renderProfileImage()}
@@ -183,8 +196,20 @@ export default class ConnectBox extends React.Component {
             <Button
               style={[buttonStyle, margins.marginTop.md]}
               textStyle={styles.profileButtonText}
-              text={connection.is_friend ? 'FRIEND' : connection.is_subscribed_to ? 'FOLLOWING' : connection.sent_friend_request ? 'PENDING' : 'CONNECT'}
-              disabled={connection.is_friend || connection.sent_friend_request || connection.is_subscribed_to}
+              text={
+                connection.is_friend
+                  ? "FRIEND"
+                  : connection.is_subscribed_to
+                  ? "FOLLOWING"
+                  : connection.sent_friend_request
+                  ? "PENDING"
+                  : "CONNECT"
+              }
+              disabled={
+                connection.is_friend ||
+                connection.sent_friend_request ||
+                connection.is_subscribed_to
+              }
               onPress={connectMethod}
             />
           </View>
@@ -206,20 +231,20 @@ export default class ConnectBox extends React.Component {
 
 ConnectBox.propTypes = {
   connection: PropTypes.object.isRequired,
-  connectionType: PropTypes.oneOf(['veteran', 'po']).isRequired,
+  connectionType: PropTypes.oneOf(["veteran", "po"]).isRequired,
   currentVeteran: PropTypes.object.isRequired,
   onConnect: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  showProfile: PropTypes.func.isRequired,
+  showProfile: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({
   /* Container of the entire box */
   baseContainer: {
     flex: 1,
-    flexDirection: 'row',
-    position: 'absolute',
-    width: '100%',
+    flexDirection: "row",
+    position: "absolute",
+    width: "100%",
     bottom: 0,
     left: 0,
     padding: 20,
@@ -228,47 +253,45 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowOffset: { width: 5, height: -5 },
     shadowRadius: 15,
-    zIndex: 100,
+    zIndex: 100
   },
 
   /* Container of left hand side column with picture and buttons */
   leftContainer: {
     flex: 1.6,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 20,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20
   },
 
   /* Container of right hand side with name and description */
   rightContainer: {
     flex: 4,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "flex-start"
   },
 
   /* Container of two buttons below profile picture */
   buttonContainer: {
     flex: 1.6,
-    marginTop: 20,
+    marginTop: 20
   },
 
   /* Container of name and title of veteran/org */
-  nameContainer: {
-
-  },
+  nameContainer: {},
 
   /* Container of veteran/org bio */
   bioContainer: {
-    marginTop: 30,
+    marginTop: 30
   },
 
   /* Individual components */
   profileImage: {
     width: 80,
     height: 80,
-    borderRadius: 40,
+    borderRadius: 40
   },
   disabledProfileButton: {
     height: 30,
@@ -283,8 +306,7 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 15,
     paddingLeft: 12,
-    paddingRight: 12,
-
+    paddingRight: 12
   },
   friendButton: {
     height: 25,
@@ -292,31 +314,31 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: colors.blue,
+    backgroundColor: colors.blue
   },
   profileButtonText: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold"
   },
   name: {
     fontSize: 22,
-    fontFamily: 'source-sans-pro-bold',
-    color: colors.charcoal,
+    fontFamily: "source-sans-pro-bold",
+    color: colors.charcoal
   },
   title: {
     fontSize: 16,
-    fontFamily: 'source-sans-pro-italic',
-    color: colors.gray,
+    fontFamily: "source-sans-pro-italic",
+    color: colors.gray
   },
   bio: {
     fontSize: 16,
-    fontFamily: 'source-sans-pro-regular',
-    color: colors.charcoal,
+    fontFamily: "source-sans-pro-regular",
+    color: colors.charcoal
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 16,
     right: 16,
-    zIndex: 1000,
-  },
+    zIndex: 1000
+  }
 });

@@ -3,78 +3,75 @@
  * Vault, Profile, and Responses.
  */
 
-import React from 'react';
-import Icon from '@expo/vector-icons/FontAwesome';
-import { TabNavigator } from 'react-navigation';
-import HomeScreen from '../screens/HomeScreen';
-import ConnectScreen from '../screens/ConnectScreen';
-import VaultScreen from '../screens/VaultScreen';
-import ResponseScreen from '../screens/ResponseScreen';
-import ProfileScreenNavigator from '../navigators/ProfileScreenNavigator';
-import EditProfileScreen from '../screens/EditProfileScreen';
+import React from "react";
+import Icon from "@expo/vector-icons/FontAwesome";
+import { createBottomTabNavigator } from "react-navigation";
 
-import { colors } from '../styles/colors';
-import HomeStackNavigator from '../navigators/HomeStackNavigator';
-import ConnectSignUpStackNavigator from '../navigators/ConnectSignUpStackNavigator';
-import VaultStackNavigator from '../navigators/VaultStackNavigator';
-import ResponseStackNavigator from '../navigators/ResponseStackNavigator';
+import ProfileScreenNavigator from "../navigators/ProfileScreenNavigator";
+import HomeStackNavigator from "../navigators/HomeStackNavigator";
+import ConnectSignUpStackNavigator from "../navigators/ConnectSignUpStackNavigator";
+import VaultStackNavigator from "../navigators/VaultStackNavigator";
+import ResponseStackNavigator from "../navigators/ResponseStackNavigator";
+import { colors } from "../styles/colors";
 
-const MainTabNavigator = TabNavigator({
-  Home: {
-    screen: HomeStackNavigator,
-    navigationOptions: {
-      tabBarLabel: 'Home',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="home" size={25} color={tintColor} />
-      ),
+const MainTabNavigator = createBottomTabNavigator(
+  {
+    Home: {
+      screen: HomeStackNavigator,
+      navigationOptions: {
+        tabBarLabel: "Home",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="home" size={25} color={tintColor} />
+        )
+      }
     },
-  },
-  Connect: {
-    screen: ConnectSignUpStackNavigator,
-    navigationOptions: {
-      tabBarLabel: 'Connect',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="users" size={20} color={tintColor} />
-      ),
+    Connect: {
+      screen: ConnectSignUpStackNavigator,
+      navigationOptions: {
+        tabBarLabel: "Connect",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="users" size={20} color={tintColor} />
+        )
+      }
     },
-  },
-  Vault: {
-    screen: VaultStackNavigator,
-    navigationOptions: {
-      tabBarLabel: 'Vault',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="briefcase" size={22} color={tintColor} />
-      ),
+    Vault: {
+      screen: VaultStackNavigator,
+      navigationOptions: {
+        tabBarLabel: "Vault",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="briefcase" size={22} color={tintColor} />
+        )
+      }
     },
-  },
-  Response: {
-    screen: ResponseStackNavigator,
-    navigationOptions: {
-      tabBarLabel: 'Response',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="exclamation-circle" size={21} color={tintColor} />
-      ),
+    Response: {
+      screen: ResponseStackNavigator,
+      navigationOptions: {
+        tabBarLabel: "Response",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="exclamation-circle" size={21} color={tintColor} />
+        )
+      }
     },
+    Profile: {
+      screen: ProfileScreenNavigator,
+      navigationOptions: {
+        tabBarLabel: "Profile",
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="user" size={22} color={tintColor} />
+        )
+      }
+    }
   },
-  Profile: {
-    screen: ProfileScreenNavigator,
-    navigationOptions: {
-      tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="user" size={22} color={tintColor} />
-      ),
+  {
+    tabBarPosition: "bottom",
+    animationEnabled: true,
+    tabBarOptions: {
+      activeTintColor: colors.green
     },
-  },
-
-}, {
-  tabBarPosition: 'bottom',
-  animationEnabled: true,
-  tabBarOptions: {
-    activeTintColor: colors.green,
-  },
-  navigationOptions: {
-    gesturesEnabled: false,
-  },
-});
+    navigationOptions: {
+      gesturesEnabled: false
+    }
+  }
+);
 
 export default MainTabNavigator;
