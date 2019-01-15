@@ -7,42 +7,35 @@
  * @param {object} params: object containing payload body
  */
 
-class BaseRequester {
+// import { getAuthRequestHeaders, refreshAccessToken } from "../utils/session";
 
+class BaseRequester {
   /**
    * GET request on endpoint.
    */
-  static get(endpoint, urlParams) {
-    return this._request(
-      'GET', endpoint, {}, urlParams
-    );
+  static async get(endpoint, urlParams) {
+    return this._request("GET", endpoint, {}, urlParams);
   }
 
   /**
    * POST request on endpoint.
    */
   static async post(endpoint, params, urlParams) {
-    return this._request(
-      'POST', endpoint, params, urlParams
-    );
+    return this._request("POST", endpoint, params, urlParams);
   }
 
   /**
    * PATCH request on endpoint.
    */
-  static patch(endpoint, params, urlParams) {
-    return this._request(
-      'PATCH', endpoint, params, urlParams
-    );
+  static async patch(endpoint, params, urlParams) {
+    return this._request("PATCH", endpoint, params, urlParams);
   }
 
   /**
    * DELETE request on endpoint.
    */
-  static destroy(endpoint, urlParams) {
-    return this._request(
-      'DELETE', endpoint, {}, urlParams
-    );
+  static async destroy(endpoint, urlParams) {
+    return this._request("DELETE", endpoint, {}, urlParams);
   }
 
   /**
@@ -50,43 +43,54 @@ class BaseRequester {
    * fetch.
    */
   static async _request(method, endpoint, params, urlParams) {
-    const headers = this._getHeaders();
+    const requestHeaders = this._getHeaders();
 
     let payload = {
       method: method,
-      headers: headers,
-    }
+      headers: requestHeaders
+    };
 
-    if (method != 'GET') {
+    if (method != "GET") {
       payload.body = JSON.stringify(params);
     }
 
+    let json, headers;
     endpoint = this._encodeUrlParams(endpoint, urlParams);
-
-    return fetch(endpoint, payload).then((response) => {
-      if (!response.ok) { throw response; }
-      if (response.status === 204) { return {}; }
-      return response.json();
-    }).then((json) => {
-      return json;
-    }).catch((error) => {
+    try {
+      let response = await fetch(endpoint, payload);
+      if (!response.ok) {
+        throw response;
+      }
+      headers = response.headers;
+      // refreshAccessToken(headers);
+      json = response.status === 204 ? {} : await response.json();
+    } catch (error) {
       if (!error.json) {
         throw error;
       }
-      return error.json().then((json) => {
-        throw json;
-      });
-    });
+      throw await error.json();
+    }
+
+    return { json, headers };
   }
 
   /**
    * Returns headers to be passed in request.
    */
   static _getHeaders() {
-    return {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
+    let headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "token-type": "Bearer"
+      // ...getAuthRequestHeaders()
     };
+
+    const csrfHeader = document.querySelector('meta[name="csrf-token"]');
+    if (csrfHeader) {
+      headers["X-CSRF-Token"] = csrfHeader.content;
+    }
+
+    return headers;
   }
 
   /**
@@ -97,11 +101,10 @@ class BaseRequester {
     if (!urlParams) return endpoint;
     let esc = encodeURIComponent;
     let query = Object.keys(urlParams)
-      .map(k => esc(k) + '=' + esc(urlParams[k]))
-      .join('&');
-    return endpoint + '?' + query;
+      .map(k => esc(k) + "=" + esc(urlParams[k]))
+      .join("&");
+    return endpoint + "?" + query;
   }
-
 }
 
 export default BaseRequester;
