@@ -1,5 +1,5 @@
-import BaseRequester from './BaseRequester';
-import { APIRoutes } from '../routes/routes';
+import BaseRequester from "./BaseRequester";
+import { APIRoutes } from "../routes/routes";
 
 class CategoryRequester {
   static async retrieveCategories(section) {
@@ -10,13 +10,13 @@ class CategoryRequester {
       } else if (section == "Response") {
         endpoint = APIRoutes.responseCategories();
       }
-      let response_json = await BaseRequester.get(endpoint);
-      return response_json;
+      let { json, headers } = await BaseRequester.get(endpoint);
+      return json;
     } catch (error) {
-      return Promise.reject(error);
+      return error;
     }
   }
-  
+
   /**
    * TODO: serialize categories on backend in resource model
    * @param {string} str
@@ -24,7 +24,7 @@ class CategoryRequester {
   static formatDict(str) {
     newStr = "";
     for (var i = 0; i < str.length; i++) {
-      if (str[i] == '_') {
+      if (str[i] == "_") {
         newStr += " ";
       } else {
         newStr += str[i];

@@ -2,11 +2,10 @@
  * Requester for logging veterans in to the API. See BaseRequester
  * for more documentation.
  */
-import BaseRequester from './BaseRequester';
-import { APIRoutes } from '../routes/routes';
+import BaseRequester from "./BaseRequester";
+import { APIRoutes } from "../routes/routes";
 
 class LoginRequester {
-
   /**
    * Sends a POST request through BaseRequester that attempts
    * to log the user in.
@@ -15,16 +14,16 @@ class LoginRequester {
     const params = {
       veteran: {
         email: email,
-        password: password,
-      },
+        password: password
+      }
     };
     const endpoint = APIRoutes.veteransSignInPath();
 
     try {
-      let response_json = await BaseRequester.post(endpoint, params);
-      return Promise.resolve(response_json);
+      let { json, headers } = await BaseRequester.post(endpoint, params);
+      return json;
     } catch (error) {
-      return Promise.reject(error);
+      return error;
     }
   }
 
@@ -40,9 +39,9 @@ class LoginRequester {
       post_911: fields.post_911,
       family_member: fields.familyMember,
       caregiver: fields.caregiver,
-      other: fields.other,
+      other: fields.other
     };
-    roles = Object.keys(roles).filter((role) => {
+    roles = Object.keys(roles).filter(role => {
       return roles[role];
     });
     const params = {
@@ -54,16 +53,15 @@ class LoginRequester {
         password_confirmation: fields.confirmPassword,
         roles: roles ? roles : [],
         description: fields.description
-      },
+      }
     };
     const endpoint = APIRoutes.veteransSignUpPath();
 
     try {
-      let response_json = await BaseRequester.post(endpoint, params);
-      return Promise.resolve(response_json);
+      let { json, headers } = await BaseRequester.post(endpoint, params);
+      return json;
     } catch (error) {
-      console.log(error);
-      return Promise.reject(error);
+      return error;
     }
   }
 
@@ -71,10 +69,10 @@ class LoginRequester {
     const endpoint = APIRoutes.veteransSignOutPath();
 
     try {
-      let response_json = await BaseRequester.destroy(endpoint);
-      return Promise.resolve(response_json);
+      let { json, headers } = await BaseRequester.destroy(endpoint);
+      return json;
     } catch (error) {
-      return Promise.reject(error);
+      return error;
     }
   }
 }
