@@ -1,30 +1,28 @@
- /**
+/**
  * Helper methods to retrieve all the routes to connect with the API.
  */
 
-import { HOST_ADDR } from '../secrets';
-
+import { HOST_ADDR } from "../secrets";
 
 class APIRoutes {
-
   static create(route) {
     return HOST_ADDR + route;
   }
 
-  // Authentication
+  // Authentication (token auth)
   static veteransSignInPath() {
-    return APIRoutes.create('/veterans/sign_in');
+    return APIRoutes.create("/auth/sign_in");
   }
   static veteransSignUpPath() {
-    return APIRoutes.create('/veterans');
+    return APIRoutes.create("/auth/sign_in");
   }
   static veteransSignOutPath() {
-    return APIRoutes.create('/veterans/sign_out');
+    return APIRoutes.create("/auth/sign_out");
   }
 
   // Veterans
   static veteransPath() {
-    return APIRoutes.create('/veterans');
+    return APIRoutes.create("/veterans");
   }
   static veteransConnectSignUpPath(id) {
     return APIRoutes.create(`/veterans/${id}/connect_sign_up`);
@@ -33,7 +31,7 @@ class APIRoutes {
     return APIRoutes.create(`/veterans/${id}`);
   }
   static veteransMilitaryBranch() {
-    return APIRoutes.create('/veterans/get_military_branch');
+    return APIRoutes.create("/veterans/get_military_branch");
   }
   static veteranFriendRequestsPath(id) {
     return APIRoutes.create(`/veterans/${id}/requests`);
@@ -48,42 +46,42 @@ class APIRoutes {
     return APIRoutes.create(`/veterans/${veteran_id}/subscriptions`);
   }
   static resourcePath() {
-    return APIRoutes.create('/resources');
+    return APIRoutes.create("/resources");
   }
   static newUpvote() {
-    return APIRoutes.create('/upvotes');
+    return APIRoutes.create("/upvotes");
   }
   static deleteUpvote() {
-    return APIRoutes.create('/upvotes/delete_upvote');
+    return APIRoutes.create("/upvotes/delete_upvote");
   }
 
   static homeResources() {
-    return APIRoutes.create('/resources/get_home_resources');
+    return APIRoutes.create("/resources/get_home_resources");
   }
 
   static recentResources() {
-    return APIRoutes.create('/resources/get_recent_resources');
+    return APIRoutes.create("/resources/get_recent_resources");
   }
-static resourceCategories() {
-  return APIRoutes.create('/resources/get_resource_categories')
-}
+  static resourceCategories() {
+    return APIRoutes.create("/resources/get_resource_categories");
+  }
 
   // Partnering Orgs
   static parterOrgsPath() {
-    return APIRoutes.create('/partnering_organizations');
+    return APIRoutes.create("/partnering_organizations");
   }
 
   // Categories
   static allCategories() {
-    return APIRoutes.create('/categories');
+    return APIRoutes.create("/categories");
   }
 
   static vaultCategories() {
-    return APIRoutes.create('/categories/vault');
+    return APIRoutes.create("/categories/vault");
   }
 
   static responseCategories() {
-    return APIRoutes.create('/categories/response');
+    return APIRoutes.create("/categories/response");
   }
 
   static getProfile(veteran_id) {
@@ -93,5 +91,5 @@ static resourceCategories() {
   static getCategoryResources(id) {
     return APIRoutes.create(`/categories/${id}/get_resources`);
   }
-
-} export { APIRoutes };
+}
+export { APIRoutes };

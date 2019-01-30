@@ -30,8 +30,8 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    this.getVeterans();
-    // this.getRecentResources();
+    await this.getVeterans();
+    await this.getRecentResources();
   }
 
   /**
@@ -39,23 +39,30 @@ export default class HomeScreen extends React.Component {
    * TODO (Ken): currently a placeholer and retrieves all
    * veterans
    */
-  getVeterans() {
+  async getVeterans() {
     const route = APIRoutes.veteransPath();
-    BaseRequester.get(route)
-      .then(response => {
-        this.setState({ veterans: response });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    let json, headers;
+    try {
+      ({ json, headers } = await BaseRequester.get(route));
+      this.setState({ veterans: json });
+    } catch (error) {
+      console.error(error);
+      return;
+    }
   }
 
   /** Disable for now. Get recent resources */
-  getRecentResources() {
-    let endpoint = APIRoutes.recentResources();
-    BaseRequester.get(endpoint).then(response => {
-      this.setState({ resources: response });
-    });
+  async getRecentResources() {
+    let endpoint = APIRoutes.homeResources();
+    let json, headers;
+    try {
+      ({ json, headers } = await BaseRequester.get(endpoint));
+      console.log(json);
+      this.setState({ resources: json });
+    } catch (error) {
+      console.error(error);
+      return;
+    }
   }
 
   /**
@@ -83,6 +90,7 @@ export default class HomeScreen extends React.Component {
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
+    console.log(this.state.resources);
     return this.state.resources.map(item => {
       return (
         <View>
@@ -104,7 +112,6 @@ export default class HomeScreen extends React.Component {
 
   render() {
     const currentVeteran = this.props.navigation.getParam("veteran", {});
-    console.log(currentVeteran);
 
     return (
       <BackgroundOverlay
