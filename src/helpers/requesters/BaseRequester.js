@@ -7,7 +7,7 @@
  * @param {object} params: object containing payload body
  */
 
-// import { getAuthRequestHeaders, refreshAccessToken } from "../utils/session";
+import SessionManager from "../utils/session";
 
 class BaseRequester {
   /**
@@ -43,8 +43,7 @@ class BaseRequester {
    * fetch.
    */
   static async _request(method, endpoint, params, urlParams) {
-    const requestHeaders = this._getHeaders();
-
+    const requestHeaders = await this._getHeaders();
     let payload = {
       method: method,
       headers: requestHeaders
@@ -62,6 +61,9 @@ class BaseRequester {
         throw response;
       }
       headers = response.headers;
+      // TODO: In the future if we'd like to support refresh token on request for security,
+      // then we will have to remove this comment here and implement a method in SessionManager
+      // that refreshes the access token and expiry.
       // refreshAccessToken(headers);
       json = response.status === 204 ? {} : await response.json();
     } catch (error) {
@@ -77,18 +79,19 @@ class BaseRequester {
   /**
    * Returns headers to be passed in request.
    */
-  static _getHeaders() {
+  static async _getHeaders() {
     let headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "token-type": "Bearer"
-      // ...getAuthRequestHeaders()
+      "token-type": "Bearer",
+      ...(await SessionManager.getAuthRequestHeaders())
     };
 
-    const csrfHeader = document.querySelector('meta[name="csrf-token"]');
-    if (csrfHeader) {
-      headers["X-CSRF-Token"] = csrfHeader.content;
-    }
+    // No CSRF for mobile app
+    // const csrfHeader = document.querySelector('meta[name="csrf-token"]');
+    // if (csrfHeader) {
+    //   headers["X-CSRF-Token"] = csrfHeader.content;
+    // }
 
     return headers;
   }

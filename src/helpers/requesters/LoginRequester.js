@@ -5,6 +5,8 @@
 import BaseRequester from "./BaseRequester";
 import { APIRoutes } from "../routes/routes";
 
+import SessionManager from "../utils/session";
+
 class LoginRequester {
   /**
    * Sends a POST request through BaseRequester that attempts
@@ -12,18 +14,17 @@ class LoginRequester {
    */
   static async login(email, password) {
     const params = {
-      veteran: {
-        email: email,
-        password: password
-      }
+      email: email,
+      password: password
     };
     const endpoint = APIRoutes.veteransSignInPath();
-
     try {
       let { json, headers } = await BaseRequester.post(endpoint, params);
+      await SessionManager.storeUserSession(json.data, headers);
       return json;
     } catch (error) {
-      return error;
+      console.error(error);
+      throw error;
     }
   }
 
@@ -70,6 +71,7 @@ class LoginRequester {
 
     try {
       let { json, headers } = await BaseRequester.destroy(endpoint);
+      await SessionManager.removeUserSession();
       return json;
     } catch (error) {
       return error;
