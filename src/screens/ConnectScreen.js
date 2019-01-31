@@ -6,8 +6,8 @@
  * @prop navigation.state.params      - current signed in veteran obj
  */
 
-import React from 'react';
-import Icon from '@expo/vector-icons/FontAwesome';
+import React from "react";
+import Icon from "@expo/vector-icons/FontAwesome";
 import {
   StyleSheet,
   Text,
@@ -16,24 +16,22 @@ import {
   Modal,
   Image,
   Dimensions,
-} from 'react-native';
-import update from 'immutability-helper';
+} from "react-native";
+import update from "immutability-helper";
 
-import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
-import ConnectSignUpRequester from '../helpers/requesters/ConnectSignUpRequester';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { imageStyles } from "../styles/images";
+import { layoutStyles } from "../styles/layout";
+import ConnectSignUpRequester from "../helpers/requesters/ConnectSignUpRequester";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
-import { APIRoutes } from '../helpers/routes/routes';
-import BaseRequester from '../helpers/requesters/BaseRequester';
-import InfoModal from '../components/InfoModal';
-import FriendRequestModal from '../components/FriendRequestModal';
-import ConnectPin from '../components/ConnectPin';
-import ConnectBox from '../components/ConnectBox';
-
+import { APIRoutes } from "../helpers/routes/routes";
+import BaseRequester from "../helpers/requesters/BaseRequester";
+import InfoModal from "../components/InfoModal";
+import FriendRequestModal from "../components/FriendRequestModal";
+import ConnectPin from "../components/ConnectPin";
+import ConnectBox from "../components/ConnectBox";
 
 export default class ConnectScreen extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -43,12 +41,12 @@ export default class ConnectScreen extends React.Component {
       parterOrgs: [],
       currentPos: [],
       currentVets: [],
-      activeConnection: null,  // Indicates if a veteran/org has been focused
+      activeConnection: null, // Indicates if a veteran/org has been focused
       activeConnectionType: null, // Either 'veteran' or 'po'
       stillLoading: true,
       onConnect: false,
       friendRequests: [],
-    }
+    };
 
     this.veteransMapping = {};
 
@@ -62,6 +60,7 @@ export default class ConnectScreen extends React.Component {
 
   componentDidMount() {
     params = this.props.navigation.state.params;
+    console.log(this.props.navigation.state.params);
     this.getConnectStatus(() => {
       this.getVeterans();
       this.getParterOrgs();
@@ -70,7 +69,10 @@ export default class ConnectScreen extends React.Component {
   }
 
   navigateToSignUp() {
-    this.props.navigation.navigate('ConnectSignUp', this.props.navigation.state.params);
+    this.props.navigation.navigate(
+      "ConnectSignUp",
+      this.props.navigation.state.params
+    );
   }
 
   /**
@@ -83,17 +85,19 @@ export default class ConnectScreen extends React.Component {
    */
   getConnectStatus(onConnectCallback) {
     const id = params.id;
-    ConnectSignUpRequester.connectStatus(id).then((response) => {
-      if(response.on_connect) {
-        this.setState({ stillLoading: false, onConnect: true });
-        onConnectCallback && onConnectCallback();
-      } else {
+    ConnectSignUpRequester.connectStatus(id)
+      .then(response => {
+        if (response.on_connect) {
+          this.setState({ stillLoading: false, onConnect: true });
+          onConnectCallback && onConnectCallback();
+        } else {
+          this.setState({ stillLoading: false, onConnect: false });
+        }
+      })
+      .catch(error => {
+        console.error(error);
         this.setState({ stillLoading: false, onConnect: false });
-      }
-    }).catch((error) => {
-      console.error(error)
-      this.setState({ stillLoading: false, onConnect: false });
-    });
+      });
   }
 
   /**
@@ -101,12 +105,14 @@ export default class ConnectScreen extends React.Component {
    */
   getVeterans() {
     const route = APIRoutes.veteransPath();
-    BaseRequester.get(route).then((response) => {
-      this.setState({ veterans: response });
-      this.veteransMapping = this.buildVeteransMapping();
-    }).catch((error) => {
-      console.error(error);
-    });
+    BaseRequester.get(route)
+      .then(response => {
+        this.setState({ veterans: response });
+        this.veteransMapping = this.buildVeteransMapping();
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   /**
@@ -114,11 +120,13 @@ export default class ConnectScreen extends React.Component {
    */
   getParterOrgs() {
     const route = APIRoutes.parterOrgsPath();
-    BaseRequester.get(route).then((response) => {
-      this.setState({ parterOrgs: response });
-    }).catch((error) => {
-      console.error(error);
-    });
+    BaseRequester.get(route)
+      .then(response => {
+        this.setState({ parterOrgs: response });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   /**
@@ -128,11 +136,13 @@ export default class ConnectScreen extends React.Component {
   getVeteranFriendRequests() {
     const id = this.props.navigation.state.params.id;
     const route = APIRoutes.veteranFriendRequestsPath(id);
-    BaseRequester.get(route).then((response) => {
-      this.setState({ friendRequests: response });
-    }).catch((error) => {
-      console.error(error);
-    });
+    BaseRequester.get(route)
+      .then(response => {
+        this.setState({ friendRequests: response });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   /**
@@ -140,7 +150,7 @@ export default class ConnectScreen extends React.Component {
    */
   buildVeteransMapping() {
     let mapping = {};
-    this.state.veterans.forEach((veteran) => {
+    this.state.veterans.forEach(veteran => {
       mapping[veteran.id] = veteran;
     });
     return mapping;
@@ -196,22 +206,26 @@ export default class ConnectScreen extends React.Component {
   }
 
   onRegionChangeComplete(region) {
-    const buffer = .3
+    const buffer = 0.3;
     const vets = this.state.veterans.filter(vet => {
-      const lat = parseFloat(vet.lat)
-      const lng = parseFloat(vet.lng)
-      return lat <= region.latitude + region.latitudeDelta/(2 - buffer) &&
-             lat >= region.latitude - region.latitudeDelta/(2 - buffer) &&
-             lng <= region.longitude + region.longitudeDelta/(2 - buffer) &&
-             lng >= region.longitude - region.longitudeDelta/(2 - buffer)
+      const lat = parseFloat(vet.lat);
+      const lng = parseFloat(vet.lng);
+      return (
+        lat <= region.latitude + region.latitudeDelta / (2 - buffer) &&
+        lat >= region.latitude - region.latitudeDelta / (2 - buffer) &&
+        lng <= region.longitude + region.longitudeDelta / (2 - buffer) &&
+        lng >= region.longitude - region.longitudeDelta / (2 - buffer)
+      );
     });
     const pos = this.state.parterOrgs.filter(po => {
-      const lat = parseFloat(po.lat)
-      const lng = parseFloat(po.lng)
-      return lat <= region.latitude + region.latitudeDelta/(2 - buffer) &&
-             lat >= region.latitude - region.latitudeDelta/(2 - buffer) &&
-             lng <= region.longitude + region.longitudeDelta/(2 - buffer) &&
-             lng >= region.longitude - region.longitudeDelta/(2 - buffer)
+      const lat = parseFloat(po.lat);
+      const lng = parseFloat(po.lng);
+      return (
+        lat <= region.latitude + region.latitudeDelta / (2 - buffer) &&
+        lat >= region.latitude - region.latitudeDelta / (2 - buffer) &&
+        lng <= region.longitude + region.longitudeDelta / (2 - buffer) &&
+        lng >= region.longitude - region.longitudeDelta / (2 - buffer)
+      );
     });
     this.setState({ region: region, currentPos: pos, currentVets: vets });
   }
@@ -241,7 +255,8 @@ export default class ConnectScreen extends React.Component {
 
     return () => {
       // First need to animate map to current coordinate
-      this.mapView && this.mapView.animateToCoordinate(coordinate, mapAnimateDuration);
+      this.mapView &&
+        this.mapView.animateToCoordinate(coordinate, mapAnimateDuration);
 
       // Next also need to show Connect Box for this connection
       this.openConnectBox(connection, connectionType);
@@ -287,12 +302,14 @@ export default class ConnectScreen extends React.Component {
    *                that uses this callback
    */
   navigateToConnectProfile(params) {
-    const navParams = update(params, {$merge: {
-      source: 'connect',
-      currentVeteran: this.props.navigation.state.params,
-      onConnect: this.onConnectRequest,
-    }});
-    this.props.navigation.navigate('ConnectProfile', navParams);
+    const navParams = update(params, {
+      $merge: {
+        source: "connect",
+        currentVeteran: this.props.navigation.state.params,
+        onConnect: this.onConnectRequest,
+      },
+    });
+    this.props.navigation.navigate("ConnectProfile", navParams);
   }
 
   /**
@@ -305,7 +322,7 @@ export default class ConnectScreen extends React.Component {
         {this.renderHelpModal()}
         {this.renderFriendRequests()}
       </View>
-    )
+    );
   }
 
   /**
@@ -348,22 +365,26 @@ export default class ConnectScreen extends React.Component {
     const locations = new Set();
     let currentVets = this.state.currentVets;
     if (this.state.currentVets.length + this.state.currentPos.length > 10) {
-      currentVets = this.state.currentVets.slice(0, 10 - this.state.currentPos.length)
+      currentVets = this.state.currentVets.slice(
+        0,
+        10 - this.state.currentPos.length
+      );
     }
-    return currentVets.map((veteran) => {
+    return currentVets.map(veteran => {
       const coordinate = {
         latitude: parseFloat(veteran.lat),
         longitude: parseFloat(veteran.lng),
       };
       //Change coordinate if two pins are in the same location
       if (locations.has(coordinate)) {
-        coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
+        coordinate["latitude"] =
+          coordinate["latitude"] + this.state.region.latitudeDelta / 20;
       }
       locations.add(coordinate);
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={this.onMarkerPress(veteran, 'veteran')}
+          onPress={this.onMarkerPress(veteran, "veteran")}
           key={`veteran-${veteran.id}`}
         >
           <ConnectPin pinType="veteran" />
@@ -371,7 +392,6 @@ export default class ConnectScreen extends React.Component {
       );
     });
   }
-
 
   comparePO(a, b) {
     let maxA = 0;
@@ -401,27 +421,28 @@ export default class ConnectScreen extends React.Component {
       currentPos.sort(comparePO);
       currentPos = currentPos.slice(0, 10);
     }
-    return currentPos.map((org) => {
+    return currentPos.map(org => {
       const coordinate = {
         latitude: parseFloat(org.lat),
         longitude: parseFloat(org.lng),
       };
       //Move pins that have same location
       if (locations.has(coordinate)) {
-        coordinate['latitude'] = coordinate['latitude'] + this.state.region.latitudeDelta / 20;
+        coordinate["latitude"] =
+          coordinate["latitude"] + this.state.region.latitudeDelta / 20;
       }
       locations.add(coordinate);
 
       return (
         <MapView.Marker
           coordinate={coordinate}
-          onPress={this.onMarkerPress(org, 'po')}
+          onPress={this.onMarkerPress(org, "po")}
           key={`parterOrg-${org.id}`}
         >
           <ConnectPin pinType="parterOrg" />
         </MapView.Marker>
       );
-    })
+    });
   }
 
   renderConnectBox() {
@@ -444,62 +465,67 @@ export default class ConnectScreen extends React.Component {
    */
   renderConnectSignUp() {
     return (
-      <View style= {{ flex: 1 }}>
-        <Image style={ styles.backgroundImg } source={require('../../assets/images/map.jpg')}/>
-        <View style={ styles.backgroundOverlay }>
-          <View style={ styles.contentContainer}>
-            <Text style={ styles.subtitleText }>
-              Get started with
-            </Text>
-            <Text style={ styles.titleText }>
-              Veterans 360 Connect
-            </Text>
-            <View style={{ marginTop: 20, flex: 1, marginBottom: 60, alignItems: 'center' }}>
-              <View style={ styles.tile }>
-                <View style={ styles.tileIcon }>
-                  <Icon name="map-marker" size={50} color={'#18B671'} />
+      <View style={{ flex: 1 }}>
+        <Image
+          style={styles.backgroundImg}
+          source={require("../../assets/images/map.jpg")}
+        />
+        <View style={styles.backgroundOverlay}>
+          <View style={styles.contentContainer}>
+            <Text style={styles.subtitleText}>Get started with</Text>
+            <Text style={styles.titleText}>Veterans 360 Connect</Text>
+            <View
+              style={{
+                marginTop: 20,
+                flex: 1,
+                marginBottom: 60,
+                alignItems: "center",
+              }}
+            >
+              <View style={styles.tile}>
+                <View style={styles.tileIcon}>
+                  <Icon name="map-marker" size={50} color={"#18B671"} />
                 </View>
-                <View style={ styles.tileText }>
-                  <Text style={ styles.tileTitleText }>
-                    EXPLORE
-                  </Text>
-                  <Text style={ styles.bodyText }>
-                    veterans and partnered veteran organizations around your area.
+                <View style={styles.tileText}>
+                  <Text style={styles.tileTitleText}>EXPLORE</Text>
+                  <Text style={styles.bodyText}>
+                    veterans and partnered veteran organizations around your
+                    area.
                   </Text>
                 </View>
               </View>
-              <View style={ styles.line }>
-              </View>
-              <View style={ styles.tile }>
-                <View style={ styles.tileIcon }>
-                  <Icon name="users" size={50} color={'#18B671'} />
+              <View style={styles.line} />
+              <View style={styles.tile}>
+                <View style={styles.tileIcon}>
+                  <Icon name="users" size={50} color={"#18B671"} />
                 </View>
-                <View style={ styles.tileText }>
-                  <Text style={ styles.tileTitleText }>
-                    CONNECT
-                  </Text>
-                  <Text style={ styles.bodyText }>
+                <View style={styles.tileText}>
+                  <Text style={styles.tileTitleText}>CONNECT</Text>
+                  <Text style={styles.bodyText}>
                     with other veterans like you and get in touch.
                   </Text>
                 </View>
               </View>
-              <View style={ styles.line }>
-              </View>
-              <View style={ styles.tile }>
-                <View style={ styles.tileIcon }>
-                  <Icon name="calendar-check-o" size={50} color={'#18B671'} />
+              <View style={styles.line} />
+              <View style={styles.tile}>
+                <View style={styles.tileIcon}>
+                  <Icon name="calendar-check-o" size={50} color={"#18B671"} />
                 </View>
-                <View style={ styles.tileText }>
-                  <Text style={ styles.tileTitleText }>
-                    STAY UP TO DATE
-                  </Text>
-                  <Text style={ styles.bodyText }>
-                    with every new event and resource created by your connections.
+                <View style={styles.tileText}>
+                  <Text style={styles.tileTitleText}>STAY UP TO DATE</Text>
+                  <Text style={styles.bodyText}>
+                    with every new event and resource created by your
+                    connections.
                   </Text>
                 </View>
               </View>
             </View>
-            <TouchableHighlight onPress={ () => { this.navigateToSignUp(); } } style={styles.button}>
+            <TouchableHighlight
+              onPress={() => {
+                this.navigateToSignUp();
+              }}
+              style={styles.button}
+            >
               <Text style={styles.buttonText}>SIGN UP</Text>
             </TouchableHighlight>
           </View>
@@ -510,7 +536,7 @@ export default class ConnectScreen extends React.Component {
 
   render() {
     if (this.state.stillLoading) {
-      return <View />
+      return <View />;
     } else if (!this.state.onConnect) {
       return this.renderConnectSignUp();
     }
@@ -519,7 +545,7 @@ export default class ConnectScreen extends React.Component {
       <View style={styles.baseContainer}>
         {this.renderNotifications()}
         <MapView
-          ref={(ref) => this.mapView = ref}
+          ref={ref => (this.mapView = ref)}
           style={styles.baseMapContainer}
           initialRegion={this.getInitialRegion()}
           onRegionChangeComplete={this.onRegionChangeComplete}
@@ -533,43 +559,42 @@ export default class ConnectScreen extends React.Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   baseContainer: {
     flex: 1,
-    height: '100%',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   baseMapContainer: {
     flex: 1,
-    height: '100%',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   backgroundImg: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
   backgroundOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
   },
   contentContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 40,
     bottom: 40,
     left: 40,
     right: 40,
   },
   notificationBox: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
@@ -579,31 +604,31 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: 'source-sans-pro-semibold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    fontFamily: "source-sans-pro-semibold",
+    textAlign: "center",
   },
   subtitleText: {
     fontSize: 24,
-    fontFamily: 'source-sans-pro-light',
-    textAlign: 'center',
+    fontFamily: "source-sans-pro-light",
+    textAlign: "center",
   },
   bodyText: {
     fontSize: 12,
-    fontFamily: 'source-sans-pro-regular',
+    fontFamily: "source-sans-pro-regular",
   },
   tileTitleText: {
-    fontFamily: 'source-sans-pro-bold',
+    fontFamily: "source-sans-pro-bold",
     fontSize: 12,
-    color:'#949494',
+    color: "#949494",
   },
   tile: {
-    backgroundColor: 'rgb(255, 255, 255)',
+    backgroundColor: "rgb(255, 255, 255)",
     flex: 3,
-    shadowColor:'black',
-    shadowOpacity:0.05,
-    shadowOffset:{width:5, height:10},
-    flexDirection: 'row',
+    shadowColor: "black",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 5, height: 10 },
+    flexDirection: "row",
     paddingTop: 20,
     paddingBottom: 20,
     paddingRight: 20,
@@ -612,32 +637,32 @@ const styles = StyleSheet.create({
   line: {
     flex: 2,
     width: 2,
-    backgroundColor: '#18B671',
+    backgroundColor: "#18B671",
   },
   tileIcon: {
     flex: 1,
     marginRight: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   tileText: {
     flex: 3,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   buttonText: {
-    fontFamily: 'source-sans-pro-bold',
+    fontFamily: "source-sans-pro-bold",
     fontSize: 20,
-    color:'#ffffff',
+    color: "#ffffff",
   },
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingLeft: 12,
     paddingRight: 12,
     paddingTop: 10,
     paddingBottom: 10,
     borderRadius: 30,
     marginRight: 60,
-    marginLeft:60,
-    backgroundColor:'#18B671',
+    marginLeft: 60,
+    backgroundColor: "#18B671",
   },
 });

@@ -2,27 +2,24 @@
  * Login screen for veterans.
  */
 
-import React from "react";
 import Icon from "@expo/vector-icons/FontAwesome";
-import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
+import React from "react";
+import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 
+import BackgroundOverlay from "../components/BackgroundOverlay";
+import Button from "../components/Button";
 import { Form, t } from "../components/Form";
+import RaisedContainer from "../components/RaisedContainer";
+import LoginRequester from "../helpers/requesters/LoginRequester";
+import { colors } from "../styles/colors";
 import { imageStyles } from "../styles/images";
 import { layoutStyles, margins } from "../styles/layout";
-import { colors } from "../styles/colors";
-import LoginRequester from "../helpers/requesters/LoginRequester";
-import BackgroundOverlay from "../components/BackgroundOverlay";
-import RaisedContainer from "../components/RaisedContainer";
-import Button from "../components/Button";
 
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      formValues: this.getInitialFormValues(),
-      errors: []
-    };
+    this.state = { formValues: this.getInitialFormValues(), errors: [] };
 
     this.onFormChange = this.onFormChange.bind(this);
     this.login = this.login.bind(this);
@@ -30,32 +27,20 @@ export default class LoginScreen extends React.Component {
   }
 
   getInitialFormValues() {
-    return {
-      email: "kenchen@berkeley.edu",
-      password: "password"
-    };
+    return { email: "veteran0@gmail.com", password: "password" };
   }
 
   getFormType() {
-    return t.struct({
-      email: t.String,
-      password: t.String
-    });
+    return t.struct({ email: t.String, password: t.String });
   }
 
   getFormOptions() {
     return {
       error: this.state.errors,
       fields: {
-        email: {
-          value: "gretahuang@berkeley.edu"
-        },
-        password: {
-          secureTextEntry: true,
-          password: true,
-          value: "password"
-        }
-      }
+        email: { value: "gretahuang@berkeley.edu" },
+        password: { secureTextEntry: true, password: true, value: "password" },
+      },
     };
   }
 
@@ -85,7 +70,7 @@ export default class LoginScreen extends React.Component {
       LoginRequester.login(values.email, values.password)
         .then(response => {
           onSuccess && onSuccess(response);
-          this.navigateToApp({ veteran: response, hello: true });
+          this.navigateToApp({ veteran: response });
         })
         .catch(error => {
           onFailure && onFailure(error.error);
@@ -151,7 +136,7 @@ const styles = StyleSheet.create({
     width: "80%",
     flex: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   formContainer: {
     width: "100%",
@@ -159,7 +144,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 40,
     paddingLeft: 40,
-    paddingRight: 40
+    paddingRight: 40,
   },
   titleStyle: {
     position: "absolute",
@@ -168,15 +153,13 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     fontSize: 36,
     fontWeight: "300",
-    zIndex: 100
+    zIndex: 100,
   },
   signupButtonStyle: {
     position: "absolute",
     bottom: -72,
     height: 32,
-    borderRadius: 16
+    borderRadius: 16,
   },
-  signupButtonTextStyle: {
-    fontSize: 13
-  }
+  signupButtonTextStyle: { fontSize: 13 },
 });

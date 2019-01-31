@@ -22,7 +22,7 @@ export default class HomeScreen extends React.Component {
       veterans: [],
       categories: [],
       resources: [],
-      stillLoading: true
+      stillLoading: true,
     };
 
     this.onConnectRequest = this.onConnectRequest.bind(this);
@@ -30,6 +30,7 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
+    console.log(this.props.navigation.state.params);
     await this.getVeterans();
     await this.getRecentResources();
   }
@@ -76,8 +77,8 @@ export default class HomeScreen extends React.Component {
   onConnectRequest(i) {
     const newVeterans = update(this.state.veterans, {
       [i]: {
-        sent_friend_request: { $set: true }
-      }
+        sent_friend_request: { $set: true },
+      },
     });
     this.setState({ veterans: newVeterans });
   }
@@ -90,7 +91,6 @@ export default class HomeScreen extends React.Component {
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
-    console.log(this.state.resources);
     return this.state.resources.map(item => {
       return (
         <View>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   /* Container for the welcome text */
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     margin: 20,
     marginTop: 40,
     marginBottom: 0,
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   },
 
   profileGalleryContainer: {
@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 
   /* Individual items */
 });

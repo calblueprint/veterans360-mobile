@@ -22,8 +22,8 @@ const MainTabNavigator = createBottomTabNavigator(
         tabBarLabel: "Home",
         tabBarIcon: ({ tintColor }) => (
           <Icon name="home" size={25} color={tintColor} />
-        )
-      }
+        ),
+      },
     },
     Connect: {
       screen: ConnectSignUpStackNavigator,
@@ -31,8 +31,8 @@ const MainTabNavigator = createBottomTabNavigator(
         tabBarLabel: "Connect",
         tabBarIcon: ({ tintColor }) => (
           <Icon name="users" size={20} color={tintColor} />
-        )
-      }
+        ),
+      },
     },
     Vault: {
       screen: VaultStackNavigator,
@@ -40,8 +40,8 @@ const MainTabNavigator = createBottomTabNavigator(
         tabBarLabel: "Vault",
         tabBarIcon: ({ tintColor }) => (
           <Icon name="briefcase" size={22} color={tintColor} />
-        )
-      }
+        ),
+      },
     },
     Response: {
       screen: ResponseStackNavigator,
@@ -49,8 +49,8 @@ const MainTabNavigator = createBottomTabNavigator(
         tabBarLabel: "Response",
         tabBarIcon: ({ tintColor }) => (
           <Icon name="exclamation-circle" size={21} color={tintColor} />
-        )
-      }
+        ),
+      },
     },
     Profile: {
       screen: ProfileScreenNavigator,
@@ -58,19 +58,19 @@ const MainTabNavigator = createBottomTabNavigator(
         tabBarLabel: "Profile",
         tabBarIcon: ({ tintColor }) => (
           <Icon name="user" size={22} color={tintColor} />
-        )
-      }
-    }
+        ),
+      },
+    },
   },
   {
     tabBarPosition: "bottom",
     animationEnabled: true,
     tabBarOptions: {
-      activeTintColor: colors.green
+      activeTintColor: colors.green,
     },
     navigationOptions: {
-      gesturesEnabled: false
-    }
+      gesturesEnabled: false,
+    },
   }
 );
 
