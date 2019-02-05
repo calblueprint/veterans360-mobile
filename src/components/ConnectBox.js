@@ -36,7 +36,7 @@ export default class ConnectBox extends React.Component {
     super(props);
 
     this.state = {
-      animationValue: new Animated.Value(0)
+      animationValue: new Animated.Value(0),
     };
 
     this.onBoxClose = this.onBoxClose.bind(this);
@@ -75,10 +75,10 @@ export default class ConnectBox extends React.Component {
         {
           translateY: this.state.animationValue.interpolate({
             inputRange: [0, 1],
-            outputRange: [200, 0]
-          })
-        }
-      ]
+            outputRange: [200, 0],
+          }),
+        },
+      ],
     };
   }
 
@@ -89,8 +89,8 @@ export default class ConnectBox extends React.Component {
     const params = {
       friendship: {
         veteran_id: id,
-        friend_id: this.props.connection.id
-      }
+        friend_id: this.props.connection.id,
+      },
     };
     BaseRequester.post(route, params)
       .then(response => {
@@ -110,8 +110,8 @@ export default class ConnectBox extends React.Component {
     const params = {
       subscription: {
         veteran_id: id,
-        partnering_organization_id: this.props.connection.id
-      }
+        partnering_organization_id: this.props.connection.id,
+      },
     };
     BaseRequester.post(route, params)
       .then(response => {
@@ -126,15 +126,21 @@ export default class ConnectBox extends React.Component {
   showProfile(event, onSuccess, onFailure) {
     const connection = update(this.props.connection, {
       $merge: {
-        profileType: this.props.connectionType
-      }
+        profileType: this.props.connectionType,
+      },
     });
     this.props.showProfile(connection);
     onSuccess && onSuccess();
   }
 
   renderProfileImage() {
-    return <div />; // FIXME: FIND OUT WHY IMAGE FAILING
+    // return <div />; // FIXME: FIND OUT WHY IMAGE FAILING
+    return (
+      <Image
+        source={require("../../assets/images/default_icon.png")}
+        style={styles.profileImage}
+      />
+    );
     // if (this.props.connection.image) {
     //   return (
     //     <Image
@@ -181,7 +187,7 @@ export default class ConnectBox extends React.Component {
         style={[
           styles.baseContainer,
           this.getAnimationStyle(),
-          this.props.style
+          this.props.style,
         ]}
       >
         <View style={styles.leftContainer}>
@@ -235,7 +241,7 @@ ConnectBox.propTypes = {
   currentVeteran: PropTypes.object.isRequired,
   onConnect: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  showProfile: PropTypes.func.isRequired
+  showProfile: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -253,7 +259,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowOffset: { width: 5, height: -5 },
     shadowRadius: 15,
-    zIndex: 100
+    zIndex: 100,
   },
 
   /* Container of left hand side column with picture and buttons */
@@ -262,7 +268,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 20
+    marginRight: 20,
   },
 
   /* Container of right hand side with name and description */
@@ -270,13 +276,13 @@ const styles = StyleSheet.create({
     flex: 4,
     flexDirection: "column",
     justifyContent: "center",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
 
   /* Container of two buttons below profile picture */
   buttonContainer: {
     flex: 1.6,
-    marginTop: 20
+    marginTop: 20,
   },
 
   /* Container of name and title of veteran/org */
@@ -284,14 +290,14 @@ const styles = StyleSheet.create({
 
   /* Container of veteran/org bio */
   bioContainer: {
-    marginTop: 30
+    marginTop: 30,
   },
 
   /* Individual components */
   profileImage: {
     width: 80,
     height: 80,
-    borderRadius: 40
+    borderRadius: 40,
   },
   disabledProfileButton: {
     height: 30,
@@ -299,14 +305,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingLeft: 12,
     paddingRight: 12,
-    backgroundColor: colors.gray
+    backgroundColor: colors.gray,
   },
   profileButton: {
     height: 30,
     width: 100,
     borderRadius: 15,
     paddingLeft: 12,
-    paddingRight: 12
+    paddingRight: 12,
   },
   friendButton: {
     height: 25,
@@ -314,31 +320,31 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingLeft: 15,
     paddingRight: 15,
-    backgroundColor: colors.blue
+    backgroundColor: colors.blue,
   },
   profileButtonText: {
     fontSize: 12,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   name: {
     fontSize: 22,
     fontFamily: "source-sans-pro-bold",
-    color: colors.charcoal
+    color: colors.charcoal,
   },
   title: {
     fontSize: 16,
     fontFamily: "source-sans-pro-italic",
-    color: colors.gray
+    color: colors.gray,
   },
   bio: {
     fontSize: 16,
     fontFamily: "source-sans-pro-regular",
-    color: colors.charcoal
+    color: colors.charcoal,
   },
   closeButton: {
     position: "absolute",
     top: 16,
     right: 16,
-    zIndex: 1000
-  }
+    zIndex: 1000,
+  },
 });

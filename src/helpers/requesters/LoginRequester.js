@@ -2,10 +2,10 @@
  * Requester for logging veterans in to the API. See BaseRequester
  * for more documentation.
  */
-import BaseRequester from "./BaseRequester";
 import { APIRoutes } from "../routes/routes";
-
 import SessionManager from "../utils/session";
+
+import BaseRequester from "./BaseRequester";
 
 class LoginRequester {
   /**
@@ -13,16 +13,15 @@ class LoginRequester {
    * to log the user in.
    */
   static async login(email, password) {
-    const params = {
-      email: email,
-      password: password
-    };
+    const params = { email: email, password: password };
     const endpoint = APIRoutes.veteransSignInPath();
     try {
       let { json, headers } = await BaseRequester.post(endpoint, params);
       await SessionManager.storeUserSession(json.data, headers);
       return json;
     } catch (error) {
+      // Erase user session on login failure in case stale session is there
+      await SessionManager.removeUserSession();
       console.error(error);
       throw error;
     }
@@ -40,7 +39,7 @@ class LoginRequester {
       post_911: fields.post_911,
       family_member: fields.familyMember,
       caregiver: fields.caregiver,
-      other: fields.other
+      other: fields.other,
     };
     roles = Object.keys(roles).filter(role => {
       return roles[role];
@@ -53,8 +52,8 @@ class LoginRequester {
         password: fields.password,
         password_confirmation: fields.confirmPassword,
         roles: roles ? roles : [],
-        description: fields.description
-      }
+        description: fields.description,
+      },
     };
     const endpoint = APIRoutes.veteransSignUpPath();
 

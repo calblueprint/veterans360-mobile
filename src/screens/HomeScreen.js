@@ -14,15 +14,18 @@ import BackgroundOverlay from "../components/BackgroundOverlay";
 import ResourceCard from "../components/ResourceCard";
 import CategoryRequester from "../helpers/requesters/CategoryRequester";
 
+import SessionManager from "../helpers/utils/session";
+
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      sessionUser: null,
       veterans: [],
       categories: [],
       resources: [],
-      stillLoading: true
+      stillLoading: true,
     };
 
     this.onConnectRequest = this.onConnectRequest.bind(this);
@@ -30,8 +33,17 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getVeterans();
-    await this.getRecentResources();
+    await this.hydrateVeteran();
+    await Promise.all([this.getVeterans(), this.getRecentResources()]);
+  }
+
+  async hydrateVeteran() {
+    try {
+      const sessionUser = await SessionManager.getUserSession();
+      await this.setState({ sessionUser: sessionUser });
+    } catch (error) {
+      return;
+    }
   }
 
   /**
@@ -53,11 +65,11 @@ export default class HomeScreen extends React.Component {
 
   /** Disable for now. Get recent resources */
   async getRecentResources() {
-    let endpoint = APIRoutes.homeResources();
+    let endpoint = APIRoutes.resourcePath(); // Change this later
     let json, headers;
     try {
       ({ json, headers } = await BaseRequester.get(endpoint));
-      console.log(json);
+      console.log("home resources:", json);
       this.setState({ resources: json });
     } catch (error) {
       console.error(error);
@@ -76,8 +88,8 @@ export default class HomeScreen extends React.Component {
   onConnectRequest(i) {
     const newVeterans = update(this.state.veterans, {
       [i]: {
-        sent_friend_request: { $set: true }
-      }
+        sent_friend_request: { $set: true },
+      },
     });
     this.setState({ veterans: newVeterans });
   }
@@ -90,10 +102,9 @@ export default class HomeScreen extends React.Component {
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
-    console.log(this.state.resources);
-    return this.state.resources.map(item => {
+    return this.state.resources.map((item, i) => {
       return (
-        <View>
+        <View key={`resource-${i}`}>
           <ResourceCard
             resource_id={item.id}
             resource_description={item.description}
@@ -103,7 +114,7 @@ export default class HomeScreen extends React.Component {
             resource_category={item.category}
             resource_file_link={item.file.url}
             resource_veteran_has_upvoted={item.veteran_has_upvoted}
-            veteran_id={this.props.navigation.state.params.id}
+            veteran_id={this.state.sessionUser.id}
           />
         </View>
       );
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   /* Container for the welcome text */
@@ -154,7 +165,7 @@ const styles = StyleSheet.create({
     margin: 20,
     marginTop: 40,
     marginBottom: 0,
-    backgroundColor: "transparent"
+    backgroundColor: "transparent",
   },
 
   profileGalleryContainer: {
@@ -163,8 +174,8 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 
   /* Individual items */
 });

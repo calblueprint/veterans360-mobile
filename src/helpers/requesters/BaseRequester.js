@@ -46,7 +46,7 @@ class BaseRequester {
     const requestHeaders = await this._getHeaders();
     let payload = {
       method: method,
-      headers: requestHeaders
+      headers: requestHeaders,
     };
 
     if (method != "GET") {
@@ -61,10 +61,10 @@ class BaseRequester {
         throw response;
       }
       headers = response.headers;
-      // TODO: In the future if we'd like to support refresh token on request for security,
-      // then we will have to remove this comment here and implement a method in SessionManager
-      // that refreshes the access token and expiry.
-      // refreshAccessToken(headers);
+      // TODO: In the future if we'd like to support refresh token on request
+      // for security, then we will have to remove this comment here and
+      // implement a method in SessionManager that refreshes the access token
+      // and expiry. refreshAccessToken(headers);
       json = response.status === 204 ? {} : await response.json();
     } catch (error) {
       if (!error.json) {
@@ -73,7 +73,10 @@ class BaseRequester {
       throw await error.json();
     }
 
-    return { json, headers };
+    return {
+      json,
+      headers,
+    };
   }
 
   /**
@@ -83,8 +86,7 @@ class BaseRequester {
     let headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "token-type": "Bearer",
-      ...(await SessionManager.getAuthRequestHeaders())
+      ...(await SessionManager.getAuthRequestHeaders()),
     };
 
     // No CSRF for mobile app

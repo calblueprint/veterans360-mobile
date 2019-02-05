@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Text,
   StyleSheet,
@@ -8,49 +8,53 @@ import {
   TouchableHighlight,
   FlatList,
   ItemSeparatorComponent,
-} from 'react-native';
+} from "react-native";
 
-import { imageStyles } from '../styles/images';
-import { layoutStyles } from '../styles/layout';
-import { colors } from '../styles/colors';
-import { APIRoutes } from '../helpers/routes/routes';
-import BaseRequester from '../helpers/requesters/BaseRequester';
-import Resource from '../components/Resource';
-import CategoryRequester from '../helpers/requesters/CategoryRequester';
-import { List, ListItem } from 'react-native-elements';
+import { imageStyles } from "../styles/images";
+import { layoutStyles } from "../styles/layout";
+import { colors } from "../styles/colors";
+import { APIRoutes } from "../helpers/routes/routes";
+import BaseRequester from "../helpers/requesters/BaseRequester";
+import Resource from "../components/Resource";
+import CategoryRequester from "../helpers/requesters/CategoryRequester";
+import { List, ListItem } from "react-native-elements";
 
 export default class VaultScreen extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      searchText: '',
+      searchText: "",
       categories: [],
       resources: [],
       stillLoading: true,
     };
   }
 
-  componentDidMount() {
-    CategoryRequester.retrieveCategories("Vault").then((response) => {
-      this.setState({ categories: response, stillLoading: false });
-    })
+  async componentDidMount() {
+    console.log("vault mounted!");
+    try {
+      const categories = await CategoryRequester.retrieveCategories("Vault");
+      console.log("categories:", categories);
+      this.setState({ categories: categories, stillLoading: false });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   getData = () => {
     return this.state.categories.map((category, i) => {
-        return {key: category.name, id: category.id};
+      return { key: category.name, id: category.id };
     });
   };
 
-  updateSelected = (item) => {
+  updateSelected = item => {
     let params = {
       veteranId: this.props.navigation.state.params.id,
       categories: this.state.categories,
       categoryToDisplay: item.id,
       title: item.key,
     };
-    this.props.navigation.navigate('Resource', params);
+    this.props.navigation.navigate("Resource", params);
   };
 
   renderSeparator = () => {
@@ -67,27 +71,23 @@ export default class VaultScreen extends React.Component {
 
   renderCategories = () => {
     return (
-      <View style={ styles.backgroundContainer }>
-        <View style={{flex: 1,}}>
-          <View style={ styles.contentContainer }>
-            <Text style={ styles.subtitleText }>
-              Select a
-            </Text>
-            <Text style={ styles.titleText }>
-              Vault Category
-            </Text>
+      <View style={styles.backgroundContainer}>
+        <View style={{ flex: 1 }}>
+          <View style={styles.contentContainer}>
+            <Text style={styles.subtitleText}>Select a</Text>
+            <Text style={styles.titleText}>Vault Category</Text>
             <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
               <FlatList
                 ItemSeparatorComponent={this.renderSeparator}
                 data={this.getData()}
                 renderItem={({ item }) => (
-                <ListItem
-                  titleStyle={ styles.listItemTitle }
-                  title={`${item.key}`}
-                  containerStyle={{ borderBottomWidth: 0 }}
-                  onPress={this.updateSelected.bind(this, item)}
-                />
-              )}
+                  <ListItem
+                    titleStyle={styles.listItemTitle}
+                    title={`${item.key}`}
+                    containerStyle={{ borderBottomWidth: 0 }}
+                    onPress={this.updateSelected.bind(this, item)}
+                  />
+                )}
               />
             </List>
           </View>
@@ -98,74 +98,68 @@ export default class VaultScreen extends React.Component {
 
   render() {
     if (this.state.stillLoading) {
-      return (
-        <View />
-      );
+      return <View />;
     } else {
-      return (
-        <View style={{flex: 1,}}>
-          {this.renderCategories()}
-        </View>
-      );
+      return <View style={{ flex: 1 }}>{this.renderCategories()}</View>;
     }
   }
 }
 
 const styles = StyleSheet.create({
   baseText: {
-    fontFamily: 'source-sans-pro-regular',
+    fontFamily: "source-sans-pro-regular",
   },
   titleText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: 'source-sans-pro-semibold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    fontFamily: "source-sans-pro-semibold",
+    textAlign: "center",
   },
   subtitleText: {
     fontSize: 24,
-    fontFamily: 'source-sans-pro-light',
-    textAlign: 'center',
+    fontFamily: "source-sans-pro-light",
+    textAlign: "center",
   },
   bodyText: {
     fontSize: 12,
-    fontFamily: 'source-sans-pro-regular',
+    fontFamily: "source-sans-pro-regular",
   },
   contentContainer: {
-    flexDirection:'column',
+    flexDirection: "column",
   },
   backgroundContainer: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    flexDirection: "column",
+    justifyContent: "flex-start",
     backgroundColor: colors.light_snow,
   },
   backgroundDisplay: {
     height: 400,
     width: 1000,
-    transform: [{rotate: '-8deg'}],
+    transform: [{ rotate: "-8deg" }],
     backgroundColor: colors.light_steel,
     zIndex: -1,
     left: -200,
     top: -200,
   },
   search: {
-    flexDirection:'row',
-    flex:1,
+    flexDirection: "row",
+    flex: 1,
   },
   searchBar: {
     height: 30,
     borderRadius: 20,
-    borderWidth:0.8,
+    borderWidth: 0.8,
     fontSize: 12,
-    borderColor: 'rgb(255, 255, 255)',
-    color: 'rgb(255, 255, 255)',
+    borderColor: "rgb(255, 255, 255)",
+    color: "rgb(255, 255, 255)",
     paddingLeft: 13,
-    paddingRight:13,
+    paddingRight: 13,
     flex: 0.92,
-    fontFamily:'source-sans-pro-light',
+    fontFamily: "source-sans-pro-light",
   },
   item: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingLeft: 12,
     paddingRight: 12,
     paddingTop: 5,
@@ -174,50 +168,50 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     borderWidth: 0.8,
-    borderColor: 'rgb(255, 255, 255)'
+    borderColor: "rgb(255, 255, 255)",
   },
   filter: {
-    position: 'absolute',
-    marginLeft:13,
+    position: "absolute",
+    marginLeft: 13,
     marginTop: 125,
   },
   contentPanel: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderLeftWidth: 10,
     borderLeftColor: colors.green,
-    paddingLeft:10,
+    paddingLeft: 10,
     paddingRight: 10,
-    paddingTop:15,
+    paddingTop: 15,
     paddingBottom: 15,
-    shadowColor:'black',
-    shadowOpacity:0.05,
-    shadowOffset:{width:5, height:10},
+    shadowColor: "black",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 5, height: 10 },
     marginBottom: 10,
   },
   contentInformation: {
-    flexDirection:'row',
+    flexDirection: "row",
   },
   partnerOrgIcon: {
-    backgroundColor: 'black',
+    backgroundColor: "black",
     height: 30,
     borderRadius: 15,
     width: 30,
   },
   contentTitle: {
-    fontFamily: 'source-sans-pro-bold',
+    fontFamily: "source-sans-pro-bold",
     fontSize: 16,
   },
   partnerOrg: {
-    fontFamily: 'source-sans-pro-light-italic',
+    fontFamily: "source-sans-pro-light-italic",
     fontSize: 12,
   },
   dateText: {
-    fontFamily: 'source-sans-pro-bold',
+    fontFamily: "source-sans-pro-bold",
     fontSize: 12,
     color: colors.gray,
   },
   button: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingLeft: 12,
     paddingRight: 12,
     paddingTop: 3,
@@ -226,28 +220,28 @@ const styles = StyleSheet.create({
     backgroundColor: colors.green,
   },
   upvote: {
-    justifyContent:'center',
+    justifyContent: "center",
     marginLeft: 10,
   },
   upvoteText: {
-    fontFamily: 'source-sans-pro-bold',
+    fontFamily: "source-sans-pro-bold",
     fontSize: 12,
   },
   upvote: {
-    justifyContent:'center',
+    justifyContent: "center",
     marginLeft: 10,
   },
   resourceCategory: {
-    justifyContent:'center',
+    justifyContent: "center",
     marginLeft: 10,
   },
   categoryText: {
-    fontFamily: 'source-sans-pro-light-italic',
+    fontFamily: "source-sans-pro-light-italic",
     fontSize: 12,
     color: "rgb(0,0,0)",
   },
   listItemTitle: {
-    fontFamily: 'source-sans-pro-regular',
+    fontFamily: "source-sans-pro-regular",
     fontSize: 22,
   },
 });

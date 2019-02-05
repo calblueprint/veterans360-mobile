@@ -25,8 +25,9 @@ import {
   View,
   ScrollView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
+import { withNavigation } from "react-navigation";
 
 import { APIRoutes } from "../helpers/routes/routes";
 import BaseRequester from "../helpers/requesters/BaseRequester";
@@ -38,7 +39,9 @@ import Button from "../components/Button";
 import EditProfileScreen from "./EditProfileScreen";
 import ProfileRequester from "../helpers/requesters/ProfileRequester";
 
-export default class ProfileScreen extends React.Component {
+import SessionManager from "../helpers/utils/session";
+
+class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     /**
@@ -48,8 +51,9 @@ export default class ProfileScreen extends React.Component {
      * component's veteran `sent_friend_request` state.
      */
     this.state = {
+      sessionUser: null,
       sentConnectRequest: false,
-      veteran: {}
+      veteran: {},
     };
 
     this.connectWithVeteran = this.connectWithVeteran.bind(this);
@@ -70,7 +74,28 @@ export default class ProfileScreen extends React.Component {
       });
   }
 
-  componentDidMount() {
+  async hydrateVeteran() {
+    try {
+      const sessionUser = await SessionManager.getUserSession();
+      await this.setState({ sessionUser: sessionUser });
+      await this.props.navigation.setParams({ currentVeteran: sessionUser });
+      if (!this.props.navigation.getParam("source", null)) {
+        // Hack and hydrate the current state with this veteran
+        // Assume loading current veteran profile
+        await this.props.navigation.setParams({
+          source: null,
+          profileType: "veteran",
+          ...sessionUser,
+        });
+      }
+    } catch (error) {
+      console.error("Could not hydrate veteran.");
+      return;
+    }
+  }
+
+  async componentDidMount() {
+    await this.hydrateVeteran();
     const params = this.getParams();
     this._fetchVeteran(params.id);
   }
@@ -84,10 +109,7 @@ export default class ProfileScreen extends React.Component {
    */
   getName() {
     const params = this.getParams();
-    return (
-      params.name ||
-      `${this.state.veteran.first_name} ${this.state.veteran.last_name}`
-    );
+    return `${this.state.veteran.first_name} ${this.state.veteran.last_name}`;
   }
 
   /**
@@ -104,8 +126,8 @@ export default class ProfileScreen extends React.Component {
     const route = APIRoutes.veteranFriendshipsPath(id);
     const params = {
       friendship: {
-        friend_id: navParams.id
-      }
+        friend_id: navParams.id,
+      },
     };
     BaseRequester.post(route, params)
       .then(response => {
@@ -126,8 +148,8 @@ export default class ProfileScreen extends React.Component {
     const route = APIRoutes.veteranSubscribePath(id);
     const params = {
       subscription: {
-        partnering_organization_id: navParams.id
-      }
+        partnering_organization_id: navParams.id,
+      },
     };
     BaseRequester.post(route, params)
       .then(response => {
@@ -209,7 +231,6 @@ export default class ProfileScreen extends React.Component {
    */
   renderDetails() {
     const params = this.getParams();
-    console.log(params);
     return (
       <View style={styles.detailsContainer}>
         {!!params.email ? this.renderDetailRow("EMAIL", params.email) : null}
@@ -332,6 +353,8 @@ export default class ProfileScreen extends React.Component {
   }
 
   render() {
+    if (!this.props.navigation.state.params) return null;
+
     const params = this.getParams();
     return (
       <View style={styles.baseContainer}>
@@ -364,7 +387,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
-    backgroundColor: colors.light_snow
+    backgroundColor: colors.light_snow,
   },
 
   /* Container for the header bg/photo */
@@ -372,12 +395,12 @@ const styles = StyleSheet.create({
     height: "30%",
     width: "100%",
     backgroundColor: colors.green,
-    zIndex: 100
+    zIndex: 100,
   },
 
   /* Container for the ScrollView */
   scrollContainer: {
-    flex: 1
+    flex: 1,
   },
 
   /* Container for the body content */
@@ -386,20 +409,20 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     marginLeft: 25,
-    marginTop: 20
+    marginTop: 20,
   },
 
   /* Container for the details of this veteran/PO */
   detailsContainer: {
     marginTop: 50,
     justifyContent: "flex-start",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
 
   resourcesContainer: {
     margin: 5,
     padding: 10,
-    backgroundColor: colors.light_gray
+    backgroundColor: colors.light_gray,
   },
 
   /* Container for one row of details LABEL -> value */
@@ -407,27 +430,27 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
 
   /* Container for label in a row */
   detailLabelContainer: {
     justifyContent: "flex-start",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
 
   /* Container for value field in a row */
   detailValueContainer: {
     flex: 1,
     justifyContent: "flex-start",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
 
   /* Container for this veteran/PO's bio */
   bioContainer: {
     margin: 20,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   /* Back button and text container */
@@ -438,7 +461,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 25,
     left: 10,
-    padding: 5
+    padding: 5,
   },
 
   /* Individual items */
@@ -455,7 +478,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowOffset: { width: 5, height: 5 },
     shadowRadius: 5,
-    zIndex: 100
+    zIndex: 100,
   },
   profileName: {
     position: "absolute",
@@ -463,7 +486,7 @@ const styles = StyleSheet.create({
     bottom: 10,
     fontSize: 28,
     fontFamily: "source-sans-pro-regular",
-    color: colors.white
+    color: colors.white,
   },
   logoutButton: {
     marginTop: 30,
@@ -474,7 +497,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: colors.red,
     borderWidth: 2,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
 
   editButton: {
@@ -486,7 +509,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: colors.green,
     borderWidth: 2,
-    backgroundColor: colors.white
+    backgroundColor: colors.white,
   },
   // editButton: {
   //   marginTop: 30,
@@ -502,6 +525,8 @@ const styles = StyleSheet.create({
   connectButton: {
     top: 20,
     position: "absolute",
-    right: 20
-  }
+    right: 20,
+  },
 });
+
+export default withNavigation(ProfileScreen);

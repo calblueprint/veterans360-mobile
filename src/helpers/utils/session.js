@@ -31,15 +31,27 @@ class SessionManager {
     }
   }
 
+  static async getUserSession() {
+    try {
+      const user = await AsyncStorage.getItem("user");
+      return JSON.parse(user);
+    } catch (error) {
+      // TODO: Better error logging
+      throw error;
+    }
+  }
+
   static async getAuthRequestHeaders() {
     try {
-      await AsyncStorage.getItem("user");
+      let user = await AsyncStorage.getItem("user");
+      if (!user) throw Error("No user logged in.");
     } catch (error) {
       return {};
     }
     let headerKeys = ["client", "uid", "access-token", "expiry"];
     try {
       let pairs = await AsyncStorage.multiGet(headerKeys);
+      pairs.push(["token-type", "Bearer"]);
       return Object.assign(...pairs.map(pair => ({ [pair[0]]: pair[1] })));
     } catch (error) {
       // TODO: Better error logging
@@ -47,25 +59,6 @@ class SessionManager {
       return {};
     }
   }
-  //   function getAuthRequestHeaders() {
-  //     if (!localStorage.hasOwnProperty("user")) {
-  //       return {};
-  //     }
-  //     return {
-  //       client: localStorage.getItem("client"),
-  //       uid: localStorage.getItem("uid"),
-  //       "access-token": localStorage.getItem("access-token"),
-  //       expiry: localStorage.getItem("expiry"),
-  //     };
-  //   }
-
-  // function cacheUserSession(user, headers) {
-  //     localStorage.setItem("user", JSON.stringify(user));
-  //     localStorage.setItem("client", headers.get("client"));
-  //     localStorage.setItem("uid", headers.get("uid"));
-  //     localStorage.setItem("access-token", headers.get("access-token"));
-  //     localStorage.setItem("expiry", headers.get("expiry"));
-  //   }
 }
 
 export default SessionManager;
