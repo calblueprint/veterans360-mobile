@@ -63,6 +63,7 @@ const MainTabNavigator = createBottomTabNavigator(
     },
   },
   {
+    initialRouteName: "Home",
     tabBarPosition: "bottom",
     animationEnabled: true,
     tabBarOptions: {

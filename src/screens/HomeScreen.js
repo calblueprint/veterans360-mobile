@@ -14,11 +14,14 @@ import BackgroundOverlay from "../components/BackgroundOverlay";
 import ResourceCard from "../components/ResourceCard";
 import CategoryRequester from "../helpers/requesters/CategoryRequester";
 
+import SessionManager from "../helpers/utils/session";
+
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      sessionUser: null,
       veterans: [],
       categories: [],
       resources: [],
@@ -30,9 +33,17 @@ export default class HomeScreen extends React.Component {
   }
 
   async componentDidMount() {
-    console.log(this.props.navigation.state.params);
-    await this.getVeterans();
-    await this.getRecentResources();
+    await this.hydrateVeteran();
+    await Promise.all([this.getVeterans(), this.getRecentResources()]);
+  }
+
+  async hydrateVeteran() {
+    try {
+      const sessionUser = await SessionManager.getUserSession();
+      await this.setState({ sessionUser: sessionUser });
+    } catch (error) {
+      return;
+    }
   }
 
   /**

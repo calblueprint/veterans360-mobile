@@ -31,6 +31,16 @@ class SessionManager {
     }
   }
 
+  static async getUserSession() {
+    try {
+      const user = await AsyncStorage.getItem("user");
+      return JSON.parse(user);
+    } catch (error) {
+      // TODO: Better error logging
+      throw error;
+    }
+  }
+
   static async getAuthRequestHeaders() {
     try {
       let user = await AsyncStorage.getItem("user");

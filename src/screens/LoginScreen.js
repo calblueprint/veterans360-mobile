@@ -86,7 +86,7 @@ export default class LoginScreen extends React.Component {
    * Routes the user to the app.
    */
   navigateToApp(navProps) {
-    this.props.navigation.navigate("Home", navProps);
+    this.props.navigation.navigate("App", navProps);
   }
 
   /**

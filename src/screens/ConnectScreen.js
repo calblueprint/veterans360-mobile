@@ -31,11 +31,14 @@ import FriendRequestModal from "../components/FriendRequestModal";
 import ConnectPin from "../components/ConnectPin";
 import ConnectBox from "../components/ConnectBox";
 
+import SessionManager from "../helpers/utils/session";
+
 export default class ConnectScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      sessionUser: null,
       isHelpModalOpen: true,
       veterans: [],
       parterOrgs: [],
@@ -58,21 +61,30 @@ export default class ConnectScreen extends React.Component {
     this.navigateToConnectProfile = this.navigateToConnectProfile.bind(this);
   }
 
-  componentDidMount() {
-    params = this.props.navigation.state.params;
-    console.log(this.props.navigation.state.params);
-    this.getConnectStatus(() => {
-      this.getVeterans();
-      this.getParterOrgs();
-      this.getVeteranFriendRequests();
-    });
+  async componentDidMount() {
+    console.log("mounted connect!");
+    // params = this.props.navigation.state.params;
+    // console.log(this.props.navigation.state.params);
+    // this.getConnectStatus(() => {
+    // });
+    await this.hydrateVeteran();
+    this.getVeterans();
+    this.getParterOrgs();
+    this.getVeteranFriendRequests();
+  }
+
+  async hydrateVeteran() {
+    try {
+      const sessionUser = await SessionManager.getUserSession();
+      await this.setState({ sessionUser: sessionUser });
+    } catch (error) {
+      console.error("Could not hydrate veteran.");
+      return;
+    }
   }
 
   navigateToSignUp() {
-    this.props.navigation.navigate(
-      "ConnectSignUp",
-      this.props.navigation.state.params
-    );
+    this.props.navigation.navigate("ConnectSignUp", this.state.sessionUser);
   }
 
   /**
@@ -84,6 +96,7 @@ export default class ConnectScreen extends React.Component {
    *                                      signed up with connect
    */
   getConnectStatus(onConnectCallback) {
+    const params = this.state.sessionUser;
     const id = params.id;
     ConnectSignUpRequester.connectStatus(id)
       .then(response => {
@@ -103,54 +116,51 @@ export default class ConnectScreen extends React.Component {
   /**
    * Gets all veterans from the server and sets state once retrieved.
    */
-  getVeterans() {
+  async getVeterans() {
     const route = APIRoutes.veteransPath();
-    BaseRequester.get(route)
-      .then(response => {
-        this.setState({ veterans: response });
-        this.veteransMapping = this.buildVeteransMapping();
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    try {
+      let { json, headers } = await BaseRequester.get(route);
+      this.setState({ veterans: json });
+      this.veteransMapping = this.buildVeteransMapping(json);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**
    * Gets all POs from the server and sets state once retrieved.
    */
-  getParterOrgs() {
+  async getParterOrgs() {
     const route = APIRoutes.parterOrgsPath();
-    BaseRequester.get(route)
-      .then(response => {
-        this.setState({ parterOrgs: response });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    try {
+      let { json, headers } = await BaseRequester.get(route);
+      this.setState({ parterOrgs: json });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**
    * Gets all the friend requests of this veteran
    * to render on the screen.
    */
-  getVeteranFriendRequests() {
-    const id = this.props.navigation.state.params.id;
+  async getVeteranFriendRequests() {
+    const id = this.state.sessionUser.id;
     const route = APIRoutes.veteranFriendRequestsPath(id);
-    BaseRequester.get(route)
-      .then(response => {
-        this.setState({ friendRequests: response });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    try {
+      let { json, headers } = await BaseRequester.get(route);
+      this.setState({ friendRequests: json });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**
    * Builds a map between veteran IDs and veteran objects for fast state updates
    */
-  buildVeteransMapping() {
+  buildVeteransMapping(veterans) {
     let mapping = {};
-    this.state.veterans.forEach(veteran => {
+    veterans.forEach(veteran => {
       mapping[veteran.id] = veteran;
     });
     return mapping;
@@ -305,7 +315,7 @@ export default class ConnectScreen extends React.Component {
     const navParams = update(params, {
       $merge: {
         source: "connect",
-        currentVeteran: this.props.navigation.state.params,
+        currentVeteran: this.state.sessionUser,
         onConnect: this.onConnectRequest,
       },
     });
@@ -331,10 +341,11 @@ export default class ConnectScreen extends React.Component {
    */
   renderHelpModal() {
     if (this.state.isHelpModalOpen) {
-      const { params } = this.props.navigation.state;
+      const user = this.state.sessionUser;
+      console.log(this.state.sessionUser, "here");
       return (
         <InfoModal
-          title={`WELCOME TO CONNECT, ${params.first_name}!`}
+          title={`WELCOME TO CONNECT, ${user.first_name}!`}
           text="Pan the map to see who's around you."
           onClose={this.closeHelpModal}
         />
@@ -347,7 +358,7 @@ export default class ConnectScreen extends React.Component {
       return (
         <FriendRequestModal
           veteran={veteran}
-          currentVeteran={this.props.navigation.state.params}
+          currentVeteran={this.state.sessionUser}
           onClose={this.closeFriendRequestModal(i)}
           showProfile={this.navigateToConnectProfile}
           key={`friend_request_${i}`}
@@ -452,7 +463,7 @@ export default class ConnectScreen extends React.Component {
         connectionType={this.state.activeConnectionType}
         onClose={this.closeConnectBox}
         onConnect={this.onConnectRequest}
-        currentVeteran={this.props.navigation.state.params}
+        currentVeteran={this.state.sessionUser}
         showProfile={this.navigateToConnectProfile}
       />
     ) : null;
@@ -535,11 +546,12 @@ export default class ConnectScreen extends React.Component {
   }
 
   render() {
-    if (this.state.stillLoading) {
-      return <View />;
-    } else if (!this.state.onConnect) {
-      return this.renderConnectSignUp();
-    }
+    // if (this.state.stillLoading) {
+    //   return <View />;
+    // } else if (!this.state.onConnect) {
+    //   return this.renderConnectSignUp();
+    // }
+    if (!this.state.sessionUser) return null;
 
     return (
       <View style={styles.baseContainer}>
