@@ -122,7 +122,8 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-    const currentVeteran = this.props.navigation.getParam("veteran", {});
+    const currentVeteran = this.state.sessionUser;
+    if (!currentVeteran) return null;
 
     return (
       <BackgroundOverlay

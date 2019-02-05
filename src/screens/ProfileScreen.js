@@ -269,9 +269,9 @@ class ProfileScreen extends React.Component {
   renderConnectButton() {
     const params = this.getParams();
     const connectMethod =
-      params.profileType === "veteran"
-        ? this.connectWithVeteran
-        : this.connectWithPO;
+      params.profileType === "po"
+        ? this.connectWithPO
+        : this.connectWithVeteran;
     if (params.is_friend || !params.source) {
       return;
     } else if (
