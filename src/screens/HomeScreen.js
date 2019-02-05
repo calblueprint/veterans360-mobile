@@ -65,11 +65,11 @@ export default class HomeScreen extends React.Component {
 
   /** Disable for now. Get recent resources */
   async getRecentResources() {
-    let endpoint = APIRoutes.homeResources();
+    let endpoint = APIRoutes.resourcePath(); // Change this later
     let json, headers;
     try {
       ({ json, headers } = await BaseRequester.get(endpoint));
-      console.log(json);
+      console.log("home resources:", json);
       this.setState({ resources: json });
     } catch (error) {
       console.error(error);
@@ -102,9 +102,9 @@ export default class HomeScreen extends React.Component {
    * TODO (Claire): You can return all your stuff here
    */
   renderResources() {
-    return this.state.resources.map(item => {
+    return this.state.resources.map((item, i) => {
       return (
-        <View>
+        <View key={`resource-${i}`}>
           <ResourceCard
             resource_id={item.id}
             resource_description={item.description}
@@ -114,7 +114,7 @@ export default class HomeScreen extends React.Component {
             resource_category={item.category}
             resource_file_link={item.file.url}
             resource_veteran_has_upvoted={item.veteran_has_upvoted}
-            veteran_id={this.props.navigation.state.params.id}
+            veteran_id={this.state.sessionUser.id}
           />
         </View>
       );
