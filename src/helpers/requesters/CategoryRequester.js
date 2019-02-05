@@ -4,7 +4,7 @@ import { APIRoutes } from "../routes/routes";
 class CategoryRequester {
   static async retrieveCategories(section) {
     try {
-      const endpoint = APIRoutes.allCategories();
+      let endpoint = APIRoutes.allCategories();
       if (section == "Vault") {
         endpoint = APIRoutes.vaultCategories();
       } else if (section == "Response") {
@@ -13,7 +13,7 @@ class CategoryRequester {
       let { json, headers } = await BaseRequester.get(endpoint);
       return json;
     } catch (error) {
-      return error;
+      throw error;
     }
   }
 

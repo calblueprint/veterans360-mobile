@@ -30,11 +30,15 @@ export default class VaultScreen extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     console.log("vault mounted!");
-    CategoryRequester.retrieveCategories("Vault").then(response => {
-      this.setState({ categories: response, stillLoading: false });
-    });
+    try {
+      const categories = await CategoryRequester.retrieveCategories("Vault");
+      console.log("categories:", categories);
+      this.setState({ categories: categories, stillLoading: false });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   getData = () => {
